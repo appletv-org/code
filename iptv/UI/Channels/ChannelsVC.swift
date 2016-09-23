@@ -1,5 +1,5 @@
 //
-//  SecondViewController.swift
+//  ChannelsVC.swift
 //  iptv
 //
 //  Created by Александр Колганов on 16.09.16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SecondViewController: UIViewController {
+class ChannelsVC : UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
