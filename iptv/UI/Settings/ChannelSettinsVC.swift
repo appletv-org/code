@@ -10,62 +10,22 @@ import UIKit
 import CoreData
 
 
-class ChannelCell : UICollectionViewCell {
-    
-     static let reuseIdentifier = "ChannelCell"
-    
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var label: UILabel!
-    
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        // These properties are also exposed in Interface Builder.
-        imageView.adjustsImageWhenAncestorFocused = true
-        imageView.clipsToBounds = false
-        
-        label.alpha = 0.0
-    }
-    
-    // MARK: UICollectionReusableView
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        // Reset the label's alpha value so it's initially hidden.
-        label.alpha = 0.8
-    }
-    
-    // MARK: UIFocusEnvironment
-    
-    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
-        /*
-         Update the label's alpha value using the `UIFocusAnimationCoordinator`.
-         This will ensure all animations run alongside each other when the focus
-         changes.
-         */
-        coordinator.addCoordinatedAnimations({
-            if self.isFocused {
-                self.label.alpha = 1.0
-            }
-            else {
-                self.label.alpha = 0.8
-            }
-            }, completion: nil)
-    }
-}
 
 
-class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
-    
+class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, DirectoryStackProtocol {
+
+    @IBOutlet weak var directoryStackView: UIStackView!
+
     @IBOutlet weak var channelsView: UICollectionView!
     
-    var parentGroups : [Group] = []
+    @IBAction func addAction(_ sender: AnyObject) {
+        addM3uListDialog()
+    }
+    
     var groups : [Group] = []
     var channels: [Channel] = []
     
-    var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var directoryStack : DirectoryStack?
  
     
     override func viewDidLoad() {
@@ -76,17 +36,34 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
         channelsView.delegate = self
         channelsView.dataSource = self
         
+        directoryStack = DirectoryStack(directoryStackView)
+        directoryStack!.delegate = self
+        
+        changeGroup(nil)
+        
+    }
+    
+    func changeGroup(_ group: Group?) {
         let requestGroup : NSFetchRequest<Group> =  Group.fetchRequest()
-        requestGroup.predicate = NSPredicate(format: "parent == nil")
-        if let resultGroups = try? context.fetch(requestGroup) {
+        let requestChannels : NSFetchRequest<Channel> =  Channel.fetchRequest()
+
+
+        if group == nil  {
+            requestGroup.predicate = NSPredicate(format: "parent == nil")
+            requestChannels.predicate = NSPredicate(format: "ANY group == nil")
+        }
+        else {
+            requestGroup.predicate = NSPredicate(format: "parent == %@", group!)
+            requestChannels.predicate = NSPredicate(format: "ANY group == %@", group!)
+        }
+        
+        if let resultGroups = try? CoreDataManager.context().fetch(requestGroup) {
             groups = resultGroups
         }
-        
-        let requestChannels : NSFetchRequest<Channel> =  Channel.fetchRequest()
-        if let resultChannels = try? context.fetch(requestChannels) {
+        if let resultChannels = try? CoreDataManager.context().fetch(requestChannels) {
             channels = resultChannels
         }
-        
+        self.channelsView.reloadData()
         
     }
     
@@ -98,37 +75,43 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
     }
 
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  groups.count + channels.count + 1
+        return  groups.count + channels.count
     }
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = self.channelsView.dequeueReusableCell(withReuseIdentifier: ChannelCell.reuseIdentifier, for: indexPath) as! ChannelCell
         
+        var index = indexPath.row
         
-        if indexPath.row == groups.count + channels.count {
-            cell.label.text = "Add"
+        if index < groups.count {
+            cell.element = groups[index]
+            return cell
         }
-        else {
-            if indexPath.row < groups.count {
-                cell.label.text = groups[indexPath.row].name ?? ""
-            }
-            else {
-                cell.label.text = channels[indexPath.row - groups.count].name ?? ""
-            }
+        
+        index -= groups.count
+        if index < channels.count {
+            cell.element = channels[index]
         }
+
         return cell
     }
     
     //---- UICollectionViewDelegate ------
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if(indexPath.row == groups.count + channels.count) {
-            self.addM3uList()
+        
+        var index = indexPath.row
+        
+        if index < groups.count {
+            directoryStack!.push(groups[index])
         }
+        
+        //index -= groups.count
+        //cell.label.text = channels[index].name
         
     }
     
- 
-    func addM3uList() -> Void {
+    
+    func addM3uListDialog() -> Void {
         
         let alertController = UIAlertController(title: "New playlist", message: nil, preferredStyle: .alert)
         
@@ -152,45 +135,13 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
         alertController.addAction(UIAlertAction(title: "Add", style: .default) { [unowned alertController] _ in
             
             guard let name = alertController.textFields?.first?.text , name != "",
-                let url =  alertController.textFields?.last?.text, url != "" else {
+                  let url =  alertController.textFields?.last?.text, url != "" else {
                     print("Please fill all fields")
                     return
             }
             
             do {
-                let items = try parseM3u(string:url)
-                if items.count > 0  {
-                    
-                    
-                    let parentGroup = Group.Insert()
-                    parentGroup.name = name
-                    
-                    var groups = [String: Group]()
-                    for item in items {
-                        
-                        var group :Group? = parentGroup
-
-                        if let groupName = item.group {
-                            group = groups[groupName]
-                            if group == nil {
-                                group = Group.Insert()
-                                group?.name = groupName
-                                group?.parent = parentGroup
-                            }
-                        }
-                    
-                        let channel = Channel.Insert()
-                        channel.name = item.name
-                        channel.url = item.url
-                        if group != nil {
-                            channel.addToGroups(group!)
-                        }
-                    }
-                    
-                }
-                CoreDataManager.instance.saveContext()
-                self.labels.append(name)
-                self.channelsView.reloadData()
+                try self.addM3uList(name:name, url:url)
             }
             catch let error {
                 let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
@@ -211,6 +162,135 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
         
     }
     
+    func addM3uList(name:String, url:String) throws -> Void {
+        let items = try parseM3u(string:url)
+        if items.count > 0  {
+            
+            var groupsList : [String:[M3uItem]] = ["All":[]]
+            for item in items {
+                groupsList["All"]!.append(item)
+                if let groupName = item.group {
+                    var groupList = groupsList[groupName]
+                    if groupList == nil {
+                        groupsList[groupName] = []
+                    }
+                    
+                    groupsList[groupName]!.append(item)
+                    
+                }
+            }
+            
+            
+            let parentGroup = Group.Insert()
+            parentGroup.name = name
+            
+            //var groups = [String: Group]()
+            for (nameGroup,groupList) in groupsList {
+                
+                var group = parentGroup
+                if groupsList.count > 1 { //not only all
+                    group = Group.Insert()
+                    group.name = nameGroup
+                    group.parent = parentGroup
+                    print("add group:\(group.name) to parent:\(parentGroup.name)")
+                }
+                
+                for item in groupList {
+                    let channel = Channel.Insert()
+                    channel.name = item.name
+                    channel.url = item.url
+                    channel.group = group
+                     print("add channel:\(channel.name) to group:\(group.name)")
+                }
+                
+            }
+            
+        }
+        CoreDataManager.instance.saveContext()
+        self.changeGroup(nil)
+        
+    }
+    
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        super.didUpdateFocus(in: context, with: coordinator)
+        
+        guard let nextFocusedView = context.nextFocusedView else { return }
+        print("nextFocusedView : \(nextFocusedView)")
+        
+    }
+
+    
+    
+    
 }
+
+protocol DirectoryStackProtocol {
+    func changeGroup(_ group: Group?)
+}
+
+class DirectoryStack {
+    
+    var parentGroups : [Group] = []
+    let stackView : UIStackView
+    var delegate : DirectoryStackProtocol?
+    
+    init(_ stackView:UIStackView) {
+        self.stackView = stackView
+    }
+    
+    func removeLastButton() -> Void { //last element is label
+        let index = stackView.subviews.count-2
+        if index >= 0 {
+            let view = stackView.arrangedSubviews[index]
+            stackView.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+    }
+    
+    func addLastButton(_ label: String) -> Void { //last element is label
+        
+        let popdirButton = UIButton(type: .roundedRect)
+        popdirButton.setTitle(label, for: .normal)
+        popdirButton.addTarget(self, action: #selector(DirectoryStack.popdirAction(_:)), for: .primaryActionTriggered)
+        let index = stackView.subviews.count-1
+        popdirButton.tag = index
+        stackView.insertArrangedSubview(popdirButton, at: index)
+
+    }
+    
+    func push(_ group:Group) -> Void {
+        guard let lastLabel = self.stackView.arrangedSubviews.last as? UILabel else {
+            print("Not found label")
+            return
+        }
+        
+        //add button
+        self.addLastButton(parentGroups.count == 0 ? "Channels" : (parentGroups.last?.name)!)
+        
+        lastLabel.text = group.name
+        parentGroups.append(group)
+        delegate?.changeGroup(group)
+    }
+    
+    @objc func popdirAction(_ sender:UIButton?) {
+        let index = sender!.tag
+        let last = stackView.subviews.count-2
+        for _ in index...last {
+            removeLastButton()
+        }
+        parentGroups.removeLast(last-index+1)
+        
+        guard let lastLabel = self.stackView.arrangedSubviews.last as? UILabel else {
+            print("Not found label")
+            return
+        }
+        lastLabel.text = parentGroups.count == 0 ? "Channels" : (parentGroups.last?.name)!
+        
+        delegate?.changeGroup(parentGroups.last)
+        
+    }
+    
+}
+
 
 

@@ -7,3 +7,15 @@
 //
 
 import Foundation
+
+
+enum CommonError : Error {
+    case Message(String)
+}
+
+func Err(_ mess:String) -> Error {
+    return CommonError.Message(mess)
+}
+
+
+
