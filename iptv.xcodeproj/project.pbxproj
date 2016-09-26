@@ -22,6 +22,7 @@
 		FA830D8A1D8C215E000BD36E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA830D881D8C215E000BD36E /* Main.storyboard */; };
 		FA830D8C1D8C21B1000BD36E /* ChannelsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA830D8B1D8C21B1000BD36E /* ChannelsVC.swift */; };
 		FA830D8F1D8C3361000BD36E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA830D8D1D8C3361000BD36E /* Settings.storyboard */; };
+		FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */; };
 		FAD2A1B81D93EA730047AE3F /* ChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD2A1B71D93EA730047AE3F /* ChannelCell.swift */; };
 		FAD2A1BA1D9509120047AE3F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = FAD2A1B91D9509120047AE3F /* .gitignore */; };
 /* End PBXBuildFile section */
@@ -43,6 +44,7 @@
 		FA830D891D8C215E000BD36E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = iptv/UI/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FA830D8B1D8C21B1000BD36E /* ChannelsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChannelsVC.swift; path = iptv/UI/Channels/ChannelsVC.swift; sourceTree = "<group>"; };
 		FA830D8E1D8C3361000BD36E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = iptv/UI/Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
+		FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelManager.swift; sourceTree = "<group>"; };
 		FAD2A1B71D93EA730047AE3F /* ChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChannelCell.swift; path = iptv/UI/Settings/ChannelCell.swift; sourceTree = "<group>"; };
 		FAD2A1B91D9509120047AE3F /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -97,6 +99,7 @@
 				FA5C61111D9038EF005E8EBD /* M3uParser.swift */,
 				FA5C61131D9132F1005E8EBD /* Utils.swift */,
 				FA5C61331D92798C005E8EBD /* CoreDataManager.swift */,
+				FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */,
 			);
 			name = iptv;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 				FA6944E91D92D347005B854A /* ChannelSettinsVC.swift in Sources */,
 				FA5C61341D92798C005E8EBD /* CoreDataManager.swift in Sources */,
 				FA830D821D8C209F000BD36E /* ProgramVC.swift in Sources */,
+				FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

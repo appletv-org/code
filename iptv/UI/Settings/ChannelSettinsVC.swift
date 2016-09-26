@@ -10,9 +10,8 @@ import UIKit
 import CoreData
 
 
-
-
 class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, DirectoryStackProtocol {
+
 
     @IBOutlet weak var directoryStackView: UIStackView!
 
@@ -22,10 +21,9 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
         addM3uListDialog()
     }
     
-    var groups : [Group] = []
-    var channels: [Channel] = []
+    var groupInfo : GroupInfo!
+    var directoryStack : DirectoryStack!
     
-    var directoryStack : DirectoryStack?
  
     
     override func viewDidLoad() {
@@ -35,34 +33,17 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
         
         channelsView.delegate = self
         channelsView.dataSource = self
+        channelsView.remembersLastFocusedIndexPath = true
         
         directoryStack = DirectoryStack(directoryStackView)
-        directoryStack!.delegate = self
+        directoryStack.delegate = self
         
-        changeGroup(nil)
+        changeGroup(ChannelManager.root)
         
     }
     
-    func changeGroup(_ group: Group?) {
-        let requestGroup : NSFetchRequest<Group> =  Group.fetchRequest()
-        let requestChannels : NSFetchRequest<Channel> =  Channel.fetchRequest()
-
-
-        if group == nil  {
-            requestGroup.predicate = NSPredicate(format: "parent == nil")
-            requestChannels.predicate = NSPredicate(format: "ANY group == nil")
-        }
-        else {
-            requestGroup.predicate = NSPredicate(format: "parent == %@", group!)
-            requestChannels.predicate = NSPredicate(format: "ANY group == %@", group!)
-        }
-        
-        if let resultGroups = try? CoreDataManager.context().fetch(requestGroup) {
-            groups = resultGroups
-        }
-        if let resultChannels = try? CoreDataManager.context().fetch(requestChannels) {
-            channels = resultChannels
-        }
+    func changeGroup(_ groupInfo: GroupInfo) {
+        self.groupInfo = groupInfo
         self.channelsView.reloadData()
         
     }
@@ -75,7 +56,7 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
     }
 
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  groups.count + channels.count
+        return  groupInfo.groups.count + groupInfo.channels.count
     }
 
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -83,14 +64,14 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
         
         var index = indexPath.row
         
-        if index < groups.count {
-            cell.element = groups[index]
+        if index < groupInfo.groups.count {
+            cell.element = groupInfo.groups[index]
             return cell
         }
         
-        index -= groups.count
-        if index < channels.count {
-            cell.element = channels[index]
+        index -= groupInfo.groups.count
+        if index < groupInfo.channels.count {
+            cell.element = groupInfo.channels[index]
         }
 
         return cell
@@ -101,8 +82,8 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
         
         var index = indexPath.row
         
-        if index < groups.count {
-            directoryStack!.push(groups[index])
+        if index < groupInfo.groups.count {
+            directoryStack!.push(groupInfo.groups[index])
         }
         
         //index -= groups.count
@@ -181,41 +162,44 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
             }
             
             
-            let parentGroup = Group.Insert()
-            parentGroup.name = name
             
-            //var groups = [String: Group]()
+            //add new list to root
+            let parentGroup = GroupInfo(name:name, groups:[], channels:[])
+            ChannelManager.root.groups.append(parentGroup)
+            
             for (nameGroup,groupList) in groupsList {
                 
                 var group = parentGroup
                 if groupsList.count > 1 { //not only all
-                    group = Group.Insert()
-                    group.name = nameGroup
-                    group.parent = parentGroup
+                    group = GroupInfo(name:nameGroup, groups:[], channels:[])
+                    parentGroup.groups.append(group)
                     print("add group:\(group.name) to parent:\(parentGroup.name)")
                 }
                 
                 for item in groupList {
-                    let channel = Channel.Insert()
-                    channel.name = item.name
-                    channel.url = item.url
-                    channel.group = group
+                    let channel = ChannelInfo(name:item.name!, url:item.url!)
+                    group.channels.append(channel)
                      print("add channel:\(channel.name) to group:\(group.name)")
                 }
                 
             }
+            ChannelManager.save()
             
         }
-        CoreDataManager.instance.saveContext()
-        self.changeGroup(nil)
+
+        self.changeGroup(ChannelManager.root)
         
     }
     
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         super.didUpdateFocus(in: context, with: coordinator)
         
-        guard let nextFocusedView = context.nextFocusedView else { return }
-        print("nextFocusedView : \(nextFocusedView)")
+        if let nextFocusedView = context.nextFocusedView {
+            print("nextFocusedView : \(nextFocusedView)")
+        }
+        if let prevFocusedView = context.previouslyFocusedView {
+            print("prevFocusedView : \(prevFocusedView)")
+        }
         
     }
 
@@ -225,12 +209,12 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
 }
 
 protocol DirectoryStackProtocol {
-    func changeGroup(_ group: Group?)
+    func changeGroup(_ group: GroupInfo)
 }
 
 class DirectoryStack {
     
-    var parentGroups : [Group] = []
+    var parentGroups : [GroupInfo] = [ChannelManager.root]
     let stackView : UIStackView
     var delegate : DirectoryStackProtocol?
     
@@ -258,14 +242,14 @@ class DirectoryStack {
 
     }
     
-    func push(_ group:Group) -> Void {
+    func push(_ group:GroupInfo) -> Void {
         guard let lastLabel = self.stackView.arrangedSubviews.last as? UILabel else {
             print("Not found label")
             return
         }
         
         //add button
-        self.addLastButton(parentGroups.count == 0 ? "Channels" : (parentGroups.last?.name)!)
+        self.addLastButton((parentGroups.last?.name)!)
         
         lastLabel.text = group.name
         parentGroups.append(group)
@@ -286,7 +270,7 @@ class DirectoryStack {
         }
         lastLabel.text = parentGroups.count == 0 ? "Channels" : (parentGroups.last?.name)!
         
-        delegate?.changeGroup(parentGroups.last)
+        delegate?.changeGroup(parentGroups.last!)
         
     }
     

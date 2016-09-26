@@ -46,6 +46,12 @@ class CoreDataManager {
     }()
     
     lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator = {
+        /*
+        objc_sync_enter(self)
+        defer {
+            objc_sync_exit(self)
+        }
+         */
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
         let url = self.applicationDocumentsDirectory.appendingPathComponent("iptv.sqlite")
         var failureReason = "There was an error creating or loading the application's saved data."
@@ -60,6 +66,7 @@ class CoreDataManager {
             NSLog("Unresolved error \(wrappedError), \(wrappedError.userInfo)")
             abort()
         }
+        
         
         return coordinator
     }()

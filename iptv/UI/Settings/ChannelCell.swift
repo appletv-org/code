@@ -28,11 +28,11 @@ class ChannelCell : UICollectionViewCell {
         }
         set(newElement) {
             _element = newElement
-            if let group = newElement as? Group {
+            if let group = newElement as? GroupInfo {
                 label.text = group.name
                 imageView.image = ChannelCell.imageGroup
             }
-            else if let channel = newElement as? Channel {
+            else if let channel = newElement as? ChannelInfo {
                 label.text = channel.name
                 imageView.image = ChannelCell.imageChannel
             }
@@ -40,10 +40,12 @@ class ChannelCell : UICollectionViewCell {
     }
     
     lazy var imageFocusInRect : CGRect = {
+        self.layoutIfNeeded()
         return self.imageView.frame
     }()
     
     lazy var imageFocusOutRect : CGRect = {
+        self.layoutIfNeeded()
         var frame = self.imageView.frame
         var newFrame = CGRect(x: frame.origin.x - focusIncrease, y:frame.origin.y - focusIncrease, width: frame.size.width + 2*focusIncrease, height: frame.size.height + 2 * focusIncrease)
         return newFrame
@@ -92,6 +94,7 @@ class ChannelCell : UICollectionViewCell {
             else {
                 self.label.alpha = 0.3
                 self.imageView.frame = imageSize
+                print("Update focus is unfocused \(self.label.text)")
             }
             
         }, completion: nil)
