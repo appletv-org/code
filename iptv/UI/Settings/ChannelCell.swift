@@ -20,21 +20,22 @@ class ChannelCell : UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var label: UILabel!
     
-    var _element : Any?
-    var element : Any //group or channel
+    var _element : DirElement?
+    var element : DirElement //group or channel
     {
         get {
-            return _element
+            return _element!
         }
         set(newElement) {
             _element = newElement
-            if let group = newElement as? GroupInfo {
-                label.text = group.name
-                imageView.image = ChannelCell.imageGroup
-            }
-            else if let channel = newElement as? ChannelInfo {
-                label.text = channel.name
-                imageView.image = ChannelCell.imageChannel
+            switch newElement {
+            case .group(let group):
+                    label.text = group.name
+                    imageView.image = ChannelCell.imageGroup
+                
+            case .channel(let channel):
+                    label.text = channel.name
+                    imageView.image = ChannelCell.imageChannel
             }
         }
     }
@@ -59,7 +60,7 @@ class ChannelCell : UICollectionViewCell {
         //imageView.adjustsImageWhenAncestorFocused = true
         imageView.clipsToBounds = false
         
-        label.alpha = 0.0
+        label.alpha = 0.8
     }
     
     // MARK: UICollectionReusableView
@@ -80,8 +81,6 @@ class ChannelCell : UICollectionViewCell {
          changes.
          */
         
-       
-        
         let imageSize = imageFocusInRect
         let imageFocusSize = imageFocusOutRect
         
@@ -89,12 +88,12 @@ class ChannelCell : UICollectionViewCell {
             if self.isFocused {
                 self.imageView.frame = imageFocusSize
                 self.label.alpha = 1.0
-                 print("Update focus is focused \(self.label.text)")
+                // print("Update focus is focused \(self.label.text)")
             }
             else {
                 self.label.alpha = 0.3
                 self.imageView.frame = imageSize
-                print("Update focus is unfocused \(self.label.text)")
+                //print("Update focus is unfocused \(self.label.text)")
             }
             
         }, completion: nil)

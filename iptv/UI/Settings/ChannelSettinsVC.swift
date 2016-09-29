@@ -7,45 +7,87 @@
 //
 
 import UIKit
-import CoreData
+
 
 
 class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, DirectoryStackProtocol {
 
-
-    @IBOutlet weak var directoryStackView: UIStackView!
-
+    var groupInfo : GroupInfo = ChannelManager.root
+    var path: [String] = [ChannelManager.root.name]
+    var currentItem : DirElement? = nil
+    
+    var focusedItem : UIFocusItem? = nil
+    
+    @IBOutlet weak var directoryStack: DirectoryStack!
+    @IBOutlet weak var focusedDirectoryStack: FocusedView!
     @IBOutlet weak var channelsView: UICollectionView!
+    
+    @IBOutlet weak var focusedActionView: FocusedView!
+    
+    @IBOutlet weak var editButton: UIButton!
+    @IBOutlet weak var currentLabel: UILabel!
     
     @IBAction func addAction(_ sender: AnyObject) {
         addM3uListDialog()
     }
     
-    var groupInfo : GroupInfo!
-    var directoryStack : DirectoryStack!
+    @IBAction func delAction(_ sender: AnyObject) {
+        
+        var delPath = path
+        if let currentName = currentItem?.name {
+            delPath = path.map { $0 }  // different array with same objects
+            delPath.append(currentName)
+            if ChannelManager.delPath(delPath) {
+                self.channelsView.reloadData()
+                ChannelManager.save()
+            }
+        }
+    }
     
- 
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        
         channelsView.delegate = self
         channelsView.dataSource = self
         channelsView.remembersLastFocusedIndexPath = true
         
-        directoryStack = DirectoryStack(directoryStackView)
         directoryStack.delegate = self
+        directoryStack.path = self.path
         
-        changeGroup(ChannelManager.root)
+        focusedActionView.focusedFunc =  { () -> [UIFocusEnvironment]? in
+            if ((self.focusedItem as? ChannelCell) != nil) {
+                return [self.editButton]
+            }
+            return [self.channelsView]
+        }
         
+        focusedDirectoryStack.focusedFunc = { () -> [UIFocusEnvironment]? in
+            if ((self.focusedItem as? ChannelCell) != nil) {
+                let stackSubViews = self.directoryStack.arrangedSubviews
+                if(stackSubViews.count >= 3) {
+                    return [stackSubViews[stackSubViews.count-3]]
+                }
+            }
+            return [self.channelsView]
+        }
     }
     
-    func changeGroup(_ groupInfo: GroupInfo) {
-        self.groupInfo = groupInfo
-        self.channelsView.reloadData()
-        
+    
+    //directory Stack Protocol
+    func changeStackPath(_ path: [String]) {
+        if let group = ChannelManager.findGroup(path) {
+            self.path = path
+            self.groupInfo = group
+            self.channelsView.reloadData()
+        }
+    }
+    
+    
+    func changePath(_ path: [String]) {
+        changeStackPath(path)
+        directoryStack.changePath(path)
     }
     
     
@@ -65,13 +107,13 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
         var index = indexPath.row
         
         if index < groupInfo.groups.count {
-            cell.element = groupInfo.groups[index]
+            cell.element = .group(groupInfo.groups[index])
             return cell
         }
         
         index -= groupInfo.groups.count
         if index < groupInfo.channels.count {
-            cell.element = groupInfo.channels[index]
+            cell.element = .channel(groupInfo.channels[index])
         }
 
         return cell
@@ -80,10 +122,13 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
     //---- UICollectionViewDelegate ------
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        var index = indexPath.row
+        let index = indexPath.row
         
         if index < groupInfo.groups.count {
-            directoryStack!.push(groupInfo.groups[index])
+            var newPath = path.map({$0})
+            newPath.append(groupInfo.groups[index].name)
+            changePath(newPath)
+            directoryStack.path = newPath
         }
         
         //index -= groups.count
@@ -144,137 +189,36 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
     }
     
     func addM3uList(name:String, url:String) throws -> Void {
-        let items = try parseM3u(string:url)
-        if items.count > 0  {
-            
-            var groupsList : [String:[M3uItem]] = ["All":[]]
-            for item in items {
-                groupsList["All"]!.append(item)
-                if let groupName = item.group {
-                    var groupList = groupsList[groupName]
-                    if groupList == nil {
-                        groupsList[groupName] = []
-                    }
-                    
-                    groupsList[groupName]!.append(item)
-                    
-                }
-            }
-            
-            
-            
-            //add new list to root
-            let parentGroup = GroupInfo(name:name, groups:[], channels:[])
-            ChannelManager.root.groups.append(parentGroup)
-            
-            for (nameGroup,groupList) in groupsList {
-                
-                var group = parentGroup
-                if groupsList.count > 1 { //not only all
-                    group = GroupInfo(name:nameGroup, groups:[], channels:[])
-                    parentGroup.groups.append(group)
-                    print("add group:\(group.name) to parent:\(parentGroup.name)")
-                }
-                
-                for item in groupList {
-                    let channel = ChannelInfo(name:item.name!, url:item.url!)
-                    group.channels.append(channel)
-                     print("add channel:\(channel.name) to group:\(group.name)")
-                }
-                
-            }
-            ChannelManager.save()
-            
-        }
 
-        self.changeGroup(ChannelManager.root)
-        
+        try ChannelManager.addM3uList(name: name, url: url)
+        ChannelManager.save()
+        changePath([ChannelManager.root.name])
+
     }
     
+
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         super.didUpdateFocus(in: context, with: coordinator)
         
-        if let nextFocusedView = context.nextFocusedView {
-            print("nextFocusedView : \(nextFocusedView)")
+        if let nextFocusedItem = context.nextFocusedItem {
+            //print("nextFocusedItem : \(nextFocusedItem)")
+            focusedItem = nextFocusedItem
+            if let cellItem = nextFocusedItem as? ChannelCell {
+                currentItem = cellItem.element
+                currentLabel.text = currentItem!.name
+            }
         }
-        if let prevFocusedView = context.previouslyFocusedView {
-            print("prevFocusedView : \(prevFocusedView)")
+        
+        /*
+        if let previouslyFocusedItem = context.previouslyFocusedItem {
+            print("previouslyFocusedItem : \(previouslyFocusedItem)")
         }
+         */
         
     }
 
-    
-    
-    
 }
 
-protocol DirectoryStackProtocol {
-    func changeGroup(_ group: GroupInfo)
-}
-
-class DirectoryStack {
-    
-    var parentGroups : [GroupInfo] = [ChannelManager.root]
-    let stackView : UIStackView
-    var delegate : DirectoryStackProtocol?
-    
-    init(_ stackView:UIStackView) {
-        self.stackView = stackView
-    }
-    
-    func removeLastButton() -> Void { //last element is label
-        let index = stackView.subviews.count-2
-        if index >= 0 {
-            let view = stackView.arrangedSubviews[index]
-            stackView.removeArrangedSubview(view)
-            view.removeFromSuperview()
-        }
-    }
-    
-    func addLastButton(_ label: String) -> Void { //last element is label
-        
-        let popdirButton = UIButton(type: .roundedRect)
-        popdirButton.setTitle(label, for: .normal)
-        popdirButton.addTarget(self, action: #selector(DirectoryStack.popdirAction(_:)), for: .primaryActionTriggered)
-        let index = stackView.subviews.count-1
-        popdirButton.tag = index
-        stackView.insertArrangedSubview(popdirButton, at: index)
-
-    }
-    
-    func push(_ group:GroupInfo) -> Void {
-        guard let lastLabel = self.stackView.arrangedSubviews.last as? UILabel else {
-            print("Not found label")
-            return
-        }
-        
-        //add button
-        self.addLastButton((parentGroups.last?.name)!)
-        
-        lastLabel.text = group.name
-        parentGroups.append(group)
-        delegate?.changeGroup(group)
-    }
-    
-    @objc func popdirAction(_ sender:UIButton?) {
-        let index = sender!.tag
-        let last = stackView.subviews.count-2
-        for _ in index...last {
-            removeLastButton()
-        }
-        parentGroups.removeLast(last-index+1)
-        
-        guard let lastLabel = self.stackView.arrangedSubviews.last as? UILabel else {
-            print("Not found label")
-            return
-        }
-        lastLabel.text = parentGroups.count == 0 ? "Channels" : (parentGroups.last?.name)!
-        
-        delegate?.changeGroup(parentGroups.last!)
-        
-    }
-    
-}
 
 
 
