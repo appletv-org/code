@@ -13,10 +13,11 @@ class FocusedView : UIView {
     
     var focusedObject : UIFocusEnvironment? = nil
     var focusedFunc : (() -> [UIFocusEnvironment]?)? = nil
+    var canFocused = true
     
     override var canBecomeFocused : Bool {
         get {
-            return true
+            return canFocused
         }
     }
     

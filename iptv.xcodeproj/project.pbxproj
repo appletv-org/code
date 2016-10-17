@@ -26,7 +26,10 @@
 		FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */; };
 		FAD2A1B81D93EA730047AE3F /* ChannelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD2A1B71D93EA730047AE3F /* ChannelCell.swift */; };
 		FAD2A1BA1D9509120047AE3F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = FAD2A1B91D9509120047AE3F /* .gitignore */; };
+		FAEE2EEB1DB4E60900D0F4C3 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE2EEA1DB4E60900D0F4C3 /* PlayerView.swift */; };
+		FAEE2EED1DB4E7D000D0F4C3 /* MainPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE2EEC1DB4E7D000D0F4C3 /* MainPlayerView.swift */; };
 		FAFE305D1D9D15760042A3EB /* FocusedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFE305C1D9D15760042A3EB /* FocusedView.swift */; };
+		FAFE30601D9D3E8C0042A3EB /* Channel.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAFE305E1D9D3E8C0042A3EB /* Channel.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,7 +53,10 @@
 		FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChannelManager.swift; path = iptv/ChannelManager.swift; sourceTree = "<group>"; };
 		FAD2A1B71D93EA730047AE3F /* ChannelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChannelCell.swift; path = iptv/UI/Settings/ChannelCell.swift; sourceTree = "<group>"; };
 		FAD2A1B91D9509120047AE3F /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		FAEE2EEA1DB4E60900D0F4C3 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		FAEE2EEC1DB4E7D000D0F4C3 /* MainPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainPlayerView.swift; path = iptv/UI/Channels/MainPlayerView.swift; sourceTree = "<group>"; };
 		FAFE305C1D9D15760042A3EB /* FocusedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FocusedView.swift; path = iptv/UI/FocusedView.swift; sourceTree = "<group>"; };
+		FAFE305F1D9D3E8C0042A3EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = iptv/UI/Base.lproj/Channel.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +101,7 @@
 		FA830D6C1D8C1F33000BD36E /* iptv */ = {
 			isa = PBXGroup;
 			children = (
+				FAEE2EEA1DB4E60900D0F4C3 /* PlayerView.swift */,
 				FA6944E21D92B8D0005B854A /* CoreDataExtension.swift */,
 				FA5C61351D928084005E8EBD /* iptv.xcdatamodeld */,
 				FA830D6D1D8C1F53000BD36E /* AppDelegate.swift */,
@@ -125,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				FA830D8B1D8C21B1000BD36E /* ChannelsVC.swift */,
+				FAEE2EEC1DB4E7D000D0F4C3 /* MainPlayerView.swift */,
 			);
 			name = Channels;
 			sourceTree = "<group>";
@@ -151,6 +159,7 @@
 			isa = PBXGroup;
 			children = (
 				FA830D881D8C215E000BD36E /* Main.storyboard */,
+				FAFE305E1D9D3E8C0042A3EB /* Channel.storyboard */,
 				FA830D8D1D8C3361000BD36E /* Settings.storyboard */,
 			);
 			name = Base.lproj;
@@ -216,6 +225,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAFE30601D9D3E8C0042A3EB /* Channel.storyboard in Resources */,
 				FAD2A1BA1D9509120047AE3F /* .gitignore in Resources */,
 				FA830D721D8C1F53000BD36E /* Info.plist in Resources */,
 				FA830D711D8C1F53000BD36E /* Assets.xcassets in Resources */,
@@ -234,6 +244,7 @@
 				FA5C61371D928084005E8EBD /* iptv.xcdatamodeld in Sources */,
 				FA5C61121D9038EF005E8EBD /* M3uParser.swift in Sources */,
 				FA5E5B381D9A4602009FAE4E /* DirectoryStack.swift in Sources */,
+				FAEE2EEB1DB4E60900D0F4C3 /* PlayerView.swift in Sources */,
 				FA830D8C1D8C21B1000BD36E /* ChannelsVC.swift in Sources */,
 				FAD2A1B81D93EA730047AE3F /* ChannelCell.swift in Sources */,
 				FA830D701D8C1F53000BD36E /* AppDelegate.swift in Sources */,
@@ -242,6 +253,7 @@
 				FA830D861D8C20AA000BD36E /* SettingsVC.swift in Sources */,
 				FA6944E91D92D347005B854A /* ChannelSettinsVC.swift in Sources */,
 				FA5C61341D92798C005E8EBD /* CoreDataManager.swift in Sources */,
+				FAEE2EED1DB4E7D000D0F4C3 /* MainPlayerView.swift in Sources */,
 				FA830D821D8C209F000BD36E /* ProgramVC.swift in Sources */,
 				FAFE305D1D9D15760042A3EB /* FocusedView.swift in Sources */,
 				FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */,
@@ -265,6 +277,14 @@
 				FA830D8E1D8C3361000BD36E /* Base */,
 			);
 			name = Settings.storyboard;
+			sourceTree = "<group>";
+		};
+		FAFE305E1D9D3E8C0042A3EB /* Channel.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FAFE305F1D9D3E8C0042A3EB /* Base */,
+			);
+			name = Channel.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -122,6 +122,27 @@ class ChannelManager {
         }
         return groupList
     }
+    
+    class func findDirElement(_ path: [String]) -> DirElement? {
+        var group : GroupInfo? = root
+        
+        //find prev last groupInfo
+        if(path.count > 1) {
+            let pathGroup = Array(path[0..<path.count-1])
+            group = findGroup(pathGroup)
+        }
+        
+        
+        if(group != nil) {
+            if let findgroup = group!.groups.first(where: {$0.name == path.last}) {
+                return DirElement.group(findgroup)
+            }
+            if let findchannel = group!.channels.first(where: {$0.name == path.last}) {
+                return DirElement.channel(findchannel)
+            }
+        }
+        return nil
+    }
 
     
     class func findGroup(_ path: [String]) -> GroupInfo? {

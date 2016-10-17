@@ -14,8 +14,7 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
 
     var groupInfo : GroupInfo = ChannelManager.root
     var path: [String] = [ChannelManager.root.name]
-    var currentItem : DirElement? = nil
-    
+    var currentItem : DirElement? = nil    
     var focusedItem : UIFocusItem? = nil
     
     @IBOutlet weak var directoryStack: DirectoryStack!
@@ -72,6 +71,7 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
             }
             return [self.channelsView]
         }
+        
     }
     
     
