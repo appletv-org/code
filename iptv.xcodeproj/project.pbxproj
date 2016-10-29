@@ -58,7 +58,6 @@
 		FA2E2EF81DBDFD8900CE8F7F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA2E2EF91DBDFD8900CE8F7F /* Options.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Options.swift; sourceTree = "<group>"; };
 		FA2E2EFA1DBDFD8900CE8F7F /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
-		FA2E2F101DBE096D00CE8F7F /* Gzip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Gzip.framework; path = 3lib/GZIP/Gzip.framework; sourceTree = "<group>"; };
 		FA2E2F1D1DBE109A00CE8F7F /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		FA5C61111D9038EF005E8EBD /* M3uParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = M3uParser.swift; path = iptv/M3uParser.swift; sourceTree = "<group>"; };
 		FA5C61131D9132F1005E8EBD /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = iptv/Utils.swift; sourceTree = "<group>"; };
@@ -148,7 +147,6 @@
 			isa = PBXGroup;
 			children = (
 				FA2E2F1D1DBE109A00CE8F7F /* libz.tbd */,
-				FA2E2F101DBE096D00CE8F7F /* Gzip.framework */,
 				FA6944E01D92B26C005B854A /* CoreData.framework */,
 			);
 			name = Frameworks;
