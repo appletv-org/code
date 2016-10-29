@@ -36,8 +36,8 @@ class CoreDataManager {
     
     // MARK: - Core Data stack
     
-    lazy var applicationDocumentsDirectory: URL = {
-        return  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    lazy var coreDataDirectory: URL = {
+        return  FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first
     }()!
     
     lazy var managedObjectModel: NSManagedObjectModel = {
@@ -53,7 +53,7 @@ class CoreDataManager {
         }
          */
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-        let url = self.applicationDocumentsDirectory.appendingPathComponent("iptv.sqlite")
+        let url = self.coreDataDirectory.appendingPathComponent("iptv.sqlite")
         var failureReason = "There was an error creating or loading the application's saved data."
         do {
             try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
@@ -73,7 +73,7 @@ class CoreDataManager {
     
     lazy var managedObjectContext: NSManagedObjectContext = {
         let coordinator = self.persistentStoreCoordinator
-        var managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        let managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
         managedObjectContext.persistentStoreCoordinator = coordinator
         return managedObjectContext
     }()
@@ -90,6 +90,13 @@ class CoreDataManager {
                 abort()
             }
         }
+    }
+    
+    func genManagedObjectContext() -> NSManagedObjectContext {
+        let coordinator = self.persistentStoreCoordinator
+        let managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        managedObjectContext.persistentStoreCoordinator = coordinator
+        return managedObjectContext
     }
     
     public class func context()  -> NSManagedObjectContext {

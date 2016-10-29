@@ -10,9 +10,16 @@ import UIKit
 
 class SettingsVC: UIViewController {
     
+    @IBOutlet weak var tableView: UITableView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -20,5 +27,27 @@ class SettingsVC: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    
+}
+
+extension SettingsVC: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cellId = "SetupCell\(indexPath.row)"
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        
+        return cell
+    }
+        
+}
+
+
+extension SettingsVC: UITableViewDelegate {
     
 }

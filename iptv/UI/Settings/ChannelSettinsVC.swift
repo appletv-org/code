@@ -161,9 +161,10 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
         alertController.addAction(UIAlertAction(title: "Add", style: .default) { [unowned alertController] _ in
             
             guard let name = alertController.textFields?.first?.text , name != "",
-                  let url =  alertController.textFields?.last?.text, url != "" else {
-                    print("Please fill all fields")
-                    return
+                  let url =  alertController.textFields?.last?.text, url != ""
+            else {
+                print("Please fill all fields")
+                return
             }
             
             do {

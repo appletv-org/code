@@ -38,7 +38,7 @@ public extension PlayerViewDelegate {
     func playerVideo(player: PlayerView, statusPlayer: PVStatus, error: Error?) {
         
     }
-    func playerVideo(player: PlayerView, statusItemPlayer: PVStatus, error: Error?) {
+    func playerVideo(player: PlayerView, statusItemPlayer: PVItemStatus, error: Error?) {
         
     }
     func playerVideo(player: PlayerView, loadedTimeRanges: [PVTimeRange]) {
@@ -344,7 +344,7 @@ public class PlayerView: UIView {
         willSet(newUrls) {
             
             
-            print("willSet urls")
+            //print("willSet urls")
             resetPlayer()
             guard let urls = newUrls else {
                 return
@@ -364,7 +364,7 @@ public class PlayerView: UIView {
             
             let playerItem = avPlayer.currentItem!
             
-            print("adding observers")
+            //print("adding observers")
             addObserversPlayer(avPlayer: avPlayer)
             addObserversVideoItem(playerItem: playerItem)
             
@@ -446,8 +446,10 @@ public class PlayerView: UIView {
                 super.observeValue(forKeyPath: keyPath, of: object, change: change , context: context)
                 return
             }
-            //            self.delegate?.playerVideo(self, statusPlayer: avPlayer.status, error: avPlayer.error)
-            self.delegate?.playerVideo(player: self, statusItemPlayer: avPlayer.status, error: avPlayer.error)
+            self.delegate?.playerVideo(player: self, statusPlayer: avPlayer.status, error: avPlayer.error)
+
+            //self.delegate?.playerVideo(self, statusPlayer: avPlayer.status, error: avPlayer.error)
+            //self.delegate?.playerVideo(player: self, statusItemPlayer: avPlayer.status, error: avPlayer.error)
             //            self.delegate?.playerVideo(player: self, statusItemPlayer: avPlayer.status, error: avPlayer.error)
             
             

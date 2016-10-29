@@ -12,7 +12,7 @@ import UIKit
 class FocusedView : UIView {
     
     var focusedObject : UIFocusEnvironment? = nil
-    var focusedFunc : (() -> [UIFocusEnvironment]?)? = nil
+    var focusedFunc : (() -> [UIFocusEnvironment]?)?
     var canFocused = true
     
     override var canBecomeFocused : Bool {
@@ -33,7 +33,53 @@ class FocusedView : UIView {
                     return ret
                 }
             }
-            return []            
+            return []
         }
+    }
+    
+    /*
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        super.didUpdateFocus(in: context, with: coordinator)
+        
+        if context.nextFocusedView == self {
+            self.layer.borderWidth = 3
+            self.layer.borderColor = UIColor.blue.cgColor
+        }
+        else {
+            self.layer.borderWidth = 0
+        }
+    }
+    */
+}
+
+//focused first focused subview if not define focusedObject or focusedFunc
+class ContainerFocused : FocusedView {
+    
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        super.didUpdateFocus(in: context, with: coordinator)
+        
+        if let nextView = context.nextFocusedView {
+            if !(nextView.isDescendant(of: self))  {
+                canFocused = true
+            }
+            else {
+                canFocused = false
+            }
+        }
+    }
+    
+    override var preferredFocusEnvironments: [UIFocusEnvironment] {
+        var ret = super.preferredFocusEnvironments
+        
+        if(ret.count == 0) {
+            //find first focused element
+            for subview in self.subviews {
+                if subview.canBecomeFocused {
+                    ret = [subview]
+                    break
+                }
+            }
+        }
+        return ret
     }
 }

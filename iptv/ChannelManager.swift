@@ -6,7 +6,7 @@
 //  Copyright © 2016 Home. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 class ChannelInfo : NSObject, NSCoding {
     
@@ -91,6 +91,7 @@ class ChannelManager {
     
     // Singleton
     static let instance = ChannelManager()
+    private init() {}
     
     lazy var rootGroup : GroupInfo = {
         
