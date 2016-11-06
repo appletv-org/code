@@ -9,6 +9,11 @@
 import UIKit
 import AVKit
 
+
+class PipView : PlayerView {
+    
+}
+
 class ProgramCollectionCell : UICollectionViewCell {
     
     static let programCellId = "ProgramCell"
@@ -16,16 +21,99 @@ class ProgramCollectionCell : UICollectionViewCell {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var progressView: UIProgressView!
     
+    func setProgram(_ program:EpgProgram?) {
+        if program != nil {
+            self.textView.attributedText = setProgramText(program!)
+        }
+        else {
+            self.textView.text = "The program guide is not available"
+        }
+    }
     
+    func setProgramText(_ program:EpgProgram) -> NSAttributedString {
+        
+        struct Attributes {
+            
+            static let titleFont = UIFont.boldSystemFont(ofSize: 36)
+            static let descFont = UIFont.systemFont(ofSize: 36)
+            
+            static let timeFormat : [String : Any]  = [ NSFontAttributeName: titleFont, NSForegroundColorAttributeName: UIColor.darkGray ]
+            
+            static let title : [String : Any] = [ NSFontAttributeName: titleFont, NSForegroundColorAttributeName: UIColor.darkGray ]
+            static let desc : [String : Any] = [ NSFontAttributeName: descFont, NSForegroundColorAttributeName: UIColor.darkGray]
+            
+            
+            static func timeString(_ date:Date) -> String {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "HH:mm"
+                return formatter.string(from: date)
+            }
+            
+        }
+        
+        //start date
+        
+        
+        let attributedText = NSMutableAttributedString()
+        
+        
+        //time
+        if let startDate = program.start as? Date {
+            
+            let timeString = Attributes.timeString(startDate) + " "
+            attributedText.append(NSAttributedString( string: timeString, attributes: Attributes.timeFormat))
+        }
+        
+        //title
+        if let title = program.title {
+            attributedText.append(NSAttributedString( string: title + "\n", attributes: Attributes.title  ))
+        }
+        
+        //desc
+        if let desc = program.desc {
+            attributedText.append(NSAttributedString( string: desc, attributes: Attributes.desc ))
+        }
+        
+        return attributedText
+        
+    }
+    
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        super.didUpdateFocus(in: context, with: coordinator)
+        
+        if context.nextFocusedItem as? ProgramCollectionCell == self {
+            if let attrText = self.textView.attributedText {
+                let attrString = NSMutableAttributedString(attributedString: attrText)
+                attrString.addAttribute(NSForegroundColorAttributeName, value: UIColor.white, range:NSMakeRange(0, attrText.length))
+                self.textView.attributedText = attrString
+            }
+            self.textView.layer.borderWidth = 5.0
+            self.textView.layer.borderColor = UIColor.white.cgColor
+        }
+        
+        if context.previouslyFocusedItem as? ProgramCollectionCell == self {
+            if let attrText = self.textView.attributedText {
+                
+                let attrString = NSMutableAttributedString(attributedString: attrText)
+                attrString.addAttribute(NSForegroundColorAttributeName, value: UIColor.darkGray, range:NSMakeRange(0, attrText.length))
+                self.textView.attributedText = attrString
+                self.textView.layer.borderWidth = 0.0
+                
+            }
+        }
+    }
+
+
 }
 
-class ProgramView : UITabBar, UICollectionViewDataSource, UICollectionViewDelegate {
+class ProgramView : ContainerFocused, UICollectionViewDataSource, UICollectionViewDelegate {
     
-    
+    var channel : ChannelInfo?
     var programs : [EpgProgram] = []
     var timerHideProgram : Timer?
     
     weak var dayLabel: UILabel!
+    weak var actionButtons : UISegmentedControl!
     weak var programCollectionView: UICollectionView! {
         didSet {
            programCollectionView.dataSource = self
@@ -101,6 +189,7 @@ class ProgramView : UITabBar, UICollectionViewDataSource, UICollectionViewDelega
     }
     
     func update(_ channel:ChannelInfo) {
+        self.channel = channel
         let allPrograms = ProgramManager.instance.getPrograms(forChannel:channel.name)
         //rest only today +- 1 day programs
         
@@ -141,100 +230,54 @@ class ProgramView : UITabBar, UICollectionViewDataSource, UICollectionViewDelega
         labelDayUpdate()
     }
     
+    
     func labelDayUpdate() {
         
         let dayinSec = TimeInterval(24.0*60*60)
-        var text = "Program not found"
         
-        var currentDate : Date?
+        var programDate = Date()
         
-        if programs.count > 0 {
-            currentDate = Date()
-        }
         let visibleIndexPaths = programCollectionView.indexPathsForVisibleItems
-        if visibleIndexPaths.count > 0 {
+        if programs.count > 0 && visibleIndexPaths.count > 0 {
             let indexPath = visibleIndexPaths[0]
             if (indexPath.row < programs.count) {
                 if let date = programs[indexPath.row].start as? Date {
-                    currentDate = date
+                    programDate = date
                 }
             }
         }
         
-        if let date = currentDate {
-            text = ""
-            let beginDay = NSCalendar.current.startOfDay(for: Date())
-            
-            let interval = date.timeIntervalSince(beginDay)
-            if(interval > 0) {
-                if(interval <= dayinSec) {
-                    text = "Today "
-                }
-                else if(interval > dayinSec && interval < dayinSec*2) {
-                    text = "Tommorow "
-                }
+        
+        var text = ""
+        let beginDay = NSCalendar.current.startOfDay(for: Date())
+        
+        let interval = programDate.timeIntervalSince(beginDay)
+        if(interval > 0) {
+            if(interval <= dayinSec) {
+                text += "Today "
             }
-            else {
-                if interval > -dayinSec {
-                    text = "Yestarday "
-                }
+            else if(interval > dayinSec && interval < dayinSec*2) {
+                text += "Tommorow "
             }
-            let formatter = DateFormatter()
-            formatter.dateFormat = "dd.MM"
-            text += formatter.string(from: date)
         }
+        else {
+            if interval > -dayinSec {
+                text += "Yestarday "
+            }
+        }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM"
+        text += formatter.string(from: programDate)
+        
+        if channel != nil {
+            text += ": \(channel!.name)"
+        }
+
         dayLabel.text = text
 
     }
     
     
-    func setProgramText(_ program:EpgProgram, color:UIColor = UIColor.darkGray) -> NSAttributedString {
-        
-        struct Attributes {
-            
-            static let titleFont = UIFont.boldSystemFont(ofSize: 36)
-            static let descFont = UIFont.systemFont(ofSize: 36)
-            
-            static let timeFormat : [String : Any]  = [ NSFontAttributeName: titleFont ]
-            
-            static let title : [String : Any] = [ NSFontAttributeName: titleFont ]
-            static let desc : [String : Any] = [ NSFontAttributeName: descFont]
-            
-            
-            static func timeString(_ date:Date) -> String {
-                let formatter = DateFormatter()
-                formatter.dateFormat = "HH:mm"
-                return formatter.string(from: date)
-            }
-            
-        }
-        
-        //start date
-        
-        
-        let attributedText = NSMutableAttributedString()
-        
-        
-        //time
-        if let startDate = program.start as? Date {
-            
-            let timeString = Attributes.timeString(startDate) + " "
-            attributedText.append(NSAttributedString( string: timeString, attributes: Attributes.timeFormat + [NSForegroundColorAttributeName: color] ))
-        }
-        
-        //title
-        if let title = program.title {
-            attributedText.append(NSAttributedString( string: title, attributes: Attributes.title + [NSForegroundColorAttributeName: color] ))
-        }
-        
-        //desc
-        if let desc = program.desc {
-            attributedText.append(NSAttributedString( string: desc, attributes: Attributes.desc + [NSForegroundColorAttributeName: color]))
-        }
-        
-        return attributedText
-        
-    }
     
     //collectionView delegate
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -242,7 +285,7 @@ class ProgramView : UITabBar, UICollectionViewDataSource, UICollectionViewDelega
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return programs.count
+        return programs.count > 0 ?  programs.count : 1
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -251,14 +294,12 @@ class ProgramView : UITabBar, UICollectionViewDataSource, UICollectionViewDelega
         
         let cell = self.programCollectionView.dequeueReusableCell(withReuseIdentifier: ProgramCollectionCell.programCellId, for: indexPath) as! ProgramCollectionCell
         
+        var program :EpgProgram? = nil
         if index < programs.count {
-            let program = programs[index]
-            cell.textView.attributedText = setProgramText(program)
-            //cell.textView.text = program.title
+            program = programs[index]
         }
-        else {
-            cell.textView.text = ""
-        }
+        cell.setProgram(program)
+
         return cell
         
     }
@@ -266,8 +307,11 @@ class ProgramView : UITabBar, UICollectionViewDataSource, UICollectionViewDelega
 
 
 
-class ChannelsVC : UIViewController {
+class ChannelsVC : UIViewController, ChannelPickerProtocol {
 
+    weak var channelPickerVC : ChannelPickerVC?
+
+    
     var groupInfo : GroupInfo = ChannelManager.root
     var path: [String] = [ChannelManager.root.name]
     var currentItem : DirElement?
@@ -278,13 +322,9 @@ class ChannelsVC : UIViewController {
     @IBOutlet weak var mainPlayer: PlayerView!
 
     //choose channel view contor
-    @IBOutlet weak var controlView: UIView!
-    @IBOutlet weak var directoryStack: DirectoryStack!
-    @IBOutlet weak var focusedDirectoryStack: FocusedView!
-    @IBOutlet weak var channelsView: UICollectionView!
-    @IBOutlet weak var controlChannelButton: UIButton!
+    @IBOutlet weak var channelPickerView: UIView!
     @IBAction func channelAction(_ sender: AnyObject) {
-        controlView.isHidden = true
+        channelPickerView.isHidden = true
     }
     
     //view for next/prev programs
@@ -299,6 +339,7 @@ class ChannelsVC : UIViewController {
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var programCollectionView: UICollectionView!
 
+    @IBOutlet weak var actionButtons: UISegmentedControl!
     
     //loading view
     @IBOutlet weak var loadingView: UIView!
@@ -307,9 +348,20 @@ class ChannelsVC : UIViewController {
     @IBOutlet weak var loadingErrorLabel: UILabel!
     
     override func viewDidLoad() {
+        
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        channelPickerVC = mainStoryboard.instantiateViewController(withIdentifier: "ChannelPickerVC") as? ChannelPickerVC
+        channelPickerVC!.view.translatesAutoresizingMaskIntoConstraints = false
+        channelPickerVC!.delegate = self
+        self.containerAdd(childViewController: channelPickerVC!, toView:channelPickerView)
+        channelPickerVC!.delegate = self
+
+        
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        
+        loadingView.isHidden = true
         
         if var currentChannelPath = UserDefaults.standard.array(forKey: "currentChannel") as? [String]  {
             let nameChannel = currentChannelPath.popLast()
@@ -328,31 +380,13 @@ class ChannelsVC : UIViewController {
         }
         
         
-        //choose channels
-        channelsView.delegate = self
-        channelsView.dataSource = self
-        channelsView.remembersLastFocusedIndexPath = true
-        
-        directoryStack.delegate = self
-        directoryStack.path = self.path
-        
-        focusedDirectoryStack.focusedFunc = { () -> [UIFocusEnvironment]? in
-            if ((self.focusedItem as? ChannelCell) != nil) {
-                let stackSubViews = self.directoryStack.arrangedSubviews
-                if(stackSubViews.count >= 3) {
-                    return [stackSubViews[stackSubViews.count-3]]
-                }
-            }
-            return [self.channelsView]
-        }
-
-        
         //show programs
         programView.programCollectionView = programCollectionView
         programView.dayLabel = dayLabel
+        programView.actionButtons = actionButtons
         
         
-        controlView.isHidden = true
+        channelPickerView.isHidden = true
         
         
         mainPlayer.backgroundColor = UIColor.black
@@ -444,12 +478,6 @@ class ChannelsVC : UIViewController {
         
         if  nextFocusedView != nil {
             
-            //change channel cell
-            
-            if let cellItem = nextFocusedView as? ChannelCell {
-                currentItem = cellItem.element
-                return
-            }
             
             //border animation for main view
             
@@ -469,9 +497,18 @@ class ChannelsVC : UIViewController {
     }
     
     
+    func selectedPath(chooseControl: ChannelPickerVC,  path:[String]) {
+        if let newGroupInfo = ChannelManager.findParentGroup(path) {
+            if let index = newGroupInfo.channels.index(where: {$0.name == path.last}) {
+                groupInfo = newGroupInfo
+                currentChannelIndex  = index
+                play(groupInfo.channels[index])
+            }
+        }
+    }
     
     func play(_ channel:ChannelInfo) {
-        controlView.isHidden = true
+        channelPickerView.isHidden = true
         
         //loading channel
         loadingView.isHidden = false
@@ -498,17 +535,24 @@ class ChannelsVC : UIViewController {
         }
     }
 
+    
     // this method is called when a tap is recognized
     func handleTap(sender: UITapGestureRecognizer) {
-        if controlView.isHidden {
-            controlView.isHidden = false
-            viewToFocus = channelsView
+        if channelPickerView.isHidden {
+            channelPickerView.isHidden = false
+            viewToFocus = channelPickerView
+            
+            if  groupInfo.channels.count < currentChannelIndex {
+                channelPickerVC!.setupPath(path + [groupInfo.channels[currentChannelIndex].name])
+            }
+
         }
         else {
-            controlView.isHidden = true
+            channelPickerView.isHidden = true
             viewToFocus = middleChannelView
         }
     }
+ 
     
 
 
@@ -517,79 +561,6 @@ class ChannelsVC : UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-}
-
-extension ChannelsVC: UICollectionViewDataSource {
-    //---- UICollectionViewDataSource ------
-    
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        return  groupInfo.groups.count + groupInfo.channels.count
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        var index = indexPath.row
-        
-        let cell = self.channelsView.dequeueReusableCell(withReuseIdentifier: ChannelCell.reuseIdentifier, for: indexPath) as! ChannelCell
-
-        if index < groupInfo.groups.count {
-            cell.element = .group(groupInfo.groups[index])
-            return cell
-        }
-        
-        index -= groupInfo.groups.count
-        if index < groupInfo.channels.count {
-            cell.element = .channel(groupInfo.channels[index])
-        }
-        
-        return cell
-        
-    }
-}
-
-extension ChannelsVC: UICollectionViewDelegate {
-    //---- UICollectionViewDelegate ------
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        let index = indexPath.row
-        
-        if(collectionView == channelsView) {
-            if index < groupInfo.groups.count {
-                var newPath = path.map({$0})
-                newPath.append(groupInfo.groups[index].name)
-                changePath(newPath)
-                directoryStack.path = newPath
-                return
-            }
-            
-            currentChannelIndex = index - groupInfo.groups.count
-            play(groupInfo.channels[currentChannelIndex])
-        }
-    }
-
-}
-
-extension ChannelsVC: DirectoryStackProtocol {
-    //directory Stack Protocol
-    func changeStackPath(_ path: [String]) {
-        if let group = ChannelManager.findGroup(path) {
-            self.path = path
-            self.groupInfo = group
-            self.channelsView.reloadData()
-        }
-    }
-    
-    
-    func changePath(_ path: [String]) {
-        changeStackPath(path)
-        directoryStack.changePath(path)
-    }
-    
 }
 
 extension ChannelsVC: PlayerViewDelegate {

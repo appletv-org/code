@@ -9,19 +9,12 @@
 import UIKit
 
 
+class ChannelSettingsVC : UIViewController, ChannelPickerProtocol {
 
-class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, DirectoryStackProtocol {
-
-    var groupInfo : GroupInfo = ChannelManager.root
-    var path: [String] = [ChannelManager.root.name]
-    var currentItem : DirElement? = nil    
-    var focusedItem : UIFocusItem? = nil
+    var currentPath = [String]()
     
-    @IBOutlet weak var directoryStack: DirectoryStack!
-    @IBOutlet weak var focusedDirectoryStack: FocusedView!
-    @IBOutlet weak var channelsView: UICollectionView!
-    
-    @IBOutlet weak var focusedActionView: FocusedView!
+    weak var channelPickerVC : ChannelPickerVC?
+    @IBOutlet weak var channelPickerView: UIView!
     
     @IBOutlet weak var editButton: UIButton!
     @IBOutlet weak var currentLabel: UILabel!
@@ -32,108 +25,54 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
     
     @IBAction func delAction(_ sender: AnyObject) {
         
-        var delPath = path
-        if let currentName = currentItem?.name {
-            delPath = path.map { $0 }  // different array with same objects
-            delPath.append(currentName)
-            if ChannelManager.delPath(delPath) {
-                self.channelsView.reloadData()
+        if currentPath.count > 1 { //we cannot del root group
+            
+            //find prev elem
+            var index = 0
+            let parentGroup = ChannelManager.findParentGroup(currentPath)
+            if parentGroup != nil {
+                index = parentGroup!.findDirIndex(currentPath.last!)
+            }
+            
+            if ChannelManager.delPath(currentPath) {
+                if (parentGroup != nil && index >= 0) {
+                    if index >= parentGroup!.countDirElements() {
+                        index -= 1
+                    }
+                    if index < 0 {
+                        index = 0
+                    }
+                    currentPath = Array(currentPath[0..<currentPath.count])
+                    if let nextElement = parentGroup?.findDirElement(index: index) {
+                        currentPath += [nextElement.name]
+                    }
+                    channelPickerVC!.setupPath(currentPath)
+                }
+                
                 ChannelManager.save()
             }
         }
+        
     }
     
     
     override func viewDidLoad() {
+        
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        channelPickerVC = mainStoryboard.instantiateViewController(withIdentifier: "ChannelPickerVC") as? ChannelPickerVC
+        
+        
+        channelPickerVC!.view.translatesAutoresizingMaskIntoConstraints = false
+        channelPickerVC!.delegate = self
+        self.containerAdd(childViewController: channelPickerVC!, toView:channelPickerView)
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         
-        channelsView.delegate = self
-        channelsView.dataSource = self
-        channelsView.remembersLastFocusedIndexPath = true
-        
-        directoryStack.delegate = self
-        directoryStack.path = self.path
-        
-        focusedActionView.focusedFunc =  { () -> [UIFocusEnvironment]? in
-            if ((self.focusedItem as? ChannelCell) != nil) {
-                return [self.editButton]
-            }
-            return [self.channelsView]
-        }
-        
-        focusedDirectoryStack.focusedFunc = { () -> [UIFocusEnvironment]? in
-            if ((self.focusedItem as? ChannelCell) != nil) {
-                let stackSubViews = self.directoryStack.arrangedSubviews
-                if(stackSubViews.count >= 3) {
-                    return [stackSubViews[stackSubViews.count-3]]
-                }
-            }
-            return [self.channelsView]
-        }
         
     }
     
-    
-    //directory Stack Protocol
-    func changeStackPath(_ path: [String]) {
-        if let group = ChannelManager.findGroup(path) {
-            self.path = path
-            self.groupInfo = group
-            self.channelsView.reloadData()
-        }
-    }
-    
-    
-    func changePath(_ path: [String]) {
-        changeStackPath(path)
-        directoryStack.changePath(path)
-    }
-    
-    
-    //---- UICollectionViewDataSource ------
-    
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  groupInfo.groups.count + groupInfo.channels.count
-    }
-
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = self.channelsView.dequeueReusableCell(withReuseIdentifier: ChannelCell.reuseIdentifier, for: indexPath) as! ChannelCell
-        
-        var index = indexPath.row
-        
-        if index < groupInfo.groups.count {
-            cell.element = .group(groupInfo.groups[index])
-            return cell
-        }
-        
-        index -= groupInfo.groups.count
-        if index < groupInfo.channels.count {
-            cell.element = .channel(groupInfo.channels[index])
-        }
-
-        return cell
-    }
-    
-    //---- UICollectionViewDelegate ------
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        let index = indexPath.row
-        
-        if index < groupInfo.groups.count {
-            var newPath = path.map({$0})
-            newPath.append(groupInfo.groups[index].name)
-            changePath(newPath)
-            directoryStack.path = newPath
-        }
-        
-        //index -= groups.count
-        //cell.label.text = channels[index].name
-        
+    func focusedPath(chooseControl: ChannelPickerVC,  path:[String]) {
+        currentPath = path
+        currentLabel.text = path.last
     }
     
     
@@ -189,15 +128,17 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
         
     }
     
+    
     func addM3uList(name:String, url:String) throws -> Void {
 
         try ChannelManager.addM3uList(name: name, url: url)
         ChannelManager.save()
-        changePath([ChannelManager.root.name])
+        //changePath([ChannelManager.root.name])
 
     }
-    
 
+    
+    /*
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         super.didUpdateFocus(in: context, with: coordinator)
         
@@ -217,9 +158,10 @@ class ChannelSettingsVC : UIViewController, UICollectionViewDataSource, UICollec
          */
         
     }
+     */
+
 
 }
-
 
 
 

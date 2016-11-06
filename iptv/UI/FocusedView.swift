@@ -73,13 +73,13 @@ class ContainerFocused : FocusedView {
         
         if(ret.count == 0) {
             //find first focused element
-            for subview in self.subviews {
-                if subview.canBecomeFocused {
-                    ret = [subview]
-                    break
-                }
+            if let subview = self.findFirstInDeep(where: {$0.canBecomeFocused}) {
+                ret = [subview]
             }
         }
         return ret
     }
 }
+
+
+

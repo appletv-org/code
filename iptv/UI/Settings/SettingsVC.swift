@@ -30,7 +30,7 @@ class SettingsVC: UIViewController {
     
 }
 
-extension SettingsVC: UITableViewDataSource {
+extension SettingsVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
@@ -44,10 +44,10 @@ extension SettingsVC: UITableViewDataSource {
         
         return cell
     }
+    
+
         
 }
 
 
-extension SettingsVC: UITableViewDelegate {
-    
-}
+

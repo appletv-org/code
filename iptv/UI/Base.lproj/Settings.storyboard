@@ -42,7 +42,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="lNm-iN-955" kind="show" id="vhh-VL-PWo"/>
+                                            <segue destination="epq-NJ-7Pj" kind="show" id="tiD-gZ-peK"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="SetupCell1" textLabel="VHG-mN-FqW" style="IBUITableViewCellStyleDefault" id="Jyg-y2-27v">
@@ -98,7 +98,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NS4-AT-WYg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-8916" y="1421"/>
+            <point key="canvasLocation" x="-9122" y="1329"/>
         </scene>
         <!--EPG Providers-->
         <scene sceneID="hJH-cI-vFy">
@@ -323,140 +323,74 @@
             </objects>
             <point key="canvasLocation" x="-6480" y="1446"/>
         </scene>
-        <!--Settings channels-->
-        <scene sceneID="oBd-i3-OlF">
+        <!--Epg Provider EditVC-->
+        <scene sceneID="Dkb-yy-alB">
             <objects>
-                <viewController id="lNm-iN-955" customClass="ChannelSettingsVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="EPGProviderEdit" id="k2V-1X-J6j" customClass="EpgProviderEditVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="j5J-tM-v8O" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4040" y="1446"/>
+        </scene>
+        <!--Setting 2channel-->
+        <scene sceneID="ILD-IU-NkU">
+            <objects>
+                <viewController title="Setting 2channel" id="epq-NJ-7Pj" customClass="ChannelSettingsVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="OoC-uG-QGP"/>
-                        <viewControllerLayoutGuide type="bottom" id="pUV-Qw-oF3"/>
+                        <viewControllerLayoutGuide type="top" id="MQR-gd-itz"/>
+                        <viewControllerLayoutGuide type="bottom" id="YIM-Fo-43U"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Wqk-1G-NcB">
+                    <view key="view" contentMode="scaleToFill" id="YnV-Pq-ajQ">
                         <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" spacing="21" translatesAutoresizingMaskIntoConstraints="NO" id="eGy-KT-Hw9">
-                                <frame key="frameInset" minX="30" minY="71" width="1860" height="500"/>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yo1-qa-pRS">
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="450" id="N6c-o4-hlG"/>
+                                </constraints>
+                            </containerView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YfN-li-SaT" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="SF0-er-Lqh" customClass="DirectoryStack" customModule="iptv" customModuleProvider="target">
-                                        <frame key="frameInset" width="1860" height="60"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="1Zj-so-zgf">
                                         <subviews>
-                                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r5i-8c-BS6">
-                                                <frame key="frameInset" width="1860" height="60"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" priority="250" constant="1860" id="1ti-na-8Cm"/>
-                                                </constraints>
-                                            </view>
-                                        </subviews>
-                                    </stackView>
-                                    <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EFo-hD-l0X" customClass="FocusedView" customModule="iptv" customModuleProvider="target">
-                                        <frame key="frameInset" minY="81" width="1860" height="20"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="20" id="5qK-dX-LqU"/>
-                                        </constraints>
-                                    </view>
-                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="drB-k3-CHK">
-                                        <frame key="frameInset" minY="122" width="1860" height="260"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="260" id="2rT-ro-rWW"/>
-                                        </constraints>
-                                        <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="60" minimumInteritemSpacing="60" id="Kg9-1x-FLA">
-                                            <size key="itemSize" width="200" height="176"/>
-                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                            <inset key="sectionInset" minX="60" minY="60" maxX="60" maxY="60"/>
-                                        </collectionViewFlowLayout>
-                                        <cells>
-                                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ChannelCell" id="lvO-Vh-aaC" customClass="ChannelCell" customModule="iptv" customModuleProvider="target">
-                                                <rect key="frame" x="60" y="42" width="200" height="176"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                                    <rect key="frame" x="0.0" y="0.0" width="200" height="176"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="ChannelCell" image="group" translatesAutoresizingMaskIntoConstraints="NO" id="f0v-hm-gyZ"/>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hKD-Y6-Yn8">
-                                                            <fontDescription key="fontDescription" type="system" pointSize="30"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                    </subviews>
-                                                </view>
-                                                <constraints>
-                                                    <constraint firstAttribute="bottom" secondItem="hKD-Y6-Yn8" secondAttribute="bottom" id="0mz-TW-30E"/>
-                                                    <constraint firstAttribute="bottom" secondItem="f0v-hm-gyZ" secondAttribute="bottom" constant="50" id="1Dd-gS-PHw"/>
-                                                    <constraint firstItem="f0v-hm-gyZ" firstAttribute="leading" secondItem="lvO-Vh-aaC" secondAttribute="leading" constant="5" id="3KB-Pt-3a8"/>
-                                                    <constraint firstItem="f0v-hm-gyZ" firstAttribute="top" secondItem="lvO-Vh-aaC" secondAttribute="top" constant="5" id="IAa-dM-Eoh"/>
-                                                    <constraint firstAttribute="trailing" secondItem="hKD-Y6-Yn8" secondAttribute="trailing" constant="5" id="cjb-vX-xey"/>
-                                                    <constraint firstItem="hKD-Y6-Yn8" firstAttribute="leading" secondItem="lvO-Vh-aaC" secondAttribute="leading" constant="5" id="yFm-yM-KCV"/>
-                                                    <constraint firstAttribute="trailing" secondItem="f0v-hm-gyZ" secondAttribute="trailing" constant="5" id="zHC-yu-uCy"/>
-                                                </constraints>
-                                                <connections>
-                                                    <outlet property="imageView" destination="f0v-hm-gyZ" id="a6H-3v-qLl"/>
-                                                    <outlet property="label" destination="hKD-Y6-Yn8" id="t7D-j9-dCy"/>
-                                                </connections>
-                                            </collectionViewCell>
-                                        </cells>
-                                    </collectionView>
-                                    <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Oik-QM-unx" customClass="FocusedView" customModule="iptv" customModuleProvider="target">
-                                        <frame key="frameInset" minY="403" width="1860" height="10"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="10" id="ttV-H6-tBb"/>
-                                        </constraints>
-                                    </view>
-                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="e8p-UL-HYo">
-                                        <frame key="frameInset" minY="434" width="1860" height="66"/>
-                                        <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" distribution="fillEqually" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="4ol-NF-yQT">
-                                                <frame key="frameInset" width="607" height="66"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="WTV-qA-ggj">
                                                 <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xQ0-gL-2wH">
-                                                        <frame key="frameInset" width="189" height="66"/>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TTd-Fv-yVg">
                                                         <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                                         <state key="normal" title="Edit"/>
                                                     </button>
-                                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cW8-2b-fBo">
-                                                        <frame key="frameInset" minX="209" width="189" height="66"/>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S1y-XW-grl">
                                                         <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                                         <state key="normal" title="Add"/>
                                                         <connections>
-                                                            <action selector="addAction:" destination="lNm-iN-955" eventType="primaryActionTriggered" id="PNk-hu-s3F"/>
+                                                            <action selector="addAction:" destination="epq-NJ-7Pj" eventType="primaryActionTriggered" id="RmX-eb-bWT"/>
                                                         </connections>
                                                     </button>
-                                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Imb-QP-teO">
-                                                        <frame key="frameInset" minX="418" width="189" height="66"/>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kVs-Vn-fvw">
                                                         <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                                         <state key="normal" title="Delete"/>
                                                         <connections>
-                                                            <action selector="delAction:" destination="lNm-iN-955" eventType="primaryActionTriggered" id="YI6-cD-qec"/>
+                                                            <action selector="delAction:" destination="epq-NJ-7Pj" eventType="primaryActionTriggered" id="MId-ML-7P1"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
                                             </stackView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lg9-1s-NB8">
-                                                <frame key="frameInset" minX="627" width="606" height="66"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="muL-BF-wjg">
                                                 <fontDescription key="fontDescription" type="system" pointSize="46"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="nAv-eH-PNu">
-                                                <frame key="frameInset" minX="1253" width="607" height="66"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="f4l-W2-sf2">
                                                 <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pGm-rS-mhY">
-                                                        <frame key="frameInset" width="189" height="66"/>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vQv-uX-55l">
                                                         <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                                         <state key="normal" title="Copy"/>
                                                     </button>
-                                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fO8-iw-BAo">
-                                                        <frame key="frameInset" minX="209" width="189" height="66"/>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rKl-92-uKX">
                                                         <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                                         <state key="normal" title="Cut"/>
                                                     </button>
-                                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T5I-8d-DAi">
-                                                        <frame key="frameInset" minX="418" width="189" height="66"/>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="72F-H9-Fhj">
                                                         <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                                         <state key="normal" title="Paste"/>
                                                     </button>
@@ -465,61 +399,36 @@
                                         </subviews>
                                     </stackView>
                                 </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="drB-k3-CHK" firstAttribute="leading" secondItem="eGy-KT-Hw9" secondAttribute="leading" id="j6S-Na-hlz"/>
-                                    <constraint firstAttribute="trailing" secondItem="drB-k3-CHK" secondAttribute="trailing" id="lTn-ho-Jg9"/>
-                                    <constraint firstAttribute="trailing" secondItem="EFo-hD-l0X" secondAttribute="trailing" id="neS-ID-heE"/>
-                                    <constraint firstItem="EFo-hD-l0X" firstAttribute="leading" secondItem="eGy-KT-Hw9" secondAttribute="leading" id="tvc-ok-65O"/>
+                                    <constraint firstAttribute="trailing" secondItem="1Zj-so-zgf" secondAttribute="trailing" id="Gzp-vd-mrN"/>
+                                    <constraint firstAttribute="height" constant="60" id="Jnb-1c-KfZ"/>
+                                    <constraint firstItem="1Zj-so-zgf" firstAttribute="leading" secondItem="YfN-li-SaT" secondAttribute="leading" id="Sgp-C0-lxz"/>
+                                    <constraint firstItem="1Zj-so-zgf" firstAttribute="top" secondItem="YfN-li-SaT" secondAttribute="top" id="gAc-mb-lue"/>
+                                    <constraint firstAttribute="bottom" secondItem="1Zj-so-zgf" secondAttribute="bottom" id="wlI-Wd-Rqe"/>
                                 </constraints>
-                            </stackView>
+                            </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="eGy-KT-Hw9" firstAttribute="top" secondItem="OoC-uG-QGP" secondAttribute="bottom" constant="60" id="WYn-31-k2x"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="eGy-KT-Hw9" secondAttribute="trailing" constant="10" id="qeq-7o-xlo"/>
-                            <constraint firstItem="eGy-KT-Hw9" firstAttribute="leading" secondItem="Wqk-1G-NcB" secondAttribute="leadingMargin" constant="10" id="v6Y-zw-FIo"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="yo1-qa-pRS" secondAttribute="trailing" constant="10" id="1BV-b2-h6i"/>
+                            <constraint firstItem="YfN-li-SaT" firstAttribute="top" secondItem="yo1-qa-pRS" secondAttribute="bottom" id="HBo-9G-elM"/>
+                            <constraint firstItem="YfN-li-SaT" firstAttribute="leading" secondItem="YnV-Pq-ajQ" secondAttribute="leadingMargin" constant="10" id="L6Z-ya-bfw"/>
+                            <constraint firstItem="yo1-qa-pRS" firstAttribute="leading" secondItem="YnV-Pq-ajQ" secondAttribute="leadingMargin" constant="10" id="O38-YX-bfs"/>
+                            <constraint firstItem="yo1-qa-pRS" firstAttribute="top" secondItem="MQR-gd-itz" secondAttribute="bottom" id="WYe-d7-jo4"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="YfN-li-SaT" secondAttribute="trailing" constant="10" id="WfA-NW-rnk"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Settings channels" id="niS-G5-TAw"/>
+                    <navigationItem key="navigationItem" title="Settings channels" id="ekv-Os-seP"/>
                     <connections>
-                        <outlet property="channelsView" destination="drB-k3-CHK" id="WIk-TP-p2E"/>
-                        <outlet property="currentLabel" destination="Lg9-1s-NB8" id="PCK-Xs-dO5"/>
-                        <outlet property="directoryStack" destination="SF0-er-Lqh" id="fAl-cV-3BH"/>
-                        <outlet property="editButton" destination="xQ0-gL-2wH" id="NQl-2d-Mid"/>
-                        <outlet property="focusedActionView" destination="Oik-QM-unx" id="ee8-ik-ekv"/>
-                        <outlet property="focusedDirectoryStack" destination="EFo-hD-l0X" id="Ab7-vz-4Jd"/>
+                        <outlet property="channelPickerView" destination="yo1-qa-pRS" id="TwQ-AT-Ihr"/>
+                        <outlet property="currentLabel" destination="muL-BF-wjg" id="xYb-rU-rTQ"/>
+                        <outlet property="editButton" destination="TTd-Fv-yVg" id="T8F-lL-0cv"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="NVM-r2-oCf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gwq-vL-07f" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6343" y="-111"/>
-        </scene>
-        <!--Epg Provider EditVC-->
-        <scene sceneID="Dkb-yy-alB">
-            <objects>
-                <viewController storyboardIdentifier="EPGProviderEdit" id="k2V-1X-J6j" customClass="EpgProviderEditVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="j5J-tM-v8O" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-3266" y="1421"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="DmN-ri-rUI">
-            <objects>
-                <viewController id="thp-8A-hrs" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="sOw-ru-xNN"/>
-                        <viewControllerLayoutGuide type="bottom" id="vIn-50-vMo"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="cNZ-Zo-qCp">
-                        <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ppB-GA-FKF" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
+            <point key="canvasLocation" x="-6508" y="-79"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="group" width="200" height="200"/>
-    </resources>
 </document>

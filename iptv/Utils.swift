@@ -8,7 +8,7 @@
 
 import Foundation
 
-//error
+//--- error -----
 enum CommonError : Error {
     case Message(String)
 }
@@ -18,7 +18,7 @@ func Err(_ mess:String) -> Error {
 }
 
 
-//
+//--- directory ------
 func + <K,V>(left: Dictionary<K,V>, right: Dictionary<K,V>)
     -> Dictionary<K,V>
 {
@@ -37,3 +37,4 @@ func += <K, V> ( left: inout [K:V], right: [K:V]) {
         left.updateValue(v, forKey: k)
     }
 }
+

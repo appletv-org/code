@@ -66,6 +66,50 @@ class GroupInfo : NSObject, NSCoding {
         coder.encode(self.groups, forKey: "groups")
         coder.encode(self.channels, forKey:"channels")
     }
+    
+    func findDirElement(_ name:String) -> DirElement? {
+        
+        if let findgroup = groups.first(where: {$0.name == name}) {
+            return DirElement.group(findgroup)
+        }
+        if let findchannel = channels.first(where: {$0.name == name}) {
+            return DirElement.channel(findchannel)
+        }
+        
+        return nil
+    }
+
+    func findDirIndex(_ name:String) -> Int {
+        for i in 0..<groups.count {
+            if(groups[i].name == name) {
+                return i
+            }
+        }
+        for i in 0..<channels.count {
+            if(channels[i].name == name) {
+                return i + groups.count
+            }
+        }
+        return -1
+    }
+    
+    func findDirElement(index:Int)  -> DirElement? {
+        if index < 0 || index >= countDirElements() {
+            return nil
+        }
+        if index < groups.count {
+            return DirElement.group(groups[index])
+        }
+        else {
+            return DirElement.channel(channels[index - groups.count])
+        }
+    }
+    
+    func countDirElements() -> Int {
+        return groups.count + channels.count
+    }
+    
+    
 }
 
 enum DirElement {
@@ -85,9 +129,15 @@ enum DirElement {
 }
 
 
+//path begin from "/": 
+//path example:
+//  path to group: ["/", "edem"]
+//  path to channel:  ["/", "edem", "взрослые", "egoist.tv"]
+
 class ChannelManager {
     
-    static let channelsPropertyName = "Channels"
+    static let rootGroupName = "/"
+    static let userDefaultKey = "channels"
     
     // Singleton
     static let instance = ChannelManager()
@@ -95,9 +145,9 @@ class ChannelManager {
     
     lazy var rootGroup : GroupInfo = {
         
-        var ret = GroupInfo( name:"Channels", groups: [], channels: [])
+        var ret = GroupInfo( name:ChannelManager.rootGroupName, groups: [], channels: [])
         
-        if let data = UserDefaults.standard.object(forKey: "channels") as? NSData {
+        if let data = UserDefaults.standard.object(forKey: ChannelManager.userDefaultKey) as? NSData {
             ret = NSKeyedUnarchiver.unarchiveObject(with: data as Data) as! GroupInfo
         }
         
@@ -111,54 +161,49 @@ class ChannelManager {
         }
     }
     
-    class func findGroupList(_ path: [String]) -> [GroupInfo]? {        
-        var group : GroupInfo? = root
-        var groupList : [GroupInfo] = [root]
-        for name in path {
-            group = group?.groups.first(where: {$0.name == name})
-            if(group == nil) {
-                return nil
-            }
-            groupList.append(group!)
-        }
-        return groupList
-    }
     
     class func findDirElement(_ path: [String]) -> DirElement? {
-        var group : GroupInfo? = root
         
-        //find prev last groupInfo
-        if(path.count > 1) {
-            let pathGroup = Array(path[0..<path.count-1])
-            group = findGroup(pathGroup)
+        if path.count < 1 || path[0] != root.name {
+            print("illegal root name for path:\(path.joined())")
+            return nil
         }
         
+        if path.count == 1 {
+            return DirElement.group(root)
+        }
         
-        if(group != nil) {
-            if let findgroup = group!.groups.first(where: {$0.name == path.last}) {
-                return DirElement.group(findgroup)
-            }
-            if let findchannel = group!.channels.first(where: {$0.name == path.last}) {
-                return DirElement.channel(findchannel)
-            }
+        if let parentGroup = findParentGroup(path) {
+            return parentGroup.findDirElement(path.last!)
+        }
+        return nil
+    }
+
+    class func findParentGroup(_ path: [String]) -> GroupInfo? {
+        if path.count > 1 {
+            return findGroup(Array(path[0..<path.count-1]))
         }
         return nil
     }
 
     
     class func findGroup(_ path: [String]) -> GroupInfo? {
-        var group : GroupInfo? = root
-        var startIndex = 0
-        if path[0] == root.name {
-            startIndex = 1
-            if path.count == 1 {
-                return group
-            }
+        
+        if path.count < 1 || path[0] != root.name {
+            print("illegal root name for path:\(path.joined())")
+            return nil
         }
         
-        for ind in startIndex...path.count-1 {
+        if path.count == 1 {
+            return root
+        }
+        
+        var group : GroupInfo? = root
+        
+        for ind in 1..<path.count {
             group = group?.groups.first(where: {$0.name == path[ind]})
             if(group == nil) {
+                print("not found path: \(path.joined())")
                 return nil
             }
         }
@@ -166,11 +211,7 @@ class ChannelManager {
     }
         
     class func delPath(_ path: [String]) -> Bool {
-        if path.count == 0 {
-            return false
-        }
-        let parentPath = Array(path[0..<path.count-1])
-        let group = findGroup(parentPath)
+        let group = findParentGroup(path)
         if(group == nil) {
             return false
         }
@@ -188,44 +229,56 @@ class ChannelManager {
     
     class func save() {
         let data = NSKeyedArchiver.archivedData(withRootObject: ChannelManager.root)
-        UserDefaults.standard.set(data, forKey: "channels")
+        UserDefaults.standard.set(data, forKey: ChannelManager.userDefaultKey)
     }
     
     class func addM3uList(name:String, url:String) throws -> Void {
     
         let items = try parseM3u(string:url)
         if items.count > 0  {
-            var groupsList : [String:[M3uItem]] = ["All":[]]
+            
+            //set items by groups
+            var groupsList = [String:[M3uItem]]()
+            var channelList = [M3uItem]()
             for item in items {
-                groupsList["All"]!.append(item)
                 if let groupName = item.group {
                     if groupsList[groupName] == nil {
                         groupsList[groupName] = []
                     }
                     groupsList[groupName]!.append(item)
                 }
+                else {
+                    channelList.append(item)
+                }
             }
+            
         
         
-            //add new list to root
+            //add new group to root
             let parentGroup = GroupInfo(name:name, groups:[], channels:[])
             ChannelManager.root.groups.append(parentGroup)
             
-            for (nameGroup,groupList) in groupsList {
-            
-                var group = parentGroup
-                if groupsList.count > 1 { //not only all
-                    group = GroupInfo(name:nameGroup, groups:[], channels:[])
-                    parentGroup.groups.append(group)
-                    //print("add group:\(group.name) to parent:\(parentGroup.name)")
-                }
+            //add groups
+            for (nameGroup,itemList) in groupsList {
+                var group = GroupInfo(name:nameGroup, groups:[], channels:[])
+                parentGroup.groups.append(group)
                 
-                for item in groupList {
+                for item in itemList {
                     let channel = ChannelInfo(name:item.name!, url:item.url!)
                     group.channels.append(channel)
                     //print("add channel:\(channel.name) to group:\(group.name)")
                 }
+            }
             
+            //add items without groups
+            for item in channelList {
+                let channel = ChannelInfo(name:item.name!, url:item.url!)
+                parentGroup.channels.append(channel)
+            }
+            
+            //sort groups by count channels
+            if parentGroup.groups.count > 0 {
+                parentGroup.groups.sort(by: {$0.channels.count > $1.channels.count})
             }
         }
     }

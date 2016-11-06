@@ -47,7 +47,7 @@ class EpgProviderInfo : NSObject, NSCoding {
     
     var name : String = ""
     var url:   String = ""
-    var updateTime: Int = 0 //((24*day + hours)*60 + minuts)*60 + seconds  0-everyday, 1-monday,...,7-sunday
+    var updateTime: Int = 0 //((24*day + hours)*60 + minuts)*60 + seconds, where  day:0-everyday, 1-monday,...,7-sunday
     var shiftTime: Int = 0//hours*60 + minuts)*60 + seconds
     
     override init() {
@@ -91,6 +91,8 @@ class EpgProviderInfo : NSObject, NSCoding {
 
 class ProgramManager {
     
+    static let userDefaultKey = "epgProviders"
+    
     static let instance = ProgramManager()
     private init() {}
 
@@ -100,7 +102,7 @@ class ProgramManager {
     lazy var epgProviders : [EpgProviderInfo] = {
         
         var ret = [EpgProviderInfo]()
-        if let data = UserDefaults.standard.object(forKey: "epgProviders") as? NSData {
+        if let data = UserDefaults.standard.object(forKey: ProgramManager.userDefaultKey) as? NSData {
             ret = NSKeyedUnarchiver.unarchiveObject(with: data as Data) as! [EpgProviderInfo]
         }
         
@@ -110,7 +112,7 @@ class ProgramManager {
     
     func save() {
         let data = NSKeyedArchiver.archivedData(withRootObject: epgProviders)
-        UserDefaults.standard.set(data, forKey: "epgProviders")
+        UserDefaults.standard.set(data, forKey: ProgramManager.userDefaultKey)
     }
 
     func getProvider(_ name: String) -> EpgProviderInfo? {
@@ -136,7 +138,7 @@ class ProgramManager {
                 
                 
                 if data.isGzipped {
-                    xml = try! data.gunzipped()
+                    xml = try data.gunzipped()
                 }
                 
                 
