@@ -9,13 +9,27 @@
 import Foundation
 
 //--- error -----
-enum CommonError : Error {
-    case Message(String)
+enum SimpleError : Error {
+    case message(String)
 }
 
 func Err(_ mess:String) -> Error {
-    return CommonError.Message(mess)
+    return SimpleError.message(mess)
 }
+
+func errMsg(_ err:Error) -> String {
+    var mess = err.localizedDescription
+    
+    if let simpleErr = err as? SimpleError {
+        switch(simpleErr) {
+        case SimpleError.message(let str):
+            mess = str
+        }
+    }
+    return mess
+}
+
+
 
 
 //--- directory ------
@@ -37,4 +51,23 @@ func += <K, V> ( left: inout [K:V], right: [K:V]) {
         left.updateValue(v, forKey: k)
     }
 }
+
+
+//Date to string and vice versa
+extension Date {
+    func toFormatString(_ format:String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        return  formatter.string(from: self)
+    }
+}
+
+extension String {
+    func toFormatDate(_ format:String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        return formatter.date(from: self)
+    }
+}
+
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11232" systemVersion="16A323" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11542" systemVersion="16B2555" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="EpgCategory" representedClassName="EpgCategory" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="program" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="EpgProgram" inverseName="category" inverseEntity="EpgProgram" syncable="YES"/>
@@ -20,16 +20,18 @@
         <relationship name="channel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EpgChannel" inverseName="programs" inverseEntity="EpgChannel" syncable="YES"/>
     </entity>
     <entity name="EpgProvider" representedClassName="EpgProvider" syncable="YES" codeGenerationType="class">
-        <attribute name="frequencyUpdate" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="channelCount" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="error" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="finishDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="lastUpdate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="name" attributeType="String" indexed="YES" syncable="YES"/>
-        <attribute name="url" attributeType="String" syncable="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <relationship name="channels" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="EpgChannel" inverseName="provider" inverseEntity="EpgChannel" syncable="YES"/>
     </entity>
     <elements>
         <element name="EpgCategory" positionX="-632" positionY="-216" width="128" height="75"/>
         <element name="EpgChannel" positionX="-630" positionY="-351" width="128" height="120"/>
         <element name="EpgProgram" positionX="-819" positionY="-213" width="128" height="135"/>
-        <element name="EpgProvider" positionX="-828" positionY="-351" width="128" height="120"/>
+        <element name="EpgProvider" positionX="-828" positionY="-351" width="128" height="150"/>
     </elements>
 </model>

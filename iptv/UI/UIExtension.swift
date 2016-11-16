@@ -47,7 +47,6 @@ extension UIViewController {
     
     func containerAdd(childViewController:UIViewController, toView:UIView) {
         self.addChildViewController(childViewController)
-        //childViewController.view.frame = CGRect.init(origin: CGPoint(x:0, y:0), size: toView.frame.size)
         toView.addSubviewWithSomeSize(childViewController.view)
         childViewController.didMove(toParentViewController: self)
     }
@@ -57,5 +56,45 @@ extension UIViewController {
         childViewController.view.removeFromSuperview()
         childViewController.removeFromParentViewController()
     }
+    
+    //if controller into navigation controller then title add to title of previous controller
+    func addNavigationTitle(_ title:String) {
+        guard let viewControllers = self.navigationController?.viewControllers,
+            viewControllers.count >= 2,
+            viewControllers[viewControllers.count - 2].title != nil
+        
+        else {
+            self.title = title
+            return
+        }
+        self.title = viewControllers[viewControllers.count - 2].title!  + "/" + title
+    }
 }
 
+extension UIViewController { //simple alert actions
+
+    func simpleAlert(title: String, message: String, buttonTitle: String, completion: (() -> Swift.Void)? = nil) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let action = UIAlertAction(title: buttonTitle, style: .default, handler: nil)
+        alertController.addAction(action)
+        self.present(alertController, animated: true, completion: completion)
+    }
+    
+    func simpleAlertOk(title: String, message: String, completion: (() -> Swift.Void)? = nil) {
+        simpleAlert(title: title, message: message, buttonTitle: "Ok", completion: completion)
+    }
+
+    
+    func simpleAlertChooser(title: String, message: String, buttonTitles: [String], completion: @escaping ((Int) -> Swift.Void)) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+        for i in 0..<buttonTitles.count {
+            let action = UIAlertAction(title: buttonTitles[i], style: .default, handler: { (_) in
+                completion(i)
+            })
+            alertController.addAction(action)
+        }
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+
+}

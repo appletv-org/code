@@ -25,7 +25,7 @@ class ChannelSettingsVC : UIViewController, ChannelPickerProtocol {
     
     @IBAction func delAction(_ sender: AnyObject) {
         
-        if currentPath.count > 1 { //we cannot del root group
+        if currentPath.count >= 1 { //we cannot del root group
             
             //find prev elem
             var index = 0
@@ -67,6 +67,8 @@ class ChannelSettingsVC : UIViewController, ChannelPickerProtocol {
         self.containerAdd(childViewController: channelPickerVC!, toView:channelPickerView)
         super.viewDidLoad()
         
+        addNavigationTitle("Channels")
+        
         
     }
     
@@ -84,11 +86,10 @@ class ChannelSettingsVC : UIViewController, ChannelPickerProtocol {
         alertController.addTextField { textField in
             // Customize the text field.
             //textField.text = "Приморская локальная сеть"
-            textField.text = "Edem"
+            textField.text =  "Edem"
             textField.placeholder = NSLocalizedString("Name", comment: "")
         }
         alertController.addTextField { textField in
-            //textField.text = "http://tv.plsspb.ru/tv.m3u"
             textField.text = "https://edem.tv/playlists/uplist/e7deff4ce5cd4097ca4b2ef7c2f875ad/edem_pl.m3u8"
             textField.placeholder = NSLocalizedString("Url", comment: "")
             // Specify a custom input accessory view with a descriptive title.
@@ -133,6 +134,9 @@ class ChannelSettingsVC : UIViewController, ChannelPickerProtocol {
 
         try ChannelManager.addM3uList(name: name, url: url)
         ChannelManager.save()
+        channelPickerVC!.setupPath([name])
+        
+        
         //changePath([ChannelManager.root.name])
 
     }

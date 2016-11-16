@@ -41,6 +41,7 @@ class GroupInfo : NSObject, NSCoding {
     var name: String
     var groups: [GroupInfo]
     var channels: [ChannelInfo]
+    var url: String?
     
     init(name: String, groups:[GroupInfo], channels:[ChannelInfo]) {
         self.name = name
@@ -59,12 +60,18 @@ class GroupInfo : NSObject, NSCoding {
             groups: groups,
             channels:channels
         )
+        if let url = decoder.decodeObject(forKey: "url") as? String {
+            self.url = url
+        }
     }
     
     func encode(with coder: NSCoder) {
         coder.encode(self.name, forKey: "name")
         coder.encode(self.groups, forKey: "groups")
         coder.encode(self.channels, forKey:"channels")
+        if self.url != nil {
+            coder.encode(self.url, forKey:"url")
+        }
     }
     
     func findDirElement(_ name:String) -> DirElement? {
@@ -136,7 +143,7 @@ enum DirElement {
 
 class ChannelManager {
     
-    static let rootGroupName = "/"
+    static let rootGroupName = "Channels"
     static let userDefaultKey = "channels"
     
     // Singleton
@@ -145,13 +152,16 @@ class ChannelManager {
     
     lazy var rootGroup : GroupInfo = {
         
-        var ret = GroupInfo( name:ChannelManager.rootGroupName, groups: [], channels: [])
-        
         if let data = UserDefaults.standard.object(forKey: ChannelManager.userDefaultKey) as? NSData {
-            ret = NSKeyedUnarchiver.unarchiveObject(with: data as Data) as! GroupInfo
+            return NSKeyedUnarchiver.unarchiveObject(with: data as Data) as! GroupInfo
+        }
+        else {
+            var root = GroupInfo( name:ChannelManager.rootGroupName, groups: [], channels: [])
+            root.groups.append( GroupInfo(name: "Favorites", groups: [], channels: []) )
+            return root
         }
         
-        return ret
+        
     }()
     
     
@@ -164,12 +174,7 @@ class ChannelManager {
     
     class func findDirElement(_ path: [String]) -> DirElement? {
         
-        if path.count < 1 || path[0] != root.name {
-            print("illegal root name for path:\(path.joined())")
-            return nil
-        }
-        
-        if path.count == 1 {
+        if path.count == 0 {
             return DirElement.group(root)
         }
         
@@ -180,34 +185,25 @@ class ChannelManager {
     }
 
     class func findParentGroup(_ path: [String]) -> GroupInfo? {
-        if path.count > 1 {
+        if path.count > 0 {
             return findGroup(Array(path[0..<path.count-1]))
         }
         return nil
     }
 
     
-    class func findGroup(_ path: [String]) -> GroupInfo? {
+    
+    class func findGroup(_ path: [String], group:GroupInfo = root) -> GroupInfo? {
         
-        if path.count < 1 || path[0] != root.name {
-            print("illegal root name for path:\(path.joined())")
-            return nil
+        if path.count == 0 {
+            return group
         }
         
-        if path.count == 1 {
-            return root
+        if let findedGroup = group.groups.first(where: {$0.name == path[0]}) {
+            return findGroup( Array(path[1..<path.count]), group:findedGroup )
         }
-        
-        var group : GroupInfo? = root
-        
-        for ind in 1..<path.count {
-            group = group?.groups.first(where: {$0.name == path[ind]})
-            if(group == nil) {
-                print("not found path: \(path.joined())")
-                return nil
-            }
-        }
-        return group
+        return nil
+    
     }
         
     class func delPath(_ path: [String]) -> Bool {
@@ -260,7 +256,7 @@ class ChannelManager {
             
             //add groups
             for (nameGroup,itemList) in groupsList {
-                var group = GroupInfo(name:nameGroup, groups:[], channels:[])
+                let group = GroupInfo(name:nameGroup, groups:[], channels:[])
                 parentGroup.groups.append(group)
                 
                 for item in itemList {

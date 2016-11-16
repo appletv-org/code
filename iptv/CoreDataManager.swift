@@ -86,18 +86,51 @@ class CoreDataManager {
                 try managedObjectContext.save()
             } catch {
                 let nserror = error as NSError
-                NSLog("Unresolved error \(nserror), \(nserror.userInfo)")
-                abort()
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
     }
     
-    func genManagedObjectContext() -> NSManagedObjectContext {
-        let coordinator = self.persistentStoreCoordinator
-        let managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        managedObjectContext.persistentStoreCoordinator = coordinator
-        return managedObjectContext
+    public class func concurrentContext() -> NSManagedObjectContext { //for operation with many change/delete/save
+        let dbcontext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        dbcontext.parent = CoreDataManager.instance.managedObjectContext
+        return dbcontext
     }
+    
+    public class func saveConcurrentContext(_ concurrentContext:NSManagedObjectContext) {
+        let moc = CoreDataManager.context()
+        do {
+            try concurrentContext.save()
+            moc.performAndWait {
+                do {
+                    try moc.save()
+                } catch {
+                    fatalError("Failure to save context: \(error)")
+                }
+            }
+        } catch {
+            fatalError("Failure to save concurent context: \(error)")
+        }
+    }
+    
+    public class func simpleRequest<T : NSManagedObject>(_ predicate: NSPredicate, dbcontext: NSManagedObjectContext = CoreDataManager.context()) -> [T] {
+        let fetchRequest: NSFetchRequest<T> = T.fetchRequest() as! NSFetchRequest<T>
+        fetchRequest.predicate = predicate
+        if let result = try? dbcontext.fetch(fetchRequest) {
+            return result
+        }
+        return []
+    }
+
+    public class func getFirstElement<T : NSManagedObject>(_ predicate: NSPredicate, dbcontext: NSManagedObjectContext = CoreDataManager.context()) -> T? {
+        let elements : [T] = CoreDataManager.simpleRequest(predicate, dbcontext:dbcontext)
+        if elements.count > 0 {
+            return elements[0]
+        }
+        return nil
+    }
+
+    
     
     public class func context()  -> NSManagedObjectContext {
         return CoreDataManager.instance.managedObjectContext

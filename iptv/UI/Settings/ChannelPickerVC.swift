@@ -37,7 +37,15 @@ class ChannelCell : UICollectionViewCell {
                 
             case .channel(let channel):
                 label.text = channel.name
+                
                 imageView.image = ChannelCell.imageChannel
+                ProgramManager.instance.getIcon(channel: channel.name, completion: { (data) in
+                    if data != nil {
+                        if let image = UIImage(data: data!) {
+                            self.imageView.image = image
+                        }
+                    }
+                })
             }
         }
     }
@@ -46,8 +54,8 @@ class ChannelCell : UICollectionViewCell {
         super.awakeFromNib()
         
         self.channelView.layer.cornerRadius = 20
-        self.channelView.layer.borderColor = UIColor.darkGray.cgColor //selected color
-        self.channelView.layer.borderWidth = 0.0
+        //self.channelView.layer.borderColor = UIColor.darkGray.cgColor //selected color
+        //self.channelView.layer.borderWidth = 0.0
     }
     
     
@@ -72,10 +80,12 @@ class ChannelCell : UICollectionViewCell {
     
     func selectedCell(isSelected : Bool) {
         if(isSelected) {
-            self.channelView.layer.borderWidth = 5.0
+            self.label.textColor = UIColor.white
+            //self.channelView.layer.borderWidth = 5.0
         }
         else {
-            self.channelView.layer.borderWidth = 0.0
+            self.label.textColor = UIColor.darkGray
+            //self.channelView.layer.borderWidth = 0.0
          }
     }
     
@@ -92,8 +102,10 @@ class DirectoryStack:UIStackView {
     weak var delegate : DirectoryStackProtocol?
     
     
-    func createButton(_ title:String) -> UIButton {
+    func createButton(_ title:String, tag:Int) -> UIButton {
         let button = UIButton(type: .roundedRect)
+        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        button.tag = tag
         button.setTitle(title, for: .normal)
         button.setTitleColor(tintColor, for: .disabled)
         button.addTarget(self, action: #selector(DirectoryStack.changeDirAction(_:)), for: .primaryActionTriggered)
@@ -113,6 +125,8 @@ class DirectoryStack:UIStackView {
     }
     
     func changePath(_ path: [String]) -> Void{
+        
+        /*
         //check path not changed
         if _path.count == path.count  {
             var isEqual = true
@@ -126,21 +140,29 @@ class DirectoryStack:UIStackView {
                 return
             }
         }
+ */
         
         
         //delete all button except last item
         while arrangedSubviews.count > 1 {
             arrangedSubviews[arrangedSubviews.count - 2].removeFromSuperview()
         }
+        
         //insert buttons
-        for i in 0..<path.count {
-            let button = createButton(path[i])
-            button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-            button.tag = i
-            if i == path.count-1 && i != 0 {
+        
+        //root button
+        
+        let button = createButton(ChannelManager.root.name, tag:0)
+        insertArrangedSubview(button, at: 0)
+        var i = 1
+        for name in path {
+            let button = createButton(name, tag:i)
+            
+            if i == path.count {
                 button.isEnabled = false
             }
             insertArrangedSubview(button, at: i)
+            i += 1
         }
         _path = path
     }
@@ -148,7 +170,11 @@ class DirectoryStack:UIStackView {
     
     @objc func changeDirAction(_ sender:UIButton?) {
         let index = sender!.tag
-        let newPath = Array(path[0...index])
+        
+        var newPath = [String]()
+        if index > 0 {
+            newPath = Array(path[0..<index])
+        }
         //changePath(newPath)
         delegate?.changeDirPath(newPath)
     }
@@ -186,7 +212,7 @@ extension ChannelPickerProtocol  {
 
 class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, DirectoryStackProtocol {
     
-    var path: [String] = [ChannelManager.root.name] //current directory path for DirectoryStack
+    var path: [String] = [] //current directory path for DirectoryStack
     private var groupInfo : GroupInfo = ChannelManager.root //current group info for DirectroryStack
     //private var focusedIndex: Int = 0
     var showFocusedElement = true
@@ -223,17 +249,15 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
     //setup UI for this path
     func setupPath(_ path: [String], isParent : Bool = false) {
         
-        if isParent {
-            self.path = path
-         }
-        else {
+        self.path = path
+        if !isParent && path.count > 0 {
             self.path = Array(path[0..<path.count-1])
         }
         
         self.collectionView.focusedIndex = 0
         if let group =  ChannelManager.findGroup(self.path) {
             groupInfo = group
-            if !isParent {  //find index
+            if !isParent && path.count > 0 {  //find index
                 let index = groupInfo.findDirIndex(path.last!)
                 if index >= 0 {
                     self.collectionView.focusedIndex = index
@@ -242,7 +266,7 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
         }
         else {
             groupInfo = ChannelManager.root
-            self.path = [ChannelManager.root.name]
+            self.path = []
         }
         
         directoryStack.path = self.path

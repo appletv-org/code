@@ -10,7 +10,7 @@
 		FA210EC51DCA0344002B9592 /* UIExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA210EC41DCA0344002B9592 /* UIExtension.swift */; };
 		FA2383591DC5283F0007A006 /* Data+Gzip.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2383561DC5283F0007A006 /* Data+Gzip.swift */; };
 		FA2E2EE61DB7A42000CE8F7F /* ProgramManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E2EE51DB7A42000CE8F7F /* ProgramManager.swift */; };
-		FA2E2EE81DB8DAA700CE8F7F /* EpgProviderSettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E2EE71DB8DAA700CE8F7F /* EpgProviderSettingVC.swift */; };
+		FA2E2EE81DB8DAA700CE8F7F /* EpgProvidersVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E2EE71DB8DAA700CE8F7F /* EpgProvidersVC.swift */; };
 		FA2E2EEE1DBBE52900CE8F7F /* AlertAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E2EED1DBBE52900CE8F7F /* AlertAction.swift */; };
 		FA2E2EFD1DBDFD8900CE8F7F /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E2EF51DBDFD8900CE8F7F /* Document.swift */; };
 		FA2E2EFE1DBDFD8900CE8F7F /* Element.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E2EF61DBDFD8900CE8F7F /* Element.swift */; };
@@ -27,6 +27,7 @@
 		FA5C61371D928084005E8EBD /* iptv.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FA5C61351D928084005E8EBD /* iptv.xcdatamodeld */; };
 		FA6944E11D92B26C005B854A /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA6944E01D92B26C005B854A /* CoreData.framework */; };
 		FA6944E31D92B8D0005B854A /* CoreDataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6944E21D92B8D0005B854A /* CoreDataExtension.swift */; };
+		FA7589CA1DD10DBF009D2327 /* EpgProviderEditVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7589C91DD10DBF009D2327 /* EpgProviderEditVC.swift */; };
 		FA830D701D8C1F53000BD36E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA830D6D1D8C1F53000BD36E /* AppDelegate.swift */; };
 		FA830D711D8C1F53000BD36E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA830D6E1D8C1F53000BD36E /* Assets.xcassets */; };
 		FA830D721D8C1F53000BD36E /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA830D6F1D8C1F53000BD36E /* Info.plist */; };
@@ -48,7 +49,7 @@
 		FA2383571DC5283F0007A006 /* include.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = include.h; sourceTree = "<group>"; };
 		FA2383581DC5283F0007A006 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		FA2E2EE51DB7A42000CE8F7F /* ProgramManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramManager.swift; path = iptv/ProgramManager.swift; sourceTree = "<group>"; };
-		FA2E2EE71DB8DAA700CE8F7F /* EpgProviderSettingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EpgProviderSettingVC.swift; path = iptv/UI/Settings/EpgProviderSettingVC.swift; sourceTree = "<group>"; };
+		FA2E2EE71DB8DAA700CE8F7F /* EpgProvidersVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EpgProvidersVC.swift; path = iptv/UI/Settings/EpgProvidersVC.swift; sourceTree = "<group>"; };
 		FA2E2EED1DBBE52900CE8F7F /* AlertAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AlertAction.swift; path = iptv/AlertAction.swift; sourceTree = "<group>"; };
 		FA2E2EF11DBDFD8900CE8F7F /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		FA2E2EF21DBDFD8900CE8F7F /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -68,6 +69,7 @@
 		FA5C61361D928084005E8EBD /* iptv.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iptv.xcdatamodel; sourceTree = "<group>"; };
 		FA6944E01D92B26C005B854A /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		FA6944E21D92B8D0005B854A /* CoreDataExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataExtension.swift; path = iptv/CoreDataExtension.swift; sourceTree = "<group>"; };
+		FA7589C91DD10DBF009D2327 /* EpgProviderEditVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EpgProviderEditVC.swift; path = iptv/UI/Settings/EpgProviderEditVC.swift; sourceTree = "<group>"; };
 		FA830D4F1D8C0C62000BD36E /* iptv.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iptv.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA830D6D1D8C1F53000BD36E /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = iptv/AppDelegate.swift; sourceTree = "<group>"; };
 		FA830D6E1D8C1F53000BD36E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = iptv/Assets.xcassets; sourceTree = "<group>"; };
@@ -224,7 +226,8 @@
 			children = (
 				FA830D841D8C20AA000BD36E /* SettingsVC.swift */,
 				FA51F7A11DC7740300CA1758 /* ChannelSettinsVC.swift */,
-				FA2E2EE71DB8DAA700CE8F7F /* EpgProviderSettingVC.swift */,
+				FA2E2EE71DB8DAA700CE8F7F /* EpgProvidersVC.swift */,
+				FA7589C91DD10DBF009D2327 /* EpgProviderEditVC.swift */,
 				FA51F7A31DC7746D00CA1758 /* ChannelPickerVC.swift */,
 			);
 			name = Settings;
@@ -320,6 +323,7 @@
 				FA2E2EEE1DBBE52900CE8F7F /* AlertAction.swift in Sources */,
 				FA210EC51DCA0344002B9592 /* UIExtension.swift in Sources */,
 				FA5C61371D928084005E8EBD /* iptv.xcdatamodeld in Sources */,
+				FA7589CA1DD10DBF009D2327 /* EpgProviderEditVC.swift in Sources */,
 				FA5C61121D9038EF005E8EBD /* M3uParser.swift in Sources */,
 				FA2E2EE61DB7A42000CE8F7F /* ProgramManager.swift in Sources */,
 				FA2E2EFD1DBDFD8900CE8F7F /* Document.swift in Sources */,
@@ -329,7 +333,7 @@
 				FA51F7A21DC7740300CA1758 /* ChannelSettinsVC.swift in Sources */,
 				FA830D8C1D8C21B1000BD36E /* ChannelsVC.swift in Sources */,
 				FA830D701D8C1F53000BD36E /* AppDelegate.swift in Sources */,
-				FA2E2EE81DB8DAA700CE8F7F /* EpgProviderSettingVC.swift in Sources */,
+				FA2E2EE81DB8DAA700CE8F7F /* EpgProvidersVC.swift in Sources */,
 				FA6944E31D92B8D0005B854A /* CoreDataExtension.swift in Sources */,
 				FA5C61141D9132F1005E8EBD /* Utils.swift in Sources */,
 				FA2E2F011DBDFD8900CE8F7F /* Options.swift in Sources */,
