@@ -8,8 +8,6 @@
 
 import UIKit
 
-//------ childViewController ---------
-
 
 extension UIView {
     
@@ -43,7 +41,7 @@ extension UIView {
     }
 }
 
-extension UIViewController {
+extension UIViewController { //add/remove child  controller
     
     func containerAdd(childViewController:UIViewController, toView:UIView) {
         self.addChildViewController(childViewController)
@@ -98,3 +96,5 @@ extension UIViewController { //simple alert actions
     }
 
 }
+
+

@@ -114,10 +114,11 @@ class CoreDataManager {
     }
     
     public class func simpleRequest<T : NSManagedObject>(_ predicate: NSPredicate, dbcontext: NSManagedObjectContext = CoreDataManager.context()) -> [T] {
-        let fetchRequest: NSFetchRequest<T> = T.fetchRequest() as! NSFetchRequest<T>
-        fetchRequest.predicate = predicate
-        if let result = try? dbcontext.fetch(fetchRequest) {
-            return result
+        if let fetchRequest: NSFetchRequest<T> = T.fetchRequest() as? NSFetchRequest<T> {
+            fetchRequest.predicate = predicate
+            if let result = try? dbcontext.fetch(fetchRequest) {
+                return result
+            }
         }
         return []
     }

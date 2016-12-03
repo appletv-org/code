@@ -11,272 +11,60 @@ import AVKit
 
 
 
-
-class ProgramCollectionCell : UICollectionViewCell {
-    
-    static let programCellId = "ProgramCell"
-    
-    @IBOutlet weak var textView: UITextView!
-    @IBOutlet weak var progressView: UIProgressView!
-    
-    func setProgram(_ program:EpgProgram?) {
-        if program != nil {
-            self.textView.attributedText = setProgramText(program!)
-        }
-        else {
-            self.textView.text = "The program guide is not available"
-        }
-    }
-    
-    func setProgramText(_ program:EpgProgram) -> NSAttributedString {
-        
-        struct Attributes {
-            
-            static let titleFont = UIFont.boldSystemFont(ofSize: 36)
-            static let descFont = UIFont.systemFont(ofSize: 36)
-            
-            static let timeFormat : [String : Any]  = [ NSFontAttributeName: titleFont, NSForegroundColorAttributeName: UIColor.darkGray ]
-            
-            static let title : [String : Any] = [ NSFontAttributeName: titleFont, NSForegroundColorAttributeName: UIColor.darkGray ]
-            static let desc : [String : Any] = [ NSFontAttributeName: descFont, NSForegroundColorAttributeName: UIColor.darkGray]
-            
-            
-            static func timeString(_ date:Date) -> String {
-                let formatter = DateFormatter()
-                formatter.dateFormat = "HH:mm"
-                return formatter.string(from: date)
-            }
-            
-        }
-        
-        //start date
-        
-        
-        let attributedText = NSMutableAttributedString()
-        
-        
-        //time
-        if let startDate = program.start as? Date {
-            
-            let timeString = Attributes.timeString(startDate) + " "
-            attributedText.append(NSAttributedString( string: timeString, attributes: Attributes.timeFormat))
-        }
-        
-        //title
-        if let title = program.title {
-            attributedText.append(NSAttributedString( string: title + "\n", attributes: Attributes.title  ))
-        }
-        
-        //desc
-        if let desc = program.desc {
-            attributedText.append(NSAttributedString( string: desc, attributes: Attributes.desc ))
-        }
-        
-        return attributedText
-        
-    }
-    
-    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
-        super.didUpdateFocus(in: context, with: coordinator)
-        
-        if context.nextFocusedItem as? ProgramCollectionCell == self {
-            if let attrText = self.textView.attributedText {
-                let attrString = NSMutableAttributedString(attributedString: attrText)
-                attrString.addAttribute(NSForegroundColorAttributeName, value: UIColor.white, range:NSMakeRange(0, attrText.length))
-                self.textView.attributedText = attrString
-            }
-            self.textView.layer.borderWidth = 5.0
-            self.textView.layer.borderColor = UIColor.white.cgColor
-        }
-        
-        if context.previouslyFocusedItem as? ProgramCollectionCell == self {
-            if let attrText = self.textView.attributedText {
-                let attrString = NSMutableAttributedString(attributedString: attrText)
-                attrString.addAttribute(NSForegroundColorAttributeName, value: UIColor.darkGray, range:NSMakeRange(0, attrText.length))
-                self.textView.attributedText = attrString
-                self.textView.layer.borderWidth = 0.0
-                
-            }
-        }
-    }
-
-
-}
-
-
-class ProgramView : UIView, UICollectionViewDataSource, UICollectionViewDelegate {
-    
-    var channel : ChannelInfo?
-    var programs : [EpgProgram] = []
-    
-    weak var dayLabel: UILabel!
-    
-    weak var programCollectionView: UICollectionView! {
-        didSet {
-           programCollectionView.dataSource = self
-           programCollectionView.delegate = self
-        }
-    }
-
-    
-    func update(_ channel:ChannelInfo) {
-        self.channel = channel
-        let allPrograms = ProgramManager.instance.getPrograms(forChannel:channel.name)
-        //rest only today +- 1 day programs
-        
-        
-        let beginDay = NSCalendar.current.startOfDay(for: Date())
-        let minData = beginDay.addingTimeInterval(-24*60*60)
-        let maxData = beginDay.addingTimeInterval(24*60*60)
-        
-        programs = [EpgProgram]()
-        for program in allPrograms {
-            if let startDate = program.start as? Date {
-                if startDate >= minData && startDate < maxData {
-                    programs.append(program)
-                }
-            }
-        }
-        
-        //sort programs
-        programs.sort(by: { $0.start!.timeIntervalSince1970 < $1.start!.timeIntervalSince1970 })
-        
-        print("ChannelVC::play for channel:\(channel.name) find programs:\(programs.count)" )
-        programCollectionView.reloadData()
-        
-        //scroll to now element
-        var ind = -1
-        for i in 0 ..< programs.count {
-            guard let startDate = programs[i].start as? Date , startDate <= Date(),
-                let endDate = programs[i].stop as? Date , endDate > Date()
-                else {
-                    continue
-            }
-            ind = i
-            break
-        }
-        if ind >= 0 {
-            programCollectionView.scrollToItem(at: IndexPath(row:ind, section:0), at: .left, animated: false)
-        }
-        labelDayUpdate()
-    }
-    
-    
-    func labelDayUpdate() {
-        
-        let dayinSec = TimeInterval(24.0*60*60)
-        
-        var programDate = Date()
-        
-        let visibleIndexPaths = programCollectionView.indexPathsForVisibleItems
-        if programs.count > 0 && visibleIndexPaths.count > 0 {
-            let indexPath = visibleIndexPaths[0]
-            if (indexPath.row < programs.count) {
-                if let date = programs[indexPath.row].start as? Date {
-                    programDate = date
-                }
-            }
-        }
-        
-        
-        var text = ""
-        let beginDay = NSCalendar.current.startOfDay(for: Date())
-        
-        let interval = programDate.timeIntervalSince(beginDay)
-        if(interval > 0) {
-            if(interval <= dayinSec) {
-                text += "Today "
-            }
-            else if(interval > dayinSec && interval < dayinSec*2) {
-                text += "Tommorow "
-            }
-        }
-        else {
-            if interval > -dayinSec {
-                text += "Yestarday "
-            }
-        }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM"
-        text += formatter.string(from: programDate)
-        
-        if channel != nil {
-            text += ": \(channel!.name)"
-        }
-
-        dayLabel.text = text
-
-    }
-    
-    
-    
-    //collectionView delegate
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return programs.count > 0 ?  programs.count : 1
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        let index = indexPath.row
-        
-        let cell = self.programCollectionView.dequeueReusableCell(withReuseIdentifier: ProgramCollectionCell.programCellId, for: indexPath) as! ProgramCollectionCell
-        
-        var program :EpgProgram? = nil
-        if index < programs.count {
-            program = programs[index]
-        }
-        cell.setProgram(program)
-
-        return cell
-        
-    }
-}
-
-class ToolBar : UITabBar {
-
-}
-
 class PipPlayer : PlayerView {
    
+    var path : [String]?
     
     func setup() {
         self.backgroundColor = UIColor.black
         self.fillMode = .resize
         self.player?.isMuted = true
         
+        
     }
     
-    func play(_ channel:ChannelInfo) {
-        
+    func play(_ path: [String]?) {
         self.resetPlayer()
-        self.url = URL(string:channel.url)
-        self.play()
+        self.path = path
         
+        if path != nil {
+            if let dirElement = ChannelManager.findDirElement(path!) {
+                if case let .channel(channelInfo) = dirElement {
+                    self.url = URL(string:channelInfo.url)
+                    self.play()
+                    self.player?.volume = 0.0
+                }
+            }
+        }
     }
-
+    
 }
 
 
-class ChannelsVC : UIViewController, ChannelPickerProtocol {
+class ChannelsVC : UIViewController {
 
     weak var channelPickerVC : ChannelPickerVC?
 
     //current channel
+    var parentPath: [String] = [ChannelManager.root.name]
     var groupInfo : GroupInfo = ChannelManager.root
-    var path: [String] = [ChannelManager.root.name]
-    var currentItem : DirElement?
     var currentChannelIndex: Int = 0
     
-    //toolbar animation
-    var timerHideToolbar : Timer?
-    enum ToolbarState : Int {
-        case hide=0, program, channel
+    var currentChannelPath : [String]? {
+        get {
+            if currentChannelIndex < groupInfo.channels.count {
+                return parentPath + [groupInfo.channels[currentChannelIndex].name]
+            }
+            else {
+                return nil
+            }
+        }
     }
-    var toolbarState = ToolbarState.channel
+    
+    //toolbar animation
+    var timerHideProgram : Timer?
+    var isProgramShow : Bool = true     //programView is show or hide
+    var lastSwitchProgramTime = Date() //prevent fast switch channels
     
     //pip show/hide
     var isPipView : Bool = false
@@ -290,9 +78,6 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
     @IBOutlet weak var channelPickerView: UIView!
     
     
-    @IBAction func channelAction(_ sender: AnyObject) {
-        channelPickerView.isHidden = true
-    }
     
     //view for next/prev programs
     @IBOutlet weak var changeProgramView: ContainerFocused!
@@ -301,26 +86,25 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
     @IBOutlet weak var nextChannelView: FocusedView!
     
     // toolbar
-    @IBOutlet weak var bottomToolbar: ToolBar!
     
-    //constrain for show/hide program/channel
-    @IBOutlet weak var toolbarTopToProgramTopConstrain: NSLayoutConstraint!
-    
-    @IBOutlet weak var viewBottomToToolbarBottom: NSLayoutConstraint!
     
     //show program
+    @IBOutlet weak var programAndPipView: UIView!
     @IBOutlet weak var programView: ProgramView!
-    @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var programCollectionView: UICollectionView!
-
-    @IBOutlet weak var actionButtons: UISegmentedControl!
     
+    @IBOutlet weak var dayLabel: UILabel!
+    @IBOutlet weak var actionButtons: UISegmentedControl!
+
+    //constrain for show/hide program/channel
+    @IBOutlet weak var programViewBottomConstraint: NSLayoutConstraint!
+
     //pipView
     @IBOutlet weak var pipPlayer: PipPlayer!
     
     //pipview show/hide constrains
-    @IBOutlet weak var pipRightToViewRightConstrain: NSLayoutConstraint!
-    @IBOutlet weak var programRightToToolbarRightConstrain: NSLayoutConstraint!
+    @IBOutlet weak var pipviewTrailingConstraint: NSLayoutConstraint!
+    
     
     //loading view
     @IBOutlet weak var loadingView: UIView!
@@ -329,11 +113,39 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
     @IBOutlet weak var loadingErrorLabel: UILabel!
     
     enum SegmentAction : Int {
-        case pip = 0, channels, favorite, delete
+        case favorite = 0, delete, pip
     }
 
+    var debugViews = [String: UIView]()
+    
+    func getParentViews(_ view: UIView) -> [String] {
+        var parentViews = [String]()
+        for (name, parentView) in debugViews {
+            if view.isDescendant(of: parentView) {
+                parentViews.append(name)
+            }
+        }
+        return parentViews
+    }
+    
+    
     
     override func viewDidLoad() {
+        
+        debugViews = [
+        "mainPlayer" : mainPlayer,
+        "channelPickerView" : channelPickerView,
+        "changeProgramView" : changeProgramView,
+        "middleChannelView" : middleChannelView,
+        "prevChannelView" : prevChannelView,
+        "nextChannelView" : nextChannelView,
+        "programAndPipView" : programAndPipView,
+        "programView" : programView,
+        "programCollectionView" : programCollectionView,
+        "actionButtons" : actionButtons,
+        "pipPlayer" : pipPlayer,
+        "loadingView" : loadingView
+        ]
         
         let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         channelPickerVC = mainStoryboard.instantiateViewController(withIdentifier: "ChannelPickerVC") as? ChannelPickerVC
@@ -346,23 +158,19 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
         super.viewDidLoad()
         
         
-        loadingView.isHidden = true
+        loadingView.isHidden = true  // hide loading view
+        channelPickerView.isHidden = true //hide channel picker
+
         
-        
-        
-        
-        //show programs
+        //program guide
         programView.programCollectionView = programCollectionView
         programView.dayLabel = dayLabel
         
-        let tap = UITapGestureRecognizer( target: self, action:  #selector(programAction))
-        actionButtons.addGestureRecognizer(tap)
+        let tapActionButton = UITapGestureRecognizer( target: self, action:  #selector(programAction))
+        actionButtons.addGestureRecognizer(tapActionButton)
         
-        //hide channel picker
-        channelPickerView.isHidden = true
-        
-        //hide tollbar
-        setToolbarState(state: .hide, animated:false)
+
+        programHide(animated: false)
         
         //hide pip view
         pipHide(animated: false)
@@ -381,55 +189,53 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
         
         
         
-        //start play last playing channel
-        if var currentChannelPath = UserDefaults.standard.array(forKey: "currentChannel") as? [String]  {
-            let nameChannel = currentChannelPath.popLast()
-            if let findGroupInfo = ChannelManager.findGroup(currentChannelPath) {
-                groupInfo = findGroupInfo
-                path = currentChannelPath
-                
-                for i in 0..<findGroupInfo.channels.count {
-                    if findGroupInfo.channels[i].name == nameChannel {
-                        currentChannelIndex = i
-                        break
-                    }
-                }
-            }
-        }
-        
-        if currentChannelIndex < groupInfo.channels.count {
-            self.play(self.groupInfo.channels[self.currentChannelIndex])
-        }
-
-        
         //next /previous channel
         
+        changeProgramView.focusedObject = self.middleChannelView
+        
         prevChannelView.focusedFunc = { () -> [UIFocusEnvironment]? in
-            if(self.groupInfo.channels.count > 1) {
-                self.currentChannelIndex -= 1
-                if self.currentChannelIndex < 0 {
-                    self.currentChannelIndex = self.groupInfo.channels.count - 1
-                }
-                self.play(self.groupInfo.channels[self.currentChannelIndex])
-            }
- 
+            self.switchProgram(-1)
             return [self.middleChannelView];
         }
         
         nextChannelView.focusedFunc = { () -> [UIFocusEnvironment]? in
-            if(self.groupInfo.channels.count > 1) {
-                self.currentChannelIndex += 1
-                if self.currentChannelIndex >=  self.groupInfo.channels.count {
-                    self.currentChannelIndex = 0
-                }
-                self.play(self.groupInfo.channels[self.currentChannelIndex])
-            }
+            self.switchProgram(1)
             return [self.middleChannelView];
         }
+        
+        
+        let tapChannelChooser = UITapGestureRecognizer( target: self, action:  #selector(showChannelChooser))
+        changeProgramView.addGestureRecognizer(tapChannelChooser)
+
          
+        //start play last playing channel
+        if      let savedPath = UserDefaults.standard.array(forKey: "currentChannel") as? [String],
+                let findGroupInfo = ChannelManager.findParentGroup(savedPath),
+                let index = findGroupInfo.channels.index(where: {$0.name == savedPath.last!}) {
+            groupInfo = findGroupInfo
+            parentPath = savedPath
+            _ = parentPath.popLast()
+            currentChannelIndex = index
+            play(groupInfo.channels[currentChannelIndex])
+        }
+        else {
+            self.channelPickerView.isHidden = false
+            self.programShow(animated:false)
+        }
+        
+        //menu button hide channel chooser by menu button
+        let menuRecognizer = UITapGestureRecognizer(target: self, action: #selector(menuClickHandler))
+        menuRecognizer.allowedPressTypes = [NSNumber(value: UIPressType.menu.rawValue)];
+        self.view.addGestureRecognizer(menuRecognizer)
+        
+        //play button replace pip and main url (if pip is activated)
+        let playRecognize = UITapGestureRecognizer(target: self, action: #selector(playClickHandler))
+        playRecognize.allowedPressTypes = [NSNumber(value: UIPressType.playPause.rawValue)];
+        self.view.addGestureRecognizer(playRecognize)
+
         
         
-        //save current channel
+        //application notification background/foreground/terminate
         NotificationCenter.default.addObserver(forName: NSNotification.Name.UIApplicationDidEnterBackground, object: nil, queue: nil) { (_) in
             self.saveCurrentChannel()
         }
@@ -439,24 +245,35 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
         }
         
         NotificationCenter.default.addObserver(forName: NSNotification.Name.UIApplicationWillEnterForeground, object: nil, queue: nil) { (_) in
-            //self.saveCurrentChannel()
+            if self.currentChannelIndex < self.groupInfo.channels.count{
+                self.play(self.groupInfo.channels[self.currentChannelIndex])
+            }
         }
-
         
     }
     
-    
+    func switchProgram(_ to:Int) {
+        if lastSwitchProgramTime.timeIntervalSinceNow < -0.5 {
+            if(groupInfo.channels.count > 1) {
+                currentChannelIndex += to
+                if currentChannelIndex < 0 {
+                    currentChannelIndex = groupInfo.channels.count - 1
+                }
+                else if currentChannelIndex >=  groupInfo.channels.count {
+                    currentChannelIndex = 0
+                }
+                
+                lastSwitchProgramTime = Date()
+                play(groupInfo.channels[currentChannelIndex])
+            }
+        }
+    }
+        
+        
     func programAction(sender: UITapGestureRecognizer) {
         if let tapSegment = SegmentAction(rawValue:actionButtons.selectedSegmentIndex) {
             switch(tapSegment) {
-            case .channels:
-                if toolbarState == .channel {
-                    setToolbarState(state: .program, animated:true)
-                }
-                else {
-                    setToolbarState(state: .channel, animated:true)
-                }
-                
+               
             case .pip:
                 pipShow(animated: true, !isPipView)
                 
@@ -469,7 +286,7 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
     
     func saveCurrentChannel() {
         if self.currentChannelIndex < self.groupInfo.channels.count {
-            let channelPath = self.path + [self.groupInfo.channels[self.currentChannelIndex].name]
+            let channelPath = parentPath + [self.groupInfo.channels[self.currentChannelIndex].name]
             UserDefaults.standard.set(channelPath, forKey: "currentChannel")
         }
         
@@ -479,6 +296,7 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
     var viewToFocus: UIView? = nil {
         didSet {
             if viewToFocus != nil {
+                print("view to focus")
                 self.setNeedsFocusUpdate()
                 self.updateFocusIfNeeded()
             }
@@ -493,6 +311,21 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
         }
     }
     
+    
+    override func shouldUpdateFocus(in context: UIFocusUpdateContext) -> Bool {
+        let isShould = super.shouldUpdateFocus(in: context)
+        
+        if let nextView = context.nextFocusedItem as? UIView {
+            
+            //prevent show tabbar by move to up
+            if      let tabBar = self.tabBarController?.tabBar,
+                    nextView.isDescendant(of: tabBar) {
+                return false
+            }
+
+        }
+        return isShould
+    }
     
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         super.didUpdateFocus(in: context, with: coordinator)
@@ -513,19 +346,35 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
             }
         }
         
-        //toolbar show/hide
+        //programView show/hide
         if nextFocusedView != nil && prevFocusedView != nil {
-            if nextFocusedView!.isDescendant(of: bottomToolbar) &&  !prevFocusedView!.isDescendant(of: bottomToolbar) {
-                self.setToolbarState(state: .program, animated:true)
+            if nextFocusedView!.isDescendant(of: programAndPipView) &&  prevFocusedView!.isDescendant(of: changeProgramView) {
+                self.programShow(animated:true)
             }
-            else if !nextFocusedView!.isDescendant(of: bottomToolbar) &&  prevFocusedView!.isDescendant(of: bottomToolbar) {
-                self.setToolbarState(state: .hide, animated:true)
+            else if nextFocusedView!.isDescendant(of: changeProgramView) &&  prevFocusedView!.isDescendant(of: programAndPipView) {
+                self.programHide(animated:true)            
             }
         }
+        
+        /*
+        //print debug focused view
+        print("DidUpdateFocused")
+        if(prevFocusedView == nil) {
+            print("    prevFocusedView == nil")
+        }
+        else {
+            let views = getParentViews(prevFocusedView!)
+            print("    prevFocusedView == \(views.joined(separator: ", "))")
+        }
 
-        
-        
-        
+        if(nextFocusedView == nil) {
+            print("    nextFocusedView == nil")
+        }
+        else {
+            let views = getParentViews(nextFocusedView!)
+            print("    nextFocusedView == \(views.joined(separator: ", "))")
+        }
+         */
     }
     
     
@@ -535,7 +384,7 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
             let channelName = pathParent.popLast()
             if let index = newGroupInfo.channels.index(where: {$0.name == channelName}) {
                 groupInfo = newGroupInfo
-                self.path = pathParent
+                self.parentPath = pathParent
                 currentChannelIndex  = index
                 play(groupInfo.channels[index])
             }
@@ -557,7 +406,7 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
         
         programView.update(channel)
         
-        setToolbarState(state: .program, animated: true, hideTime: 2.0)
+        programShow(animated: true, hideTime: 4.0)
         
      }
 
@@ -576,63 +425,74 @@ class ChannelsVC : UIViewController, ChannelPickerProtocol {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
 }
 
-extension ChannelsVC { //toolbar animation
-    
-    private func _changeState(_ state: ToolbarState) {
-        switch(state) {
-        case .hide:
-            viewBottomToToolbarBottom.constant = -bottomToolbar.frame.height
-            toolbarTopToProgramTopConstrain.constant = 0.0
-            channelPickerView.isHidden = true
-         case .program:
-            viewBottomToToolbarBottom.constant = -channelPickerView.frame.size.height
-            toolbarTopToProgramTopConstrain.constant = 0.0
-            channelPickerView.isHidden = true
-            self.viewToFocus = self.actionButtons
-        case .channel:
-            viewBottomToToolbarBottom.constant = 0
-            toolbarTopToProgramTopConstrain.constant = channelPickerView.frame.size.height
-            channelPickerView.isHidden = false
-            
-            if currentChannelIndex < groupInfo.channels.count {
-                channelPickerVC!.setupPath(path + [groupInfo.channels[currentChannelIndex].name])
-                self.viewToFocus = channelPickerVC!.collectionView
+extension ChannelsVC : ChannelPickerProtocol {
+
+    func focusedPath(chooseControl: ChannelPickerVC,  path:[String])    {
+        if let dirElement = ChannelManager.findDirElement(path) {
+            if case let .channel(channelInfo) = dirElement {
+                programView.update(channelInfo)
             }
         }
     }
+    //func changePath(chooseControl: ChannelPickerVC,  path:[String])     {}
+    //func selectedPath(chooseControl: ChannelPickerVC,  path:[String])   {}
+
+}
+
+extension ChannelsVC { //programView animation
     
-    func setToolbarState(state:ToolbarState, animated:Bool = true, hideTime:Double = 0.0) {
-        cancelTimer()
-        if self.toolbarState != state {
-            self.toolbarState = state
-            self._changeState(state)
-            if(animated) {
-                UIView.animate(withDuration: 0.3, animations: {
-                    self.view.layoutIfNeeded()
-                })
-            }
-            else {
-                self.view.layoutIfNeeded()
-            }
+    func programShow(animated:Bool, hideTime: Double? = nil, _ isShow:Bool = true) {
+        if isShow {
+            programViewBottomConstraint.constant = 0
         }
-        if(hideTime > 0) {
-            self.timerHideToolbar = Timer.scheduledTimer(withTimeInterval: hideTime, repeats: false, block: { (timer) in
-                self.setToolbarState(state:.hide, animated:true)
-                self.timerHideToolbar = nil
+        else {
+            programViewBottomConstraint.constant = -programView.frame.size.height
+        }
+        
+        cancelProgramHideTimer()
+        isProgramShow = isShow
+
+        if(animated) {
+            UIView.animate(withDuration: 0.3, animations: {
+                self.view.layoutIfNeeded()
             })
         }
-        
-        
-    }
-    
-    func cancelTimer() {
-        if(timerHideToolbar != nil) {
-            timerHideToolbar!.invalidate()
-            timerHideToolbar = nil
+        else {
+            self.view.layoutIfNeeded()
         }
         
+        if(isShow) {
+            //self.viewToFocus = self.programCollectionView
+            if hideTime != nil {
+                timerHideProgram = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: false, block: { (_) in
+                    self.programHide(animated:true)
+                })
+            }
+        }
+        else {
+            // move focus from programView
+            if let focusedView = UIScreen.main.focusedView {
+                if focusedView.isDescendant(of: programView)  {
+                    self.viewToFocus = middleChannelView
+                }
+            }
+        }
+    }
+    
+    func programHide(animated:Bool) {
+        programShow(animated:animated, hideTime:nil, false)
+    }
+
+    
+    func cancelProgramHideTimer() {
+        if(timerHideProgram != nil) {
+            print("cancel hide timer")
+            timerHideProgram!.invalidate()
+            timerHideProgram = nil
+        }
     }
     
 }
@@ -665,19 +525,24 @@ extension ChannelsVC: PlayerViewDelegate {
             print("AVPlayerItemStatus failed")
         }
     }
+    
+    
+    func playerVideo(player: PlayerView, statusPlayer: PVStatus, error: Error?) {
+        print()
+    }
+    
 }
 
 extension ChannelsVC { //pip show/hide
     
     func pipShow( animated:Bool, _ isShow:Bool = true) {
         if isShow {
-            pipRightToViewRightConstrain.constant = 0
-            programRightToToolbarRightConstrain.constant = pipPlayer.frame.size.width
+            pipviewTrailingConstraint.constant = 0
         }
         else {
-            pipRightToViewRightConstrain.constant = -pipPlayer.frame.size.width
-            programRightToToolbarRightConstrain.constant = 0
+            pipviewTrailingConstraint.constant = -pipPlayer.frame.size.width
         }
+        programCollectionView.collectionViewLayout.invalidateLayout()
         if(animated) {
             UIView.animate(withDuration: 0.3, animations: {
                 self.view.layoutIfNeeded()
@@ -689,10 +554,7 @@ extension ChannelsVC { //pip show/hide
         isPipView = isShow
         
         if(isShow) {
-            if currentChannelIndex < groupInfo.channels.count  {
-                pipPlayer.play(groupInfo.channels[currentChannelIndex])
-                pipPlayer.player?.volume = 0.0
-            }
+            pipPlayer.play(self.currentChannelPath)
         }
         else {
             pipPlayer.resetPlayer()
@@ -703,11 +565,63 @@ extension ChannelsVC { //pip show/hide
         pipShow(animated:animated, false)
     }
     
-    func completedShow(_ isShow:Bool) {
-        
+
+}
+
+extension ChannelsVC { //show/hide  channel chooser
+
+    func showChannelChooser(sender: UITapGestureRecognizer) {
+        channelPickerView.isHidden = false
+        programShow(animated:false)
+        //set position
+        if currentChannelIndex < groupInfo.channels.count {
+            channelPickerVC?.setupPath(parentPath + [groupInfo.channels[currentChannelIndex].name])
+        }
+        else {
+            channelPickerVC?.setupPath(parentPath, isParent:true)
+        }
+        self.viewToFocus = self.channelPickerVC?.collectionView
     }
     
-    
+    func menuClickHandler(sender: UITapGestureRecognizer) {
+        if self.channelPickerView.isHidden == false {
+            self.channelPickerView.isHidden = true
+            programHide(animated: false)
+            self.viewToFocus = middleChannelView
+        }
+        else {
+            self.viewToFocus = self.tabBarController?.tabBar
+        }
+    }
 }
+
+extension ChannelsVC { //replace pip and main view
+    
+    func playClickHandler(sender: UITapGestureRecognizer) {
+        
+        if !isPipView {
+            return
+            /*
+            if mainPlayer.
+            mainPlayer.stop()
+             */
+        }
+        
+        //change paths pip and main
+        if          var mainPath = pipPlayer.path,
+                    let findGroupInfo = ChannelManager.findParentGroup(mainPath),
+                    let name = mainPath.popLast(),
+                    let index = findGroupInfo.channels.index(where: {$0.name == name}),
+                    let pipPath = currentChannelPath {
+            groupInfo =  findGroupInfo
+            parentPath = mainPath
+            currentChannelIndex = index
+            play(groupInfo.channels[currentChannelIndex])
+            pipPlayer.play(pipPath)
+        }
+    }
+
+}
+
 
 

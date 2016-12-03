@@ -21,6 +21,14 @@ class ChannelCell : UICollectionViewCell {
     @IBOutlet weak var channelView: UIView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var nameIntoImage: UILabel!
+    
+    @IBOutlet weak var niiHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var niiWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var niiCenterYConstraint: NSLayoutConstraint!
+    @IBOutlet weak var niiCenterXConstraint: NSLayoutConstraint!
+    
+    
     
     var _element : DirElement?
     var element : DirElement //group or channel
@@ -33,16 +41,30 @@ class ChannelCell : UICollectionViewCell {
             switch newElement {
             case .group(let group):
                 label.text = group.name
+                nameIntoImage.text = group.name
+                nameIntoImage.numberOfLines = 1
+                //nameIntoImage.backgroundColor = UIColor.red
+                niiCenterYConstraint.constant = 8
+                niiCenterXConstraint.constant = -10
+                niiWidthConstraint.constant = -46
+                niiHeightConstraint.constant = -92
                 imageView.image = ChannelCell.imageGroup
                 
             case .channel(let channel):
                 label.text = channel.name
-                
+                nameIntoImage.text = channel.name
+                nameIntoImage.numberOfLines = 2
+                //nameIntoImage.backgroundColor = UIColor.red
+                niiCenterYConstraint.constant = -8
+                niiCenterXConstraint.constant = 2
+                niiWidthConstraint.constant = -22
+                niiHeightConstraint.constant = -90
                 imageView.image = ChannelCell.imageChannel
                 ProgramManager.instance.getIcon(channel: channel.name, completion: { (data) in
                     if data != nil {
                         if let image = UIImage(data: data!) {
                             self.imageView.image = image
+                            self.nameIntoImage.text = ""
                         }
                     }
                 })
@@ -189,6 +211,7 @@ class ChannelPickerCollectionView :UICollectionView {
     override var preferredFocusEnvironments: [UIFocusEnvironment] {
         var ret = super.preferredFocusEnvironments
         if focusedIndex >= 0 {
+            self.scrollToItem(at: IndexPath(row:focusedIndex, section:0), at: .centeredHorizontally, animated: false)
             if let cell = cellForItem(at: IndexPath.init(row: focusedIndex, section: 0)) {
                 ret = [cell]
             }
@@ -274,12 +297,14 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
         delegate?.changePath(chooseControl: self, path: self.path)
         
         collectionView.performBatchUpdates({
+            self.collectionView.remembersLastFocusedIndexPath = false
             //self.collectionView.deleteSections(IndexSet(integer:0))
             //self.collectionView.insertSections(IndexSet(integer:0))
             self.collectionView.reloadSections(IndexSet(integer:0))
             //self.collectionView.reloadData()
         }, completion: { completed -> Void in
             self.viewToFocus = self.collectionView
+            self.collectionView.remembersLastFocusedIndexPath = true
             //self.viewToFocus = self.collectionView
             //self.setNeedsFocusUpdate()
             //self.updateFocusIfNeeded()
@@ -420,5 +445,6 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
         
         
     }
+    
     
 }

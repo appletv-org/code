@@ -18,7 +18,7 @@
                         <viewControllerLayoutGuide type="top" id="Ia1-K6-d13"/>
                         <viewControllerLayoutGuide type="bottom" id="4ug-Mw-9AY"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
+                    <view key="view" contentMode="scaleToFill" id="tsR-hK-woN" customClass="ControllerView" customModule="iptv" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -26,10 +26,10 @@
                                 <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kbO-ei-XoE" userLabel="LoadingView">
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kbO-ei-XoE" userLabel="LoadingView">
                                 <rect key="frame" x="20" y="0.0" width="1880" height="1080"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bXf-LD-fqb">
+                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.80000000000000004" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bXf-LD-fqb">
                                         <rect key="frame" x="883" y="20" width="115" height="60"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="60" id="JRe-Ga-yi9"/>
@@ -38,14 +38,14 @@
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GiA-m6-nZs">
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="GiA-m6-nZs">
                                         <rect key="frame" x="880" y="161" width="120" height="120"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="120" id="HPe-pZ-5Nd"/>
                                             <constraint firstAttribute="height" constant="120" id="hkK-AI-grS"/>
                                         </constraints>
                                     </activityIndicatorView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cann't load url" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kgY-18-rkn">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Cann't load url" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kgY-18-rkn">
                                         <rect key="frame" x="540" y="180" width="800" height="80"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="800" id="ggG-Dc-d41"/>
@@ -56,10 +56,12 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstAttribute="width" constant="1000" id="8DT-Vi-99d"/>
                                     <constraint firstItem="GiA-m6-nZs" firstAttribute="centerX" secondItem="kbO-ei-XoE" secondAttribute="centerX" id="RVF-17-X1s"/>
                                     <constraint firstItem="bXf-LD-fqb" firstAttribute="centerX" secondItem="kbO-ei-XoE" secondAttribute="centerX" id="SbS-Ng-BGh"/>
+                                    <constraint firstAttribute="height" constant="400" id="TFs-AL-H8p"/>
                                     <constraint firstItem="kgY-18-rkn" firstAttribute="top" secondItem="bXf-LD-fqb" secondAttribute="bottom" constant="100" id="VlO-93-2DA"/>
                                     <constraint firstItem="kgY-18-rkn" firstAttribute="centerX" secondItem="kbO-ei-XoE" secondAttribute="centerX" id="dmZ-lg-CTV"/>
                                     <constraint firstItem="bXf-LD-fqb" firstAttribute="top" secondItem="kbO-ei-XoE" secondAttribute="top" constant="20" id="qiU-iv-hQq"/>
@@ -69,23 +71,23 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zza-hi-pPi" userLabel="LeftRightProgramView" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
                                 <rect key="frame" x="20" y="145" width="1880" height="10"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CiL-gy-7Xn" customClass="FocusedView" customModule="iptv" customModuleProvider="target">
-                                        <rect key="frame" x="15" y="0.0" width="1850" height="10"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                    </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M7h-jm-Z03" customClass="FocusedView" customModule="iptv" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="10" height="10"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="300" height="10"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="10" id="hPs-Tg-bFf"/>
+                                            <constraint firstAttribute="width" constant="300" id="hPs-Tg-bFf"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Suh-K9-7f5" customClass="FocusedView" customModule="iptv" customModuleProvider="target">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CiL-gy-7Xn" customClass="FocusedView" customModule="iptv" customModuleProvider="target">
+                                        <rect key="frame" x="305" y="0.0" width="50" height="10"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="50" id="tPe-a6-sJf"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Suh-K9-7f5" customClass="FocusedView" customModule="iptv" customModuleProvider="target">
                                         <rect key="frame" x="1870" y="0.0" width="10" height="10"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="10" id="wuE-OS-vrr"/>
-                                        </constraints>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -103,33 +105,107 @@
                                     <constraint firstAttribute="height" constant="10" id="wYg-qq-zcZ"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iRu-Wh-qAi" userLabel="Bottom toolbar" customClass="ToolBar" customModule="iptv" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="460" width="1920" height="620"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gLE-1w-Dez" userLabel="ChannelPickerView" customClass="PanelView" customModule="iptv" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="410" width="1920" height="350"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="350" id="3kA-SI-2ed"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RWR-bB-oOm">
+                                <rect key="frame" x="0.0" y="760" width="1920" height="320"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kU9-vR-XXj" userLabel="ProgramView" customClass="ProgramView" customModule="iptv" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="340" width="1920" height="280"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1420" height="320"/>
                                         <subviews>
+                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="jjS-DO-Q2t">
+                                                <rect key="frame" x="0.0" y="0.0" width="1420" height="260"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="20" id="UDG-Dp-Bdd">
+                                                    <size key="itemSize" width="676" height="220"/>
+                                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                </collectionViewFlowLayout>
+                                                <cells>
+                                                    <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ProgramCell" id="UMm-Wh-jal" customClass="ProgramCollectionCell" customModule="iptv" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="20" width="676" height="220"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                                            <rect key="frame" x="0.0" y="0.0" width="676" height="220"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <subviews>
+                                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="agA-80-2zi">
+                                                                    <rect key="frame" x="8" y="8" width="660" height="204"/>
+                                                                    <subviews>
+                                                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="top" misplaced="YES" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CvX-4q-02r">
+                                                                            <rect key="frame" x="0.0" y="0.0" width="660" height="186"/>
+                                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                                            <attributedString key="attributedText">
+                                                                                <fragment content="Lorem ipsum dolor sit er elit lamet, ">
+                                                                                    <attributes>
+                                                                                        <color key="NSColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                                        <font key="NSFont" size="24" name="BradleyHandITCTT-Bold"/>
+                                                                                        <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                                                    </attributes>
+                                                                                </fragment>
+                                                                            </attributedString>
+                                                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                                        </textView>
+                                                                        <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="fIq-sr-VxA">
+                                                                            <rect key="frame" x="20" y="179" width="620" height="10"/>
+                                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                            <color key="progressTintColor" red="1" green="0.2807912669" blue="0.18054029099999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                        </progressView>
+                                                                    </subviews>
+                                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                                    <constraints>
+                                                                        <constraint firstItem="fIq-sr-VxA" firstAttribute="top" secondItem="CvX-4q-02r" secondAttribute="bottom" constant="5" id="3gA-rs-Gap"/>
+                                                                        <constraint firstItem="fIq-sr-VxA" firstAttribute="leading" secondItem="agA-80-2zi" secondAttribute="leading" constant="20" id="9zv-oJ-kXF"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="CvX-4q-02r" secondAttribute="trailing" id="SwY-EX-YPC"/>
+                                                                        <constraint firstItem="CvX-4q-02r" firstAttribute="leading" secondItem="agA-80-2zi" secondAttribute="leading" id="Vum-OU-wd0"/>
+                                                                        <constraint firstItem="CvX-4q-02r" firstAttribute="top" secondItem="agA-80-2zi" secondAttribute="top" id="abT-KL-CmA"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="fIq-sr-VxA" secondAttribute="trailing" constant="20" id="c4A-aK-GSL"/>
+                                                                        <constraint firstAttribute="bottom" secondItem="fIq-sr-VxA" secondAttribute="bottom" constant="15" id="sFP-Yt-BF6"/>
+                                                                    </constraints>
+                                                                </view>
+                                                            </subviews>
+                                                        </view>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                        <constraints>
+                                                            <constraint firstItem="agA-80-2zi" firstAttribute="top" secondItem="UMm-Wh-jal" secondAttribute="topMargin" id="2MZ-Qa-vcd"/>
+                                                            <constraint firstItem="agA-80-2zi" firstAttribute="leading" secondItem="UMm-Wh-jal" secondAttribute="leadingMargin" id="nvO-Df-wk5"/>
+                                                            <constraint firstAttribute="trailingMargin" secondItem="agA-80-2zi" secondAttribute="trailing" id="rx3-aS-Um0"/>
+                                                            <constraint firstAttribute="bottomMargin" secondItem="agA-80-2zi" secondAttribute="bottom" id="yLP-1K-dTc"/>
+                                                        </constraints>
+                                                        <connections>
+                                                            <outlet property="progressView" destination="fIq-sr-VxA" id="aNa-FL-Wgn"/>
+                                                            <outlet property="textView" destination="CvX-4q-02r" id="UBo-lF-vjz"/>
+                                                            <outlet property="view" destination="agA-80-2zi" id="meT-9I-HWN"/>
+                                                        </connections>
+                                                    </collectionViewCell>
+                                                </cells>
+                                            </collectionView>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="06L-4x-Au1" userLabel="ButtonsView" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="1920" height="60"/>
+                                                <rect key="frame" x="0.0" y="260" width="1420" height="60"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AVs-EL-FQz">
-                                                        <rect key="frame" x="8" y="0.0" width="1497" height="60"/>
+                                                        <rect key="frame" x="8" y="0.0" width="1077" height="60"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="28"/>
                                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="Mlt-XR-fcn">
-                                                        <rect key="frame" x="1510" y="0.0" width="400" height="61"/>
+                                                        <rect key="frame" x="1090" y="0.0" width="320" height="61"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="width" constant="400" id="Kx0-NV-Wwk"/>
+                                                            <constraint firstAttribute="width" constant="320" id="Kx0-NV-Wwk"/>
                                                         </constraints>
                                                         <segments>
-                                                            <segment title="" image="PIPChange"/>
-                                                            <segment title="" image="chooseChannel"/>
                                                             <segment title="" image="star"/>
                                                             <segment title="" image="garbage"/>
+                                                            <segment title="" image="PIPChange"/>
                                                         </segments>
                                                     </segmentedControl>
                                                 </subviews>
@@ -145,108 +221,53 @@
                                                     <constraint firstAttribute="bottom" secondItem="AVs-EL-FQz" secondAttribute="bottom" id="z0v-C7-MEb"/>
                                                 </constraints>
                                             </view>
-                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="jjS-DO-Q2t">
-                                                <rect key="frame" x="0.0" y="60" width="1920" height="220"/>
-                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="20" id="UDG-Dp-Bdd">
-                                                    <size key="itemSize" width="676" height="224"/>
-                                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                                </collectionViewFlowLayout>
-                                                <cells>
-                                                    <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ProgramCell" id="UMm-Wh-jal" customClass="ProgramCollectionCell" customModule="iptv" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="-2" width="676" height="224"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                                            <rect key="frame" x="0.0" y="0.0" width="676" height="224"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
-                                                            <subviews>
-                                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="top" alwaysBounceVertical="YES" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CvX-4q-02r">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="676" height="224"/>
-                                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                                    <attributedString key="attributedText">
-                                                                        <fragment content="Lorem ipsum dolor sit er elit lamet, ">
-                                                                            <attributes>
-                                                                                <color key="NSColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                                                <font key="NSFont" size="24" name="BradleyHandITCTT-Bold"/>
-                                                                                <paragraphStyle key="NSParagraphStyle" alignment="justified" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                                            </attributes>
-                                                                        </fragment>
-                                                                    </attributedString>
-                                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                                    <dataDetectorType key="dataDetectorTypes" lookupSuggestion="YES"/>
-                                                                </textView>
-                                                            </subviews>
-                                                        </view>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="bottom" secondItem="CvX-4q-02r" secondAttribute="bottom" id="5N3-y7-pGj"/>
-                                                            <constraint firstItem="CvX-4q-02r" firstAttribute="leading" secondItem="UMm-Wh-jal" secondAttribute="leading" id="Vec-Sx-kte"/>
-                                                            <constraint firstItem="CvX-4q-02r" firstAttribute="top" secondItem="UMm-Wh-jal" secondAttribute="top" id="hjf-wK-JSh"/>
-                                                            <constraint firstAttribute="trailing" secondItem="CvX-4q-02r" secondAttribute="trailing" id="wdg-Of-KPC"/>
-                                                        </constraints>
-                                                        <connections>
-                                                            <outlet property="textView" destination="CvX-4q-02r" id="UBo-lF-vjz"/>
-                                                        </connections>
-                                                    </collectionViewCell>
-                                                </cells>
-                                            </collectionView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="06L-4x-Au1" secondAttribute="trailing" id="8ff-rx-H0q"/>
-                                            <constraint firstItem="jjS-DO-Q2t" firstAttribute="top" secondItem="06L-4x-Au1" secondAttribute="bottom" id="ANA-gx-oSe"/>
+                                            <constraint firstItem="jjS-DO-Q2t" firstAttribute="top" secondItem="kU9-vR-XXj" secondAttribute="top" id="Bh3-kl-xoe"/>
                                             <constraint firstItem="06L-4x-Au1" firstAttribute="leading" secondItem="kU9-vR-XXj" secondAttribute="leading" id="RJF-iw-tVG"/>
-                                            <constraint firstAttribute="height" constant="280" id="Unr-am-uih"/>
-                                            <constraint firstItem="06L-4x-Au1" firstAttribute="top" secondItem="kU9-vR-XXj" secondAttribute="top" id="eJB-Se-WIo"/>
-                                            <constraint firstAttribute="bottom" secondItem="jjS-DO-Q2t" secondAttribute="bottom" id="kZI-YH-68g"/>
-                                            <constraint firstAttribute="trailing" secondItem="jjS-DO-Q2t" secondAttribute="trailing" id="mUM-TK-VQ9"/>
+                                            <constraint firstAttribute="trailing" secondItem="jjS-DO-Q2t" secondAttribute="trailing" id="Y81-aB-OEo"/>
+                                            <constraint firstItem="06L-4x-Au1" firstAttribute="top" secondItem="jjS-DO-Q2t" secondAttribute="bottom" id="cel-L6-mDg"/>
+                                            <constraint firstAttribute="bottom" secondItem="06L-4x-Au1" secondAttribute="bottom" id="ho9-Ax-yS8"/>
                                             <constraint firstItem="jjS-DO-Q2t" firstAttribute="leading" secondItem="kU9-vR-XXj" secondAttribute="leading" id="rCn-iF-ACF"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gLE-1w-Dez" userLabel="ChannelPickerView">
-                                        <rect key="frame" x="0.0" y="0.0" width="1920" height="350"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jD7-7Z-omH" customClass="PipPlayer" customModule="iptv">
+                                        <rect key="frame" x="1420" y="0.0" width="500" height="320"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="350" id="3kA-SI-2ed"/>
+                                            <constraint firstAttribute="width" constant="500" id="9yT-vx-hBq"/>
+                                            <constraint firstAttribute="height" constant="320" id="Aab-lB-Jit"/>
                                         </constraints>
                                     </view>
                                 </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="kU9-vR-XXj" secondAttribute="trailing" id="Avz-Wm-5Id"/>
-                                    <constraint firstAttribute="trailing" secondItem="gLE-1w-Dez" secondAttribute="trailing" id="ZIv-Cw-2hs"/>
-                                    <constraint firstItem="kU9-vR-XXj" firstAttribute="top" secondItem="iRu-Wh-qAi" secondAttribute="top" constant="340" id="fBA-dP-0ZC"/>
-                                    <constraint firstAttribute="height" constant="620" id="gsR-10-GAe"/>
-                                    <constraint firstItem="gLE-1w-Dez" firstAttribute="top" secondItem="iRu-Wh-qAi" secondAttribute="top" id="jhh-aZ-oBz"/>
-                                    <constraint firstItem="kU9-vR-XXj" firstAttribute="leading" secondItem="iRu-Wh-qAi" secondAttribute="leading" id="xpU-12-FgQ"/>
-                                    <constraint firstItem="gLE-1w-Dez" firstAttribute="leading" secondItem="iRu-Wh-qAi" secondAttribute="leading" id="xrx-EA-t8Q"/>
-                                </constraints>
-                            </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jD7-7Z-omH" customClass="PipPlayer" customModule="iptv">
-                                <rect key="frame" x="1430" y="800" width="470" height="280"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="280" id="7h6-0j-G5Y"/>
-                                    <constraint firstAttribute="width" constant="470" id="9yT-vx-hBq"/>
+                                    <constraint firstItem="kU9-vR-XXj" firstAttribute="leading" secondItem="RWR-bB-oOm" secondAttribute="leading" id="OCA-kW-uDM"/>
+                                    <constraint firstItem="jD7-7Z-omH" firstAttribute="top" secondItem="RWR-bB-oOm" secondAttribute="top" id="OhD-KW-UTC"/>
+                                    <constraint firstAttribute="bottom" secondItem="kU9-vR-XXj" secondAttribute="bottom" id="UVv-cl-L01"/>
+                                    <constraint firstAttribute="bottom" secondItem="jD7-7Z-omH" secondAttribute="bottom" id="csy-zF-gnQ"/>
+                                    <constraint firstItem="jD7-7Z-omH" firstAttribute="leading" secondItem="kU9-vR-XXj" secondAttribute="trailing" id="kRS-yq-FKR"/>
+                                    <constraint firstItem="jD7-7Z-omH" firstAttribute="height" secondItem="kU9-vR-XXj" secondAttribute="height" id="yKx-dR-S6H"/>
+                                    <constraint firstAttribute="trailing" secondItem="jD7-7Z-omH" secondAttribute="trailing" id="yOl-wi-sU9"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="kbO-ei-XoE" secondAttribute="trailing" id="6HP-jx-oUo"/>
+                            <constraint firstItem="RWR-bB-oOm" firstAttribute="top" secondItem="gLE-1w-Dez" secondAttribute="bottom" id="4ZP-bM-Nce"/>
                             <constraint firstAttribute="trailing" secondItem="iSw-KR-nIT" secondAttribute="trailing" id="6o0-Fo-mGD"/>
-                            <constraint firstAttribute="trailing" secondItem="jD7-7Z-omH" secondAttribute="trailing" id="D49-6o-LGm"/>
-                            <constraint firstItem="kbO-ei-XoE" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leadingMargin" id="FEz-Ib-yxG"/>
+                            <constraint firstItem="4ug-Mw-9AY" firstAttribute="top" secondItem="RWR-bB-oOm" secondAttribute="bottom" id="I8o-Ca-3UZ"/>
                             <constraint firstItem="iSw-KR-nIT" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="KRb-wO-lJM"/>
+                            <constraint firstAttribute="trailing" secondItem="gLE-1w-Dez" secondAttribute="trailing" id="LWT-4P-WSK"/>
+                            <constraint firstItem="kbO-ei-XoE" firstAttribute="centerX" secondItem="tsR-hK-woN" secondAttribute="centerX" id="NIb-IE-l0Y"/>
+                            <constraint firstItem="gLE-1w-Dez" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="Nyo-3u-Ron"/>
+                            <constraint firstItem="RWR-bB-oOm" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="QbP-7w-38n"/>
+                            <constraint firstAttribute="trailing" secondItem="RWR-bB-oOm" secondAttribute="trailing" id="Vlk-oW-wFm"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Zza-hi-pPi" secondAttribute="trailing" id="WVA-lg-fd9"/>
-                            <constraint firstItem="4ug-Mw-9AY" firstAttribute="top" secondItem="jD7-7Z-omH" secondAttribute="bottom" id="WvO-QG-yU9"/>
-                            <constraint firstAttribute="trailing" secondItem="iRu-Wh-qAi" secondAttribute="trailing" id="Xls-l4-slY"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="iRu-Wh-qAi" secondAttribute="bottom" id="b2m-d6-T4Q"/>
                             <constraint firstItem="iSw-KR-nIT" firstAttribute="top" secondItem="tsR-hK-woN" secondAttribute="top" id="dR8-vF-P2F"/>
-                            <constraint firstItem="iRu-Wh-qAi" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="ev4-05-YUo"/>
                             <constraint firstItem="Zza-hi-pPi" firstAttribute="top" secondItem="Ia1-K6-d13" secondAttribute="bottom" id="ljw-80-QiV"/>
-                            <constraint firstItem="4ug-Mw-9AY" firstAttribute="top" secondItem="kbO-ei-XoE" secondAttribute="bottom" id="r9h-yQ-fVZ"/>
                             <constraint firstItem="Zza-hi-pPi" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leadingMargin" id="t5p-Tq-WWC"/>
                             <constraint firstItem="4ug-Mw-9AY" firstAttribute="top" secondItem="iSw-KR-nIT" secondAttribute="bottom" id="uUD-aP-qLt"/>
                             <constraint firstItem="kbO-ei-XoE" firstAttribute="top" secondItem="tsR-hK-woN" secondAttribute="topMargin" id="xSg-c9-uuC"/>
@@ -258,7 +279,6 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="actionButtons" destination="Mlt-XR-fcn" id="lBJ-9T-bF5"/>
-                        <outlet property="bottomToolbar" destination="iRu-Wh-qAi" id="FSL-ib-XHv"/>
                         <outlet property="changeProgramView" destination="Zza-hi-pPi" id="FlJ-xv-4Aw"/>
                         <outlet property="channelPickerView" destination="gLE-1w-Dez" id="aLr-fG-BD2"/>
                         <outlet property="dayLabel" destination="AVs-EL-FQz" id="Q99-hK-J62"/>
@@ -270,13 +290,12 @@
                         <outlet property="middleChannelView" destination="CiL-gy-7Xn" id="F4p-8M-p5t"/>
                         <outlet property="nextChannelView" destination="Suh-K9-7f5" id="b4j-wc-Vj4"/>
                         <outlet property="pipPlayer" destination="jD7-7Z-omH" id="Lg2-Wm-0Dl"/>
-                        <outlet property="pipRightToViewRightConstrain" destination="D49-6o-LGm" id="lXP-EN-mhX"/>
+                        <outlet property="pipviewTrailingConstraint" destination="yOl-wi-sU9" id="wO2-FU-417"/>
                         <outlet property="prevChannelView" destination="M7h-jm-Z03" id="mXM-Aq-rna"/>
+                        <outlet property="programAndPipView" destination="RWR-bB-oOm" id="lpm-dG-wPI"/>
                         <outlet property="programCollectionView" destination="jjS-DO-Q2t" id="7fw-py-ZFg"/>
-                        <outlet property="programRightToToolbarRightConstrain" destination="Avz-Wm-5Id" id="7bx-vx-BIe"/>
                         <outlet property="programView" destination="kU9-vR-XXj" id="LjA-NC-v1M"/>
-                        <outlet property="toolbarTopToProgramTopConstrain" destination="fBA-dP-0ZC" id="OnM-B1-9op"/>
-                        <outlet property="viewBottomToToolbarBottom" destination="b2m-d6-T4Q" id="dGe-FM-xuC"/>
+                        <outlet property="programViewBottomConstraint" destination="UVv-cl-L01" id="1v8-VJ-ydI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
@@ -286,7 +305,6 @@
     </scenes>
     <resources>
         <image name="PIPChange" width="40" height="40"/>
-        <image name="chooseChannel" width="40" height="40"/>
         <image name="garbage" width="40" height="40"/>
         <image name="star" width="40" height="40"/>
     </resources>

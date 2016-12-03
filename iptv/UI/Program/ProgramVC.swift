@@ -8,6 +8,28 @@
 
 import UIKit
 
+
+class PrintPreferFocusedView : UIView {
+    
+    override var canBecomeFocused : Bool {
+        get {
+            return true
+        }
+    }
+    
+    override var preferredFocusEnvironments: [UIFocusEnvironment] {
+        
+        var envs = [UIFocusEnvironment]()
+        for view in self.subviews {
+            if view.canBecomeFocused {
+                envs.append(view as UIFocusEnvironment)
+            }
+        }
+        print("focused")
+        return envs
+    }
+}
+
 class ProgramVC: UIViewController {
 
     override func viewDidLoad() {

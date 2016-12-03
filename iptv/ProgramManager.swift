@@ -50,10 +50,9 @@ class EpgProviderInfo : NSObject, NSCoding {
     }
     
     
-    
     var name : String = ""
     var url:   String = ""
-    var updateTime: Int = 0 //((24*day + hours)*60 + minuts)*60 + seconds, where  day:0-everyday, 1-monday,...,7-sunday
+    var updateTime: Int = 0 //((24*day + hours)*60 + minuts)*60 + seconds, where  day:0-everyday, 1-sunday,...,7-monday
     var shiftTime: Int = 0//hours*60 + minuts)*60 + seconds
     var parseProgram = true
     var parseIcons = true
@@ -131,8 +130,6 @@ class EpgProviderInfo : NSObject, NSCoding {
 
 class ProgramManager {
     
-    
-    
     static let userDefaultKey = "epgProviders"
     
     static let epgNotification = Notification.Name("EpgNotification")
@@ -142,27 +139,13 @@ class ProgramManager {
     static let errorMsg = "errorMsg"
     
     
+    
+    
     let serialQueue = DispatchQueue(label: "ProgramManagerQueue")
     
     var iconCache =  NSCache<NSString,NSData>()
     
-    lazy var iconsDirectory: URL = { () -> URL? in
-        
-        let fm = FileManager.default
-        let cacheDir =  fm.urls(for: .cachesDirectory, in: .userDomainMask).first
-        let iconsDir = cacheDir!.appendingPathComponent("icons")
-        
-        if !fm.fileExists(atPath: iconsDir.absoluteString ) {
-            do {
-                try fm.createDirectory(atPath: iconsDir.absoluteString, withIntermediateDirectories: true, attributes: nil)
-            } catch let error as NSError {
-                print("Create directory error: " + error.localizedDescription);
-            }
-        }
-        
-        return iconsDir
-    }()!
-    
+    var timerUpdate : Timer?
     
     var _epgProviders : [EpgProviderInfo]?
     var epgProviders :  [EpgProviderInfo] {
@@ -280,6 +263,9 @@ class ProgramManager {
 
         return nil
     }
+        
+
+    
     
     func updateProvider(name:String, provider:EpgProviderInfo) -> Error? {
         if let error = checkProviderFields(name:name, provider:provider) {
@@ -306,6 +292,11 @@ class ProgramManager {
                 NotificationCenter.default.post(name: ProgramManager.epgNotification, object:nil,
                                                 userInfo: [ ProgramManager.userInfoStatus:"update", ProgramManager.userInfoProvider: provider] )
             }
+            
+            if prevProvider.updateTime != provider.updateTime {
+                self.checkUpdateTimer()
+            }
+            
             
             
         }
@@ -377,7 +368,82 @@ class ProgramManager {
 
 extension ProgramManager { //upload data (programs, icons) by url
     
+    func checkUpdateTimer() {
+        serialQueue.async {
+            self._checkUpdateTimer()
+        }
+
+    }
+    
+    func _checkUpdateTimer() {
+        
+        var nextUpdateTime : Date?
+        
+        if timerUpdate != nil {
+            timerUpdate!.invalidate()
+            timerUpdate =  nil
+        }
+        
+        for provider in epgProviders {
+            
+            if provider.updateTime < 0 {
+                continue
+            }
+
+            //calc prev/next update time
+            let updateDayofWeek = provider.updateTime / (24*60*60)
+            let updateSeconds = provider.updateTime % (24*60*60)
+            
+            var dateComponent = DateComponents(hour:updateSeconds/(60*60), minute:updateSeconds/60%60, second:updateSeconds%60)
+            if(updateDayofWeek != 0) { //everyday
+                dateComponent.weekday = updateDayofWeek
+            }
+            guard let  prevUpdateDate = Calendar.current.nextDate(after: Date(), matching: dateComponent, matchingPolicy: .nextTime, direction:.backward),
+                  let nextUpdateDate = Calendar.current.nextDate(after: Date(), matching: dateComponent, matchingPolicy: .nextTime, direction:.forward)
+            else {
+                continue
+            }
+            print("provider \(provider.name)")
+            print("prevUpdateDate: \(prevUpdateDate.description(with: Locale.current)) ")
+            print("nextUpdateDate: \(nextUpdateDate.description(with: Locale.current)) ")
+            
+            if nextUpdateTime == nil || nextUpdateTime! > nextUpdateDate {
+                nextUpdateTime = nextUpdateDate
+            }
+            
+            if provider.status != .idle {
+                continue
+            }
+            
+            if      let dbProvider = getDbProvider(provider.name),
+                    let lastUpdate = dbProvider.lastUpdate as? Date,
+                    lastUpdate > prevUpdateDate
+            {
+               continue
+                
+            }
+            updateData(provider)
+
+        }
+        
+        if nextUpdateTime !=  nil {
+            let timeInterval = nextUpdateTime!.timeIntervalSinceNow + 1
+            print("timeInterval: \(timeInterval)")
+            DispatchQueue.main.async {
+            self.timerUpdate = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false, block: { (_) in
+                self.checkUpdateTimer()
+            })
+            }
+        }
+        
+    }
+
+    
     func updateData(_ provider:EpgProviderInfo, isNew:Bool = false) {
+        
+        if(provider.status != .idle) {
+            return
+        }
         
         provider.status = .waiting
         NotificationCenter.default.post(name: ProgramManager.epgNotification, object:nil,
@@ -390,13 +456,36 @@ extension ProgramManager { //upload data (programs, icons) by url
     }
  
     func clearData(_ provider:EpgProviderInfo) {
+
+        if(provider.status != .idle) {
+            return
+        }
+        provider.status = .waiting
+        NotificationCenter.default.post(name: ProgramManager.epgNotification, object:nil,
+                                        userInfo: [ ProgramManager.userInfoStatus:"waiting", ProgramManager.userInfoProvider: provider] )
+
         serialQueue.async {
             self._clearData(provider)
         }
     }
 
     func _clearData(_ provider:EpgProviderInfo) {
-        //TODO: realize clear data
+        
+        if let dbProvider = getDbProvider(provider.name) {
+            
+            provider.status = .processing
+            NotificationCenter.default.post(name: ProgramManager.epgNotification, object:nil,
+                                            userInfo: [ ProgramManager.userInfoStatus:"processing", ProgramManager.userInfoProvider: provider] )
+
+            
+            CoreDataManager.context().delete(dbProvider)
+            try? CoreDataManager.context().save()
+            
+            provider.status = .idle
+            NotificationCenter.default.post(name: ProgramManager.epgNotification, object:nil,
+                                            userInfo: [ ProgramManager.userInfoStatus:"processed", ProgramManager.userInfoProvider: provider] )
+
+        }
     }
     
     
@@ -416,9 +505,6 @@ extension ProgramManager { //upload data (programs, icons) by url
         provider.status = .processing
         NotificationCenter.default.post(name: ProgramManager.epgNotification, object:nil,
                                         userInfo: [ ProgramManager.userInfoStatus:"processing", ProgramManager.userInfoProvider: provider] )
-        
-
-        
         
         
          //get file by link
@@ -446,8 +532,6 @@ extension ProgramManager { //upload data (programs, icons) by url
             let channels = try self._parseXml(xml)
             
             self._saveProgramsToDB(provider, channels)
-            
-            try self._updateIcons(provider, channels)
             
             
             dbProvider!.error = nil
@@ -554,7 +638,7 @@ extension ProgramManager { //upload data (programs, icons) by url
         var minDate : Date? = nil
         var maxDate : Date? = nil
         
-        dbcontext.perform {
+        //dbcontext.perform {
             
             var dbProvider : EpgProvider? = nil
             let providers : [EpgProvider] = CoreDataManager.simpleRequest(NSPredicate(format:"name==%@", provider.name), dbcontext: dbcontext)
@@ -626,45 +710,8 @@ extension ProgramManager { //upload data (programs, icons) by url
                 fatalError("Failure to save context: \(error)")
             }
             
-        }
-        
-        
+        //}
+
     }
-    
-    func _updateIcons(_ provider:EpgProviderInfo, _ channels:  [String: ParserChannelWithProgram])  throws {
-        
-        print(" ProgramManager._updateIcons not realized")
-        return
-        
-        //self.iconsDirectory
-
-        let fm = FileManager.default
-
-        //check/create dir
-        
-        let iconsProviderDir = iconsDirectory.appendingPathComponent(provider.name, isDirectory:true)
-        
-        if !fm.fileExists(atPath: iconsProviderDir.absoluteString ) {
-            try fm.createDirectory(atPath: iconsProviderDir.absoluteString, withIntermediateDirectories: true, attributes: nil)
-        }
-        
-        //soft change icons (change by channel)
-        for (id, channelProg) in channels {
-            guard let icon = channelProg.channel.icon,
-                  let iconUrl = URL(string: icon),
-                  let data = try? Data.init(contentsOf: iconUrl)
-            else {
-                continue
-            }
-            
-            let file = iconsProviderDir.appendingPathComponent(channelProg.channel.name, isDirectory:false)
-            try? data.write(to: file)
-        }
- 
-
-        
-        
-    }
-    
 
 }

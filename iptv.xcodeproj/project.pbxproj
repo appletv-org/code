@@ -36,6 +36,8 @@
 		FA830D8A1D8C215E000BD36E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA830D881D8C215E000BD36E /* Main.storyboard */; };
 		FA830D8C1D8C21B1000BD36E /* ChannelsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA830D8B1D8C21B1000BD36E /* ChannelsVC.swift */; };
 		FA830D8F1D8C3361000BD36E /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA830D8D1D8C3361000BD36E /* Settings.storyboard */; };
+		FA843F641DEB4EC900F95DAE /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA843F631DEB4EC900F95DAE /* StyleManager.swift */; };
+		FA843F6B1DF17E5C00F95DAE /* ProgramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA843F6A1DF17E5C00F95DAE /* ProgramView.swift */; };
 		FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */; };
 		FAD2A1BA1D9509120047AE3F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = FAD2A1B91D9509120047AE3F /* .gitignore */; };
 		FAEE2EEB1DB4E60900D0F4C3 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE2EEA1DB4E60900D0F4C3 /* PlayerView.swift */; };
@@ -79,6 +81,8 @@
 		FA830D891D8C215E000BD36E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = iptv/UI/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FA830D8B1D8C21B1000BD36E /* ChannelsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChannelsVC.swift; path = iptv/UI/Channels/ChannelsVC.swift; sourceTree = "<group>"; };
 		FA830D8E1D8C3361000BD36E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = iptv/UI/Base.lproj/Settings.storyboard; sourceTree = "<group>"; };
+		FA843F631DEB4EC900F95DAE /* StyleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleManager.swift; sourceTree = "<group>"; };
+		FA843F6A1DF17E5C00F95DAE /* ProgramView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramView.swift; path = iptv/UI/Channels/ProgramView.swift; sourceTree = "<group>"; };
 		FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChannelManager.swift; path = iptv/ChannelManager.swift; sourceTree = "<group>"; };
 		FAD2A1B91D9509120047AE3F /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		FAEE2EEA1DB4E60900D0F4C3 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = 3lib/PlayerView/PlayerView.swift; sourceTree = "<group>"; };
@@ -194,6 +198,7 @@
 		FA830D751D8C1FDA000BD36E /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FA51F7A31DC7746D00CA1758 /* ChannelPickerVC.swift */,
 				FA830D871D8C2131000BD36E /* Base.lproj */,
 				FA830D7E1D8C206C000BD36E /* Settings */,
 				FA830D7D1D8C2061000BD36E /* Programs */,
@@ -201,6 +206,7 @@
 				FAFE305C1D9D15760042A3EB /* FocusedView.swift */,
 				FA2E2EED1DBBE52900CE8F7F /* AlertAction.swift */,
 				FA210EC41DCA0344002B9592 /* UIExtension.swift */,
+				FA843F631DEB4EC900F95DAE /* StyleManager.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -209,6 +215,7 @@
 			isa = PBXGroup;
 			children = (
 				FA830D8B1D8C21B1000BD36E /* ChannelsVC.swift */,
+				FA843F6A1DF17E5C00F95DAE /* ProgramView.swift */,
 			);
 			name = Channels;
 			sourceTree = "<group>";
@@ -228,7 +235,6 @@
 				FA51F7A11DC7740300CA1758 /* ChannelSettinsVC.swift */,
 				FA2E2EE71DB8DAA700CE8F7F /* EpgProvidersVC.swift */,
 				FA7589C91DD10DBF009D2327 /* EpgProviderEditVC.swift */,
-				FA51F7A31DC7746D00CA1758 /* ChannelPickerVC.swift */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -345,6 +351,8 @@
 				FA830D821D8C209F000BD36E /* ProgramVC.swift in Sources */,
 				FAFE305D1D9D15760042A3EB /* FocusedView.swift in Sources */,
 				FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */,
+				FA843F641DEB4EC900F95DAE /* StyleManager.swift in Sources */,
+				FA843F6B1DF17E5C00F95DAE /* ProgramView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
