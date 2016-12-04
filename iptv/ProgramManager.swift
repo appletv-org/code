@@ -187,6 +187,26 @@ class ProgramManager {
     }
     
     
+    func startStopTime(program:EpgProgram) -> (start:Date?, stop:Date?) {
+        var start = program.start as? Date
+        var stop = program.stop as? Date
+        guard   let dbProvider = program.channel?.provider,
+                let provider = getProvider(dbProvider.name!),
+                provider.shiftTime != 0
+        else {
+            return (start, stop)
+        }
+        
+        if start != nil {
+            start!.addingTimeInterval(TimeInterval(provider.shiftTime))
+        }
+        if stop != nil {
+            stop!.addingTimeInterval(TimeInterval(provider.shiftTime))
+        }
+        return (start, stop)
+        
+    }
+    
     func getPrograms(forChannel name: String)  -> [EpgProgram] {
         
         let dbcontext = CoreDataManager.context()
@@ -234,7 +254,7 @@ class ProgramManager {
     
     func getProviderIcon(channel: String, provider: String) -> Data? {
         
-        guard let dbChannel : EpgChannel = CoreDataManager.getFirstElement(NSPredicate(format: "name==%@ AND provider.name == %@",
+        guard let dbChannel : EpgChannel = CoreDataManager.requestFirstElement(NSPredicate(format: "name==%@ AND provider.name == %@",
                                                                                           channel.lowercased(),  provider) ),
               let strUrl = dbChannel.icon,
               let url = URL(string:strUrl),
@@ -635,81 +655,99 @@ extension ProgramManager { //upload data (programs, icons) by url
         let moc = CoreDataManager.context()
         let dbcontext = CoreDataManager.concurrentContext()
         
-        var minDate : Date? = nil
-        var maxDate : Date? = nil
         
         //dbcontext.perform {
             
-            var dbProvider : EpgProvider? = nil
-            let providers : [EpgProvider] = CoreDataManager.simpleRequest(NSPredicate(format:"name==%@", provider.name), dbcontext: dbcontext)
-            if providers.count > 0 {
-                dbProvider = providers[0]
-            }
-            else {
+            var dbProvider : EpgProvider?  = CoreDataManager.requestFirstElement(NSPredicate(format:"name==%@", provider.name), context:dbcontext)
+            if dbProvider == nil {
                 dbProvider = EpgProvider(context:dbcontext)
                 dbProvider!.name = provider.name
             }
             
             //soft change programs (change by channel)
             for (id, channelProg) in channels {
-                //remove program for Provider
-                if dbProvider != nil {
-                    let fetchRequest: NSFetchRequest<EpgChannel> = EpgChannel.fetchRequest()
-                    fetchRequest.predicate = NSPredicate(format: "name==%@ AND provider.name == %@",
-                                                         channelProg.channel.name,  provider.name)
-                    if let result = try? dbcontext.fetch(fetchRequest) {
-                        for dbchannel in result {
-                            dbcontext.delete(dbchannel) //delete dbChannel and all program
+                
+                
+                //sort programs by start time
+                var programs = channelProg.programs.sorted(by: { $0.start.timeIntervalSince1970 < $1.start.timeIntervalSince1970 })
+
+                
+                var dbChannel : EpgChannel? = CoreDataManager.requestFirstElement(NSPredicate(format: "name==%@ AND provider.name == %@", channelProg.channel.name,  provider.name), context:dbcontext)
+                
+                if dbChannel == nil {
+                    dbChannel = EpgChannel(context:dbcontext)
+                    dbChannel!.id = id
+                    dbChannel!.name = channelProg.channel.name
+                    dbChannel!.icon = channelProg.channel.icon
+                    dbChannel!.provider = dbProvider
+                }
+                else {
+                    
+                    if programs.count > 0 {
+                        //delete programs, exist in new programs list                        
+                        let fetchRequest: NSFetchRequest<EpgProgram> = EpgProgram.fetchRequest()
+                        fetchRequest.predicate = NSPredicate(
+                            format: "channel.name==%@ AND channel.provider.name == %@ AND start >= %@",
+                            channelProg.channel.name,  provider.name, programs[0].start as NSDate)
+                        
+                        if let result = try? dbcontext.fetch(fetchRequest) {
+                            for dbprogram in result {
+                                dbcontext.delete(dbprogram) //delete programs exists in new list
+                            }
                         }
                     }
                 }
                 
-                let dbchannel = EpgChannel(context:dbcontext)
-                dbchannel.id = id
-                dbchannel.name = channelProg.channel.name
-                dbchannel.icon = channelProg.channel.icon
-                dbchannel.provider = dbProvider
-                for program in channelProg.programs {
+                //add programs
+                for program in programs {
                     let dbprogram = EpgProgram(context:dbcontext)
                     dbprogram.title = program.title
                     dbprogram.desc = program.desc
                     dbprogram.start = program.start as NSDate?
                     dbprogram.stop = program.stop as NSDate?
-                    dbprogram.channel = dbchannel
+                    dbprogram.channel = dbChannel!
                     
-                    if minDate == nil || program.start < minDate! {
-                        minDate = program.start
-                    }
-                    
-                    if maxDate == nil || program.stop > maxDate! {
-                        maxDate = program.stop
-                    }
-                    
-                
                 }
                 //print("save \(channelProg.programs.count) programs for '\(channelProg.programs)' channel")
             }
-            
+        
+            //delete programs more them 7-day old
+            let oldDate = Calendar.current.startOfDay(for: Date()).addingTimeInterval(-7*24*60*60)
+            let fetchRequest: NSFetchRequest<EpgProgram> = EpgProgram.fetchRequest()
+            fetchRequest.predicate = NSPredicate(
+                format: "channel.provider.name == %@ AND start < %@",
+                provider.name, oldDate as NSDate)
+        
+            if let result = try? dbcontext.fetch(fetchRequest) {
+                for dbprogram in result {
+                    dbcontext.delete(dbprogram) //delete old programs
+                }
+            }
+        
+            //get min max date
+        
+            var minDate : Date? = nil
+            var maxDate : Date? = nil
+
+            let fetchRequestDate: NSFetchRequest<EpgProgram> = EpgProgram.fetchRequest()
+            fetchRequestDate.predicate = NSPredicate(format:"channel.provider.name == %@", provider.name)
+            fetchRequestDate.fetchLimit = 1
+            fetchRequestDate.sortDescriptors = [NSSortDescriptor(key: "start", ascending: true)]
+            if let result = try? dbcontext.fetch(fetchRequestDate) {
+                minDate = result[0].start as Date?
+            }
+            fetchRequestDate.sortDescriptors = [NSSortDescriptor(key: "stop", ascending: false)]
+            if let result = try? dbcontext.fetch(fetchRequestDate) {
+                maxDate = result[0].stop as Date?
+            }
+        
             dbProvider!.startDate = minDate as NSDate?
             dbProvider!.finishDate = maxDate as NSDate?
             dbProvider!.channelCount = Int64(channels.count)
             dbProvider!.lastUpdate = Date() as NSDate?
             
             CoreDataManager.saveConcurrentContext(dbcontext)
-            
-            do {
-                try dbcontext.save()
-                moc.performAndWait {
-                    do {
-                        try moc.save()
-                    } catch {
-                        fatalError("Failure to save context: \(error)")
-                    }
-                }
-            } catch {
-                fatalError("Failure to save context: \(error)")
-            }
-            
+        
         //}
 
     }

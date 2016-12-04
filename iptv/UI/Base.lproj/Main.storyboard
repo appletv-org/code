@@ -182,11 +182,11 @@
                         <viewControllerLayoutGuide type="top" id="13q-yJ-jNE"/>
                         <viewControllerLayoutGuide type="bottom" id="kRW-ap-VI4"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="f3Z-j0-odr" userLabel="PickerView">
+                    <view key="view" tag="10000" contentMode="scaleToFill" id="f3Z-j0-odr" userLabel="PickerView">
                         <rect key="frame" x="0.0" y="0.0" width="1860" height="350"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vvL-1F-W8Z" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
+                            <view tag="10001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vvL-1F-W8Z" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
                                 <rect key="frame" x="30" y="0.0" width="1800" height="30"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="W1F-1A-XCe" customClass="DirectoryStack" customModule="iptv" customModuleProvider="target">
@@ -212,7 +212,7 @@
                                     <constraint firstItem="W1F-1A-XCe" firstAttribute="top" secondItem="vvL-1F-W8Z" secondAttribute="top" id="fAR-SG-uwu"/>
                                 </constraints>
                             </view>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="iBD-e1-QyB" customClass="ChannelPickerCollectionView" customModule="iptv" customModuleProvider="target">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" tag="10002" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="iBD-e1-QyB" customClass="ChannelPickerCollectionView" customModule="iptv" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="40" width="1860" height="300"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="60" id="eo1-FP-Uf1">
@@ -229,7 +229,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="250" height="230"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aMC-xC-heI">
+                                                <view tag="10003" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aMC-xC-heI">
                                                     <rect key="frame" x="8" y="8" width="234" height="222"/>
                                                     <subviews>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="ChannelCell" image="group" translatesAutoresizingMaskIntoConstraints="NO" id="Fwy-zp-gmv">

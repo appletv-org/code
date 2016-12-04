@@ -115,37 +115,9 @@ class ChannelsVC : UIViewController {
     enum SegmentAction : Int {
         case favorite = 0, delete, pip
     }
-
-    var debugViews = [String: UIView]()
-    
-    func getParentViews(_ view: UIView) -> [String] {
-        var parentViews = [String]()
-        for (name, parentView) in debugViews {
-            if view.isDescendant(of: parentView) {
-                parentViews.append(name)
-            }
-        }
-        return parentViews
-    }
-    
-    
     
     override func viewDidLoad() {
         
-        debugViews = [
-        "mainPlayer" : mainPlayer,
-        "channelPickerView" : channelPickerView,
-        "changeProgramView" : changeProgramView,
-        "middleChannelView" : middleChannelView,
-        "prevChannelView" : prevChannelView,
-        "nextChannelView" : nextChannelView,
-        "programAndPipView" : programAndPipView,
-        "programView" : programView,
-        "programCollectionView" : programCollectionView,
-        "actionButtons" : actionButtons,
-        "pipPlayer" : pipPlayer,
-        "loadingView" : loadingView
-        ]
         
         let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         channelPickerVC = mainStoryboard.instantiateViewController(withIdentifier: "ChannelPickerVC") as? ChannelPickerVC
@@ -356,40 +328,22 @@ class ChannelsVC : UIViewController {
             }
         }
         
-        /*
+        
         //print debug focused view
-        print("DidUpdateFocused")
-        if(prevFocusedView == nil) {
-            print("    prevFocusedView == nil")
-        }
-        else {
-            let views = getParentViews(prevFocusedView!)
-            print("    prevFocusedView == \(views.joined(separator: ", "))")
+        var tag = 0
+        var nextView = nextFocusedView
+        while(nextView != nil) {
+            if(nextView!.tag != 0) {
+                tag = nextView!.tag
+                break
+            }
+            nextView = nextView!.superview
         }
 
-        if(nextFocusedView == nil) {
-            print("    nextFocusedView == nil")
-        }
-        else {
-            let views = getParentViews(nextFocusedView!)
-            print("    nextFocusedView == \(views.joined(separator: ", "))")
-        }
-         */
+        print("DidUpdateFocused to: \(tag)")
     }
     
     
-    func selectedPath(chooseControl: ChannelPickerVC,  path:[String]) {
-        if let newGroupInfo = ChannelManager.findParentGroup(path) {
-            var pathParent = path
-            let channelName = pathParent.popLast()
-            if let index = newGroupInfo.channels.index(where: {$0.name == channelName}) {
-                groupInfo = newGroupInfo
-                self.parentPath = pathParent
-                currentChannelIndex  = index
-                play(groupInfo.channels[index])
-            }
-        }
-    }
     
     func play(_ channel:ChannelInfo) {
         channelPickerView.isHidden = true
@@ -404,9 +358,9 @@ class ChannelsVC : UIViewController {
         mainPlayer.url = URL(string:channel.url)
         mainPlayer.play()
         
-        programView.update(channel)
-        
-        programShow(animated: true, hideTime: 4.0)
+        if programView.update(channel) {
+            programShow(animated: true, hideTime: 4.0)
+        }
         
      }
 
@@ -437,6 +391,21 @@ extension ChannelsVC : ChannelPickerProtocol {
             }
         }
     }
+    
+    func selectedPath(chooseControl: ChannelPickerVC,  path:[String]) {
+        if let newGroupInfo = ChannelManager.findParentGroup(path) {
+            var pathParent = path
+            let channelName = pathParent.popLast()
+            if let index = newGroupInfo.channels.index(where: {$0.name == channelName}) {
+                groupInfo = newGroupInfo
+                self.parentPath = pathParent
+                currentChannelIndex  = index
+                play(groupInfo.channels[index])
+                self.viewToFocus = middleChannelView
+            }
+        }
+    }
+
     //func changePath(chooseControl: ChannelPickerVC,  path:[String])     {}
     //func selectedPath(chooseControl: ChannelPickerVC,  path:[String])   {}
 

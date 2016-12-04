@@ -113,18 +113,18 @@ class CoreDataManager {
         }
     }
     
-    public class func simpleRequest<T : NSManagedObject>(_ predicate: NSPredicate, dbcontext: NSManagedObjectContext = CoreDataManager.context()) -> [T] {
+    public class func simpleRequest<T : NSManagedObject>(_ predicate: NSPredicate, context: NSManagedObjectContext = CoreDataManager.context()) -> [T] {
         if let fetchRequest: NSFetchRequest<T> = T.fetchRequest() as? NSFetchRequest<T> {
             fetchRequest.predicate = predicate
-            if let result = try? dbcontext.fetch(fetchRequest) {
+            if let result = try? context.fetch(fetchRequest) {
                 return result
             }
         }
         return []
     }
 
-    public class func getFirstElement<T : NSManagedObject>(_ predicate: NSPredicate, dbcontext: NSManagedObjectContext = CoreDataManager.context()) -> T? {
-        let elements : [T] = CoreDataManager.simpleRequest(predicate, dbcontext:dbcontext)
+    public class func requestFirstElement<T : NSManagedObject>(_ predicate: NSPredicate, context: NSManagedObjectContext = CoreDataManager.context()) -> T? {
+        let elements : [T] = CoreDataManager.simpleRequest(predicate, context:context)
         if elements.count > 0 {
             return elements[0]
         }

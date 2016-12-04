@@ -206,18 +206,21 @@ class DirectoryStack:UIStackView {
 
 class ChannelPickerCollectionView :UICollectionView {
     
-    var focusedIndex : Int =  -1
+    var focusedIndex : Int?
     
+    /*
     override var preferredFocusEnvironments: [UIFocusEnvironment] {
-        var ret = super.preferredFocusEnvironments
+        //var ret = super.preferredFocusEnvironments
         if focusedIndex >= 0 {
             self.scrollToItem(at: IndexPath(row:focusedIndex, section:0), at: .centeredHorizontally, animated: false)
             if let cell = cellForItem(at: IndexPath.init(row: focusedIndex, section: 0)) {
-                ret = [cell]
+                return [cell]
             }
         }
-        return ret
+        
+        return []
     }
+    */
 }
 
 protocol ChannelPickerProtocol : class {
@@ -254,7 +257,7 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
     
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.remembersLastFocusedIndexPath = true //we use focusedIndex
+        collectionView.remembersLastFocusedIndexPath = false //we use focusedIndex
         
         directoryStack.delegate = self
         
@@ -297,14 +300,15 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
         delegate?.changePath(chooseControl: self, path: self.path)
         
         collectionView.performBatchUpdates({
-            self.collectionView.remembersLastFocusedIndexPath = false
+            //self.collectionView.remembersLastFocusedIndexPath = false
             //self.collectionView.deleteSections(IndexSet(integer:0))
             //self.collectionView.insertSections(IndexSet(integer:0))
             self.collectionView.reloadSections(IndexSet(integer:0))
             //self.collectionView.reloadData()
         }, completion: { completed -> Void in
+            
             self.viewToFocus = self.collectionView
-            self.collectionView.remembersLastFocusedIndexPath = true
+            //self.collectionView.remembersLastFocusedIndexPath = true
             //self.viewToFocus = self.collectionView
             //self.setNeedsFocusUpdate()
             //self.updateFocusIfNeeded()
@@ -387,11 +391,18 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
         
     }
     
-    /*
+    
     func indexPathForPreferredFocusedView(in collectionView: UICollectionView) -> IndexPath? {
-        return IndexPath.init(row: focusedIndex, section: 0)
+        if(self.collectionView.focusedIndex != nil) {
+            let indexPath = IndexPath(row: self.collectionView.focusedIndex!, section: 0)
+            self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+            return indexPath
+        }
+        return nil
+        
     }
-    */
+    
+    
     
  
     

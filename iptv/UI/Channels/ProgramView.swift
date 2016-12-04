@@ -157,7 +157,7 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
     }
     
     
-    func update(_ channel:ChannelInfo) {
+    func update(_ channel:ChannelInfo) -> Bool {
         self.channel = channel
         let allPrograms = ProgramManager.instance.getPrograms(forChannel:channel.name)
         //rest only today +- 1 day programs
@@ -183,10 +183,15 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         //programCollectionView.reloadData()
         programCollectionView.reloadSections(IndexSet(integer:0))
         //scroll to now element
+        var isFindProgram = false
         if let ind = findIndexNow() {
+            isFindProgram = true
             programCollectionView.scrollToItem(at: IndexPath(row:ind, section:0), at: .left, animated: false)
         }
         labelDayUpdate()
+        
+        return isFindProgram
+        
     }
     
     func findIndexNow() -> Int? {
