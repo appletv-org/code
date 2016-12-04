@@ -143,8 +143,13 @@ enum DirElement {
 
 class ChannelManager {
     
-    static let rootGroupName = "Channels"
     static let userDefaultKey = "channels"
+    
+    static let groupNameRoot = "Channels"
+    static let groupNameHidden = "Hidden"
+    static let groupNameAll = "All"
+    static let groupNameFavorites = "Favorites"
+    
     
     // Singleton
     static let instance = ChannelManager()
@@ -156,8 +161,8 @@ class ChannelManager {
             return NSKeyedUnarchiver.unarchiveObject(with: data as Data) as! GroupInfo
         }
         else {
-            var root = GroupInfo( name:ChannelManager.rootGroupName, groups: [], channels: [])
-            root.groups.append( GroupInfo(name: "Favorites", groups: [], channels: []) )
+            var root = GroupInfo( name:ChannelManager.groupNameRoot, groups: [], channels: [])
+            root.groups.append( GroupInfo(name: ChannelManager.groupNameFavorites, groups: [], channels: []) )
             return root
         }
         
@@ -199,6 +204,11 @@ class ChannelManager {
             return group
         }
         
+        if path.count == 1 && path[0] == ChannelManager.groupNameAll  {
+            let channels = ChannelManager.allChannels(group)
+            return GroupInfo(name: ChannelManager.groupNameAll, groups: [GroupInfo](), channels: channels)
+        }
+        
         if let findedGroup = group.groups.first(where: {$0.name == path[0]}) {
             return findGroup( Array(path[1..<path.count]), group:findedGroup )
         }
@@ -228,6 +238,31 @@ class ChannelManager {
         UserDefaults.standard.set(data, forKey: ChannelManager.userDefaultKey)
     }
     
+    
+    class func _addChannels(_ group:GroupInfo, setLink: inout Set<String>, channels: inout [ChannelInfo]) {
+        for channel in group.channels {
+            if !setLink.contains(channel.url) {
+                setLink.insert(channel.url)
+                channels.append(channel)
+            }
+        }
+        for group in group.groups {
+            if group.name == groupNameHidden {
+                continue
+            }
+            self._addChannels(group, setLink: &setLink, channels: &channels)
+        }
+    }
+        
+    class func allChannels(_ group:GroupInfo) -> [ChannelInfo] {
+        var setLink = Set<String>()
+        var channels = [ChannelInfo]()
+        self._addChannels(group, setLink: &setLink, channels: &channels)
+        return channels
+    }
+}
+    
+extension  ChannelManager { //parsing m3u list
     class func addM3uList(name:String, url:String) throws -> Void {
     
         let items = try parseM3u(string:url)
@@ -278,6 +313,5 @@ class ChannelManager {
             }
         }
     }
-
 
 }

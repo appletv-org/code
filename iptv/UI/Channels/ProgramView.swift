@@ -50,9 +50,11 @@ class ProgramCollectionCell : UICollectionViewCell {
         
         
         //time
-        if let startDate = program.start as? Date {
+        let startStop = ProgramManager.startStopTime(program)
+        
+        if startStop.start != nil {
             
-            let timeString = startDate.toFormatString("HH:mm") + " "
+            let timeString = startStop.start!.toFormatString("HH:mm") + " "
             attributedText.append(NSAttributedString( string: timeString, attributes: timeFormatAttributes))
         }
         
@@ -72,20 +74,23 @@ class ProgramCollectionCell : UICollectionViewCell {
     
     func setProgressBar(_ program:EpgProgram?) {
         
-        let now = Date()
-        guard let start = program?.start as? Date,
-            let end = program?.stop as? Date,
-            start < now,
-            now < end
-            else {
-                self.progressView.isHidden = true
+        if program != nil {
+            let now = Date()
+            let startStop = ProgramManager.startStopTime(program!)
+            if      let start = startStop.start,
+                    let stop = startStop.stop,
+                    start < now, stop > now {
+                
+                self.progressView.isHidden = false
+                let length = Float(stop.timeIntervalSince(start))
+                let gone = Float(now.timeIntervalSince(start))
+                self.progressView.progress = gone / length
                 return
+            }
         }
         
-        self.progressView.isHidden = false
-        let length = Float(end.timeIntervalSince(start))
-        let gone = Float(now.timeIntervalSince(start))
-        self.progressView.progress = gone / length
+        self.progressView.isHidden = true
+        
     }
     
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
@@ -197,8 +202,10 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
     func findIndexNow() -> Int? {
         
         for i in 0 ..< programs.count {
-            if let startDate = programs[i].start as? Date , startDate <= Date(),
-                let endDate = programs[i].stop as? Date , endDate > Date()  {
+            let startStop = ProgramManager.startStopTime(programs[i])
+            if      let start = startStop.start,
+                    let stop = startStop.stop,
+                    start <= Date(), stop > Date() {
                 return i
             }
         }
@@ -259,7 +266,7 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return programs.count > 0 ?  programs.count : 1
+        return programs.count > 0 ? programs.count : 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

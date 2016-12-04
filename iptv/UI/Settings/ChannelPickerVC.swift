@@ -243,6 +243,9 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
     //private var focusedIndex: Int = 0
     var showFocusedElement = true
     
+    var showAllGroup = false
+    var showHideGroup = false
+    
     var viewToFocus : UIFocusItem?
     
     weak var delegate : ChannelPickerProtocol?
@@ -281,6 +284,7 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
         }
         
         self.collectionView.focusedIndex = 0
+        
         if let group =  ChannelManager.findGroup(self.path) {
             groupInfo = group
             if !isParent && path.count > 0 {  //find index
@@ -348,13 +352,26 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  groupInfo.groups.count + groupInfo.channels.count
+        var ret = groupInfo.groups.count + groupInfo.channels.count
+        if showAllGroup && groupInfo.groups.count > 0 {
+            ret += 1
+        }
+        return ret
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChannelCell.reuseIdentifier, for: indexPath) as! ChannelCell
         
         var index = indexPath.row
+        
+        if showAllGroup && groupInfo.groups.count > 0 {
+            if index == 0 {
+                let group = GroupInfo(name: ChannelManager.groupNameAll, groups: [GroupInfo](), channels: [ChannelInfo]())
+                cell.element = .group(group)
+                return cell
+            }
+            index -= 1
+        }
         
         if index < groupInfo.groups.count {
             cell.element = .group(groupInfo.groups[index])
@@ -374,21 +391,31 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
         
         var index = indexPath.row
         
+        if showAllGroup && groupInfo.groups.count > 0 {
+            if index == 0 {
+                var newPath = path
+                newPath.append(ChannelManager.groupNameAll)
+                setupPath(newPath, isParent: true)
+                return
+            }
+            index -= 1
+        }
+
+        
         if index < groupInfo.groups.count {
             var newPath = path
             newPath.append(groupInfo.groups[index].name)
             setupPath(newPath, isParent: true)
+            return
         }
-        else {
-            index -= groupInfo.groups.count
-            if index >= 0 && index < groupInfo.channels.count {
-                delegate?.selectedPath(chooseControl: self, path: path + [groupInfo.channels[index].name])
-            }
+       
+        index -= groupInfo.groups.count
+        if index >= 0 && index < groupInfo.channels.count {
+            delegate?.selectedPath(chooseControl: self, path: path + [groupInfo.channels[index].name])
         }
         
         //index -= groups.count
         //cell.label.text = channels[index].name
-        
     }
     
     

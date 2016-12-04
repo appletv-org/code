@@ -125,6 +125,7 @@ class ChannelsVC : UIViewController {
         channelPickerVC!.delegate = self
         self.containerAdd(childViewController: channelPickerVC!, toView:channelPickerView)
         channelPickerVC!.delegate = self
+        channelPickerVC!.showAllGroup = true
 
         
         super.viewDidLoad()

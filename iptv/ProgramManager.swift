@@ -186,8 +186,11 @@ class ProgramManager {
         return nil
     }
     
+    class func startStopTime(_ program:EpgProgram) -> (start:Date?, stop:Date?) {
+        return ProgramManager.instance._startStopTime(program)
+    }
     
-    func startStopTime(program:EpgProgram) -> (start:Date?, stop:Date?) {
+    func _startStopTime(_ program:EpgProgram) -> (start:Date?, stop:Date?) {
         var start = program.start as? Date
         var stop = program.stop as? Date
         guard   let dbProvider = program.channel?.provider,
@@ -198,10 +201,10 @@ class ProgramManager {
         }
         
         if start != nil {
-            start!.addingTimeInterval(TimeInterval(provider.shiftTime))
+            start!.addTimeInterval(TimeInterval(provider.shiftTime))
         }
         if stop != nil {
-            stop!.addingTimeInterval(TimeInterval(provider.shiftTime))
+            stop!.addTimeInterval(TimeInterval(provider.shiftTime))
         }
         return (start, stop)
         
