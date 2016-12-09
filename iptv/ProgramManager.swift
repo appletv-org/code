@@ -190,6 +190,8 @@ class ProgramManager {
         return ProgramManager.instance._startStopTime(program)
     }
     
+    
+    //start & stop time with timeshift
     func _startStopTime(_ program:EpgProgram) -> (start:Date?, stop:Date?) {
         var start = program.start as? Date
         var stop = program.stop as? Date
@@ -210,25 +212,40 @@ class ProgramManager {
         
     }
     
-    func getPrograms(forChannel name: String)  -> [EpgProgram] {
+    func getPrograms(channel: String, from:Date?=nil, to:Date?=nil )  -> [EpgProgram] {
         
         let dbcontext = CoreDataManager.context()
         
         for provider in epgProviders  where provider.parseProgram {
-            let fetchRequest: NSFetchRequest<EpgChannel> = EpgChannel.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "name==%@ AND provider.name == %@",
-                                                 name.lowercased(),  provider.name)
-            if let result = try? dbcontext.fetch(fetchRequest) {
-                if result.count == 1 {
-                    if let programs = result[0].programs?.allObjects as? [EpgProgram] {
-                        return programs
-                    }
-                    
-                }
-            }
+            let programs = getProviderPrograms(provider:provider.name, channel:channel, from:from, to:to)
+            if programs.count > 0 {
+                return programs
+            }            
         }
 
         return []
+    }
+    
+    func getProviderPrograms(provider:String, channel: String, from:Date?=nil, to:Date?=nil )  -> [EpgProgram] {
+        
+        guard let dbChannel : EpgChannel = CoreDataManager.requestFirstElement(
+                        NSPredicate(format: "name == %@ AND provider.name == %@",channel.lowercased(),  provider)),
+              let programs = dbChannel.programs?.allObjects as? [EpgProgram]
+        else {
+             return []
+        }
+        
+        
+        if from == nil && to == nil {
+            return programs
+        }
+        
+        let filterPrograms = programs.filter {
+            (from == nil || ($0.stop as! Date) > from!) && (to == nil || ($0.start as! Date) < to!)
+        }
+        
+        return filterPrograms
+        
     }
     
     

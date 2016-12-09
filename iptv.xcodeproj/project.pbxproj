@@ -41,6 +41,8 @@
 		FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */; };
 		FAD2A1BA1D9509120047AE3F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = FAD2A1B91D9509120047AE3F /* .gitignore */; };
 		FAEE2EEB1DB4E60900D0F4C3 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE2EEA1DB4E60900D0F4C3 /* PlayerView.swift */; };
+		FAFC8F301DF9829900350A2B /* ProgramCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFC8F2F1DF9829900350A2B /* ProgramCollectionCell.swift */; };
+		FAFC8F321DFAD87E00350A2B /* Program.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAFC8F311DFAD87E00350A2B /* Program.storyboard */; };
 		FAFE305D1D9D15760042A3EB /* FocusedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFE305C1D9D15760042A3EB /* FocusedView.swift */; };
 		FAFE30601D9D3E8C0042A3EB /* Channel.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAFE305E1D9D3E8C0042A3EB /* Channel.storyboard */; };
 /* End PBXBuildFile section */
@@ -86,6 +88,8 @@
 		FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChannelManager.swift; path = iptv/ChannelManager.swift; sourceTree = "<group>"; };
 		FAD2A1B91D9509120047AE3F /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		FAEE2EEA1DB4E60900D0F4C3 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = 3lib/PlayerView/PlayerView.swift; sourceTree = "<group>"; };
+		FAFC8F2F1DF9829900350A2B /* ProgramCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramCollectionCell.swift; path = iptv/UI/Channels/ProgramCollectionCell.swift; sourceTree = "<group>"; };
+		FAFC8F311DFAD87E00350A2B /* Program.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Program.storyboard; sourceTree = "<group>"; };
 		FAFE305C1D9D15760042A3EB /* FocusedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FocusedView.swift; path = iptv/UI/FocusedView.swift; sourceTree = "<group>"; };
 		FAFE305F1D9D3E8C0042A3EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = iptv/UI/Base.lproj/Channel.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -216,6 +220,7 @@
 			children = (
 				FA830D8B1D8C21B1000BD36E /* ChannelsVC.swift */,
 				FA843F6A1DF17E5C00F95DAE /* ProgramView.swift */,
+				FAFC8F2F1DF9829900350A2B /* ProgramCollectionCell.swift */,
 			);
 			name = Channels;
 			sourceTree = "<group>";
@@ -243,6 +248,7 @@
 			isa = PBXGroup;
 			children = (
 				FA830D881D8C215E000BD36E /* Main.storyboard */,
+				FAFC8F311DFAD87E00350A2B /* Program.storyboard */,
 				FAFE305E1D9D3E8C0042A3EB /* Channel.storyboard */,
 				FA830D8D1D8C3361000BD36E /* Settings.storyboard */,
 			);
@@ -310,6 +316,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA2E2F001DBDFD8900CE8F7F /* Info.plist in Resources */,
+				FAFC8F321DFAD87E00350A2B /* Program.storyboard in Resources */,
 				FAFE30601D9D3E8C0042A3EB /* Channel.storyboard in Resources */,
 				FAD2A1BA1D9509120047AE3F /* .gitignore in Resources */,
 				FA830D721D8C1F53000BD36E /* Info.plist in Resources */,
@@ -352,6 +359,7 @@
 				FAFE305D1D9D15760042A3EB /* FocusedView.swift in Sources */,
 				FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */,
 				FA843F641DEB4EC900F95DAE /* StyleManager.swift in Sources */,
+				FAFC8F301DF9829900350A2B /* ProgramCollectionCell.swift in Sources */,
 				FA843F6B1DF17E5C00F95DAE /* ProgramView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -480,7 +488,7 @@
 		FA830D611D8C0C63000BD36E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				DEVELOPMENT_TEAM = Z23F78X45H;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -499,7 +507,7 @@
 		FA830D621D8C0C63000BD36E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				DEVELOPMENT_TEAM = Z23F78X45H;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
