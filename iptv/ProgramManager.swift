@@ -214,10 +214,8 @@ class ProgramManager {
     
     func getPrograms(channel: String, from:Date?=nil, to:Date?=nil )  -> [EpgProgram] {
         
-        let dbcontext = CoreDataManager.context()
-        
         for provider in epgProviders  where provider.parseProgram {
-            let programs = getProviderPrograms(provider:provider.name, channel:channel, from:from, to:to)
+            let programs = getProviderPrograms(provider: provider, channel:channel, from:from, to:to)
             if programs.count > 0 {
                 return programs
             }            
@@ -226,10 +224,10 @@ class ProgramManager {
         return []
     }
     
-    func getProviderPrograms(provider:String, channel: String, from:Date?=nil, to:Date?=nil )  -> [EpgProgram] {
+    func getProviderPrograms(provider:EpgProviderInfo, channel: String, from:Date?=nil, to:Date?=nil )  -> [EpgProgram] {
         
         guard let dbChannel : EpgChannel = CoreDataManager.requestFirstElement(
-                        NSPredicate(format: "name == %@ AND provider.name == %@",channel.lowercased(),  provider)),
+                        NSPredicate(format: "name == %@ AND provider.name == %@",channel.lowercased(),  provider.name)),
               let programs = dbChannel.programs?.allObjects as? [EpgProgram]
         else {
              return []
@@ -240,19 +238,36 @@ class ProgramManager {
             return programs
         }
         
+        
+        var fromDate = "01.01.2000".toFormatDate("dd.mm.YYYY")!
+        if from != nil {
+            fromDate = from!.addingTimeInterval(-TimeInterval(provider.shiftTime))
+        }
+        
+        var toDate = "01.01.2100".toFormatDate("dd.mm.YYYY")!
+        if to != nil {
+            toDate = to!.addingTimeInterval(-TimeInterval(provider.shiftTime))
+        }
+        
         let filterPrograms = programs.filter {
-            (from == nil || ($0.stop as! Date) > from!) && (to == nil || ($0.start as! Date) < to!)
+            ($0.stop as! Date) > fromDate && ($0.start as! Date) < toDate
         }
         
         return filterPrograms
-        
     }
     
     
     func getIcon(channel: String, completion:@escaping (Data?) -> Swift.Void )  {
         
         if let nsData = iconCache.object(forKey: channel as NSString) {
-            completion(nsData as Data)
+            if(Thread.isMainThread) {
+                completion(nsData as Data)
+            }
+            else {
+                DispatchQueue.main.async {
+                    completion(nsData as Data)
+                }
+            }
         }
         
         DispatchQueue.global().async {

@@ -82,5 +82,26 @@ class ContainerFocused : FocusedView {
     }
 }
 
+class FocusedViewController : UIViewController {
+    
+    
+    var viewToFocus: UIView? = nil {
+        didSet {
+            if viewToFocus != nil {
+                print("view to focus")
+                self.setNeedsFocusUpdate()
+                self.updateFocusIfNeeded()
+            }
+        }
+    }
+    
+    override var preferredFocusEnvironments: [UIFocusEnvironment] {
+        if viewToFocus != nil {
+            return [viewToFocus!]
+        } else {
+            return super.preferredFocusEnvironments
+        }
+    }
 
+}
 
