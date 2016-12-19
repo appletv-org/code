@@ -21,7 +21,7 @@ class ProgramCollectionCell : UICollectionViewCell {
             self.textView.attributedText = setProgramText(program!)
         }
         else {
-            self.textView.text = "The program guide is not available"
+            self.textView.text = UICommonString.programNotFound
         }
         self.setProgressBar(program)
     }

@@ -41,9 +41,9 @@ class PipPlayer : PlayerView {
 }
 
 
-class ChannelsVC : UIViewController {
+class ChannelsVC : FocusedViewController {
 
-    weak var channelPickerVC : ChannelPickerVC?
+    weak var channelPickerVC : ChannelPickerVC!
 
     //current channel
     var parentPath: [String] = [ChannelManager.root.name]
@@ -75,6 +75,13 @@ class ChannelsVC : UIViewController {
     @IBOutlet weak var mainPlayer: PlayerView!
 
     //choose channel view contor
+    @IBOutlet weak var channelChooserContainer: UIView!
+    @IBOutlet weak var buttonChannelClose: UIButton!
+    @IBAction func buttonCloseAction(_ sender: Any) {
+        channelChooserContainer.isHidden = true
+        programHide(animated: true)
+        self.viewToFocus = self.middleChannelView
+    }
     @IBOutlet weak var channelPickerView: UIView!
     
     
@@ -84,8 +91,6 @@ class ChannelsVC : UIViewController {
     @IBOutlet weak var middleChannelView: FocusedView!
     @IBOutlet weak var prevChannelView: FocusedView!
     @IBOutlet weak var nextChannelView: FocusedView!
-    
-    // toolbar
     
     
     //show program
@@ -118,21 +123,17 @@ class ChannelsVC : UIViewController {
     
     override func viewDidLoad() {
         
-        
-        let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        channelPickerVC = mainStoryboard.instantiateViewController(withIdentifier: "ChannelPickerVC") as? ChannelPickerVC
-        channelPickerVC!.view.translatesAutoresizingMaskIntoConstraints = false
-        channelPickerVC!.delegate = self
-        self.containerAdd(childViewController: channelPickerVC!, toView:channelPickerView)
-        channelPickerVC!.delegate = self
-        channelPickerVC!.showAllGroup = true
+        super.viewDidLoad()
 
         
-        super.viewDidLoad()
+        channelPickerVC = ChannelPickerVC.insertToView(parentController: self, parentView: channelPickerView)
+        channelPickerVC.showAllGroup = true
+        channelPickerVC.setupPath([])
+        channelPickerVC.delegate = self
         
         
         loadingView.isHidden = true  // hide loading view
-        channelPickerView.isHidden = true //hide channel picker
+        
 
         
         //program guide
@@ -166,16 +167,6 @@ class ChannelsVC : UIViewController {
         
         changeProgramView.focusedObject = self.middleChannelView
         
-        prevChannelView.focusedFunc = { () -> [UIFocusEnvironment]? in
-            self.switchProgram(-1)
-            return [self.middleChannelView];
-        }
-        
-        nextChannelView.focusedFunc = { () -> [UIFocusEnvironment]? in
-            self.switchProgram(1)
-            return [self.middleChannelView];
-        }
-        
         
         let tapChannelChooser = UITapGestureRecognizer( target: self, action:  #selector(showChannelChooser))
         changeProgramView.addGestureRecognizer(tapChannelChooser)
@@ -190,10 +181,12 @@ class ChannelsVC : UIViewController {
             _ = parentPath.popLast()
             currentChannelIndex = index
             play(groupInfo.channels[currentChannelIndex])
+            self.viewToFocus = middleChannelView
         }
         else {
-            self.channelPickerView.isHidden = false
+            self.channelChooserContainer.isHidden = false
             self.programShow(animated:false)
+            
         }
         
         //menu button hide channel chooser by menu button
@@ -266,38 +259,27 @@ class ChannelsVC : UIViewController {
     }
 
 
-    var viewToFocus: UIView? = nil {
-        didSet {
-            if viewToFocus != nil {
-                print("view to focus")
-                self.setNeedsFocusUpdate()
-                self.updateFocusIfNeeded()
-            }
-        }
-    }
-    
-    override var preferredFocusEnvironments: [UIFocusEnvironment] {
-        if viewToFocus != nil {
-            return [viewToFocus!]
-        } else {
-            return super.preferredFocusEnvironments
-        }
-    }
-    
     
     override func shouldUpdateFocus(in context: UIFocusUpdateContext) -> Bool {
-        let isShould = super.shouldUpdateFocus(in: context)
         
-        if let nextView = context.nextFocusedItem as? UIView {
-            
-            //prevent show tabbar by move to up
-            if      let tabBar = self.tabBarController?.tabBar,
-                    nextView.isDescendant(of: tabBar) {
-                return false
-            }
-
+        let nextView = context.nextFocusedItem as? UIView
+        let prevView = context.previouslyFocusedItem as? UIView
+        
+        //prevent show tabbar by move to up
+        if  nextView != nil,
+            let tabBar = self.tabBarController?.tabBar,
+            nextView!.isDescendant(of: tabBar)
+        {
+            return false
         }
-        return isShould
+        
+        if  prevView == buttonChannelClose,
+            nextView == middleChannelView
+        {
+            return false
+        }
+ 
+        return super.shouldUpdateFocus(in: context)
     }
     
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
@@ -307,6 +289,26 @@ class ChannelsVC : UIViewController {
         let prevFocusedView = context.previouslyFocusedItem as? UIView
         
         
+        //switch program to prev/next
+        if prevFocusedView == middleChannelView &&
+            (nextFocusedView == prevChannelView || nextFocusedView == nextChannelView)
+        {
+            if nextFocusedView == nextChannelView  {
+                self.switchProgram(1)
+            }
+            else {
+                self.switchProgram(-1)
+            }
+            
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: { 
+                if(self.prevChannelView.isFocused || self.nextChannelView.isFocused) {
+                    self.viewToFocus = self.middleChannelView
+                }
+            })
+            
+        }
+    
         //border animation for main view
         if  nextFocusedView != nil {
             if nextFocusedView == middleChannelView && prevFocusedView != middleChannelView {
@@ -330,6 +332,7 @@ class ChannelsVC : UIViewController {
         }
         
         
+        /*
         //print debug focused view
         var tag = 0
         var nextView = nextFocusedView
@@ -340,14 +343,14 @@ class ChannelsVC : UIViewController {
             }
             nextView = nextView!.superview
         }
-
         print("DidUpdateFocused to: \(tag)")
+        */
     }
     
     
     
     func play(_ channel:ChannelInfo) {
-        channelPickerView.isHidden = true
+        channelChooserContainer.isHidden = true
         
         //loading channel
         loadingView.isHidden = false
@@ -383,7 +386,7 @@ class ChannelsVC : UIViewController {
     
 }
 
-extension ChannelsVC : ChannelPickerProtocol {
+extension ChannelsVC : ChannelPickerDelegate {
 
     func focusedPath(chooseControl: ChannelPickerVC,  path:[String])    {
         if let dirElement = ChannelManager.findDirElement(path) {
@@ -541,7 +544,7 @@ extension ChannelsVC { //pip show/hide
 extension ChannelsVC { //show/hide  channel chooser
 
     func showChannelChooser(sender: UITapGestureRecognizer) {
-        channelPickerView.isHidden = false
+        channelChooserContainer.isHidden = false
         programShow(animated:false)
         //set position
         if currentChannelIndex < groupInfo.channels.count {
@@ -554,8 +557,8 @@ extension ChannelsVC { //show/hide  channel chooser
     }
     
     func menuClickHandler(sender: UITapGestureRecognizer) {
-        if self.channelPickerView.isHidden == false {
-            self.channelPickerView.isHidden = true
+        if self.channelChooserContainer.isHidden == false {
+            self.channelChooserContainer.isHidden = true
             programHide(animated: false)
             self.viewToFocus = middleChannelView
         }

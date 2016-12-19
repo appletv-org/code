@@ -9,11 +9,11 @@
 import UIKit
 
 
-class ChannelSettingsVC : UIViewController, ChannelPickerProtocol {
+class ChannelSettingsVC : UIViewController, ChannelPickerDelegate {
 
     var currentPath = [String]()
     
-    weak var channelPickerVC : ChannelPickerVC?
+    weak var channelPickerVC : ChannelPickerVC!
     @IBOutlet weak var channelPickerView: UIView!
     
     @IBOutlet weak var editButton: UIButton!
@@ -46,7 +46,7 @@ class ChannelSettingsVC : UIViewController, ChannelPickerProtocol {
                     if let nextElement = parentGroup?.findDirElement(index: index) {
                         currentPath += [nextElement.name]
                     }
-                    channelPickerVC!.setupPath(currentPath)
+                    channelPickerVC.setupPath(currentPath)
                 }
                 
                 ChannelManager.save()
@@ -58,13 +58,10 @@ class ChannelSettingsVC : UIViewController, ChannelPickerProtocol {
     
     override func viewDidLoad() {
         
-        let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        channelPickerVC = mainStoryboard.instantiateViewController(withIdentifier: "ChannelPickerVC") as? ChannelPickerVC
-        
-        
-        channelPickerVC!.view.translatesAutoresizingMaskIntoConstraints = false
-        channelPickerVC!.delegate = self
-        self.containerAdd(childViewController: channelPickerVC!, toView:channelPickerView)
+        channelPickerVC = ChannelPickerVC.insertToView(parentController: self, parentView: channelPickerView)
+        channelPickerVC.delegate = self
+        channelPickerVC.setupPath([])
+
         super.viewDidLoad()
         
         addNavigationTitle("Channels")
@@ -134,7 +131,7 @@ class ChannelSettingsVC : UIViewController, ChannelPickerProtocol {
 
         try ChannelManager.addM3uList(name: name, url: url)
         ChannelManager.save()
-        channelPickerVC!.setupPath([name])
+        channelPickerVC.setupPath([name])
         
         
         //changePath([ChannelManager.root.name])

@@ -228,32 +228,34 @@ class ProgramManager {
         
         guard let dbChannel : EpgChannel = CoreDataManager.requestFirstElement(
                         NSPredicate(format: "name == %@ AND provider.name == %@",channel.lowercased(),  provider.name)),
-              let programs = dbChannel.programs?.allObjects as? [EpgProgram]
+              var programs = dbChannel.programs?.allObjects as? [EpgProgram]
         else {
              return []
         }
         
         
-        if from == nil && to == nil {
-            return programs
+        if from != nil || to != nil {
+            var fromDate = "01.01.2000".toFormatDate("dd.mm.YYYY")!
+            if from != nil {
+                fromDate = from!.addingTimeInterval(-TimeInterval(provider.shiftTime))
+            }
+            
+            var toDate = "01.01.2100".toFormatDate("dd.mm.YYYY")!
+            if to != nil {
+                toDate = to!.addingTimeInterval(-TimeInterval(provider.shiftTime))
+            }
+            
+            let filterPrograms = programs.filter {
+                ($0.stop as! Date) > fromDate && ($0.start as! Date) < toDate
+            }
+            programs = filterPrograms
         }
         
+        //sort programs by start time
+        programs.sort(by: { $0.start!.timeIntervalSince1970 < $1.start!.timeIntervalSince1970 })
+
         
-        var fromDate = "01.01.2000".toFormatDate("dd.mm.YYYY")!
-        if from != nil {
-            fromDate = from!.addingTimeInterval(-TimeInterval(provider.shiftTime))
-        }
-        
-        var toDate = "01.01.2100".toFormatDate("dd.mm.YYYY")!
-        if to != nil {
-            toDate = to!.addingTimeInterval(-TimeInterval(provider.shiftTime))
-        }
-        
-        let filterPrograms = programs.filter {
-            ($0.stop as! Date) > fromDate && ($0.start as! Date) < toDate
-        }
-        
-        return filterPrograms
+        return programs
     }
     
     
@@ -274,7 +276,7 @@ class ProgramManager {
             
             var data : Data? = nil
             for provider in self.epgProviders where provider.parseIcons {
-                data = self.getProviderIcon(channel: channel, provider: provider.name)
+                data = self._getProviderIcon(channel: channel, provider: provider.name)
                 if data != nil {
                     self.iconCache.setObject(data! as NSData, forKey: channel as NSString)
                     break
@@ -287,7 +289,25 @@ class ProgramManager {
         }
     }
     
-    func getProviderIcon(channel: String, provider: String) -> Data? {
+    func getProviderIcon(channel: String, provider: String, completion:@escaping (Data?) -> Swift.Void )  {
+        DispatchQueue.global().async {
+            
+            var data : Data? = nil
+            if let dbChannel : EpgChannel = CoreDataManager.requestFirstElement(NSPredicate(format: "name==%@ AND provider.name == %@",
+                                                                                               channel.lowercased(),  provider) ),
+                let strUrl = dbChannel.icon,
+                let url = URL(string:strUrl) {
+                
+                data = try? Data(contentsOf: url)
+                
+            }
+            DispatchQueue.main.async {
+                completion(data)
+            }
+        }
+    }
+
+    private func _getProviderIcon(channel: String, provider: String) -> Data? {
         
         guard let dbChannel : EpgChannel = CoreDataManager.requestFirstElement(NSPredicate(format: "name==%@ AND provider.name == %@",
                                                                                           channel.lowercased(),  provider) ),

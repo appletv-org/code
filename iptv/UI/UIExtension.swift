@@ -8,6 +8,10 @@
 
 import UIKit
 
+class UICommonString {
+    static let programNotFound = "TV-program not found"
+}
+
 
 extension UIView {
     
@@ -83,15 +87,24 @@ extension UIViewController { //simple alert actions
     }
 
     
-    func simpleAlertChooser(title: String, message: String, buttonTitles: [String], completion: @escaping ((Int) -> Swift.Void)) {
+    func simpleAlertChooser(title: String, message: String, buttonTitles: [String], prefferButton:Int = 0, completion: @escaping ((Int) -> Swift.Void)) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         for i in 0..<buttonTitles.count {
-            let action = UIAlertAction(title: buttonTitles[i], style: .default, handler: { (_) in
-                completion(i)
+            
+            let action = UIAlertAction(title: buttonTitles[i], style:  .default, handler: { (_) in
+                    completion(i)
             })
             alertController.addAction(action)
+            if i == prefferButton { //add hidden cancel action for exit by menu button
+                alertController.preferredAction = action
+                let cancelAction = UIAlertAction(title: nil, style:  .cancel, handler: { (_) in
+                    completion(i)
+                })
+                alertController.addAction(cancelAction)
+            }
         }
         
+        //add alert cancel
         self.present(alertController, animated: true, completion: nil)
     }
 

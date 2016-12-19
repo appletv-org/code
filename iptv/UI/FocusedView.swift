@@ -88,7 +88,7 @@ class FocusedViewController : UIViewController {
     var viewToFocus: UIView? = nil {
         didSet {
             if viewToFocus != nil {
-                print("view to focus")
+                //print("view to focus")
                 self.setNeedsFocusUpdate()
                 self.updateFocusIfNeeded()
             }
@@ -104,4 +104,29 @@ class FocusedViewController : UIViewController {
     }
 
 }
+
+/*
+class HiddenTabBarController : UITabBarController {
+ 
+    override var preferredFocusEnvironments: [UIFocusEnvironment] {
+        if self.tabBar.isHidden {
+            return selectedViewController!.preferredFocusEnvironments
+        }
+        return super.preferredFocusEnvironments
+    }
+}
+*/
+
+class HiddenTabBar : UITabBar {
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        if ((context.nextFocusedItem as? UIView) == self) {
+           print("next focused is I am")
+        }
+        else {
+           print("next focused is not I am") 
+        }
+        return super.didUpdateFocus(in:context, with:coordinator)
+    }
+}
+
 

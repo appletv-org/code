@@ -1,5 +1,5 @@
 //
-//  ProgramVC.swift
+//  ProgramVC_old.swift
 //  iptv
 //
 //  Created by Александр Колганов on 16.09.16.
@@ -27,7 +27,7 @@ class ProgramFocusedCell : UIView {
                 label.text = "\(startStop.start!.toFormatString("HH:mm")). \(program!.title ?? "")"
             }
             else {
-                label.text = "Program guide not found"
+                label.text = UICommonString.programNotFound
             }
         }
     }
@@ -180,16 +180,16 @@ class ChannelFocusedCell : UIView {
 
 
 
-class ProgramVC: FocusedViewController {
+class ProgramVC_old: FocusedViewController {
     
     static let pixelInHour = CGFloat(300.0)
-    static let pixelInSecond : CGFloat = (ProgramVC.pixelInHour / (60 * 60))
+    static let pixelInSecond : CGFloat = (ProgramVC_old.pixelInHour / (60 * 60))
     static let heightElement = CGFloat(100.0)
     static let shiftHeight = CGFloat(10.0)
     static let shiftWidth = CGFloat(10.0)
     static let dayShift = 30*60 //before and after today day
     
-    static let widthDayView :CGFloat = CGFloat(24*60*60 + ProgramVC.dayShift*2) * ProgramVC.pixelInSecond
+    static let widthDayView :CGFloat = CGFloat(24*60*60 + ProgramVC_old.dayShift*2) * ProgramVC_old.pixelInSecond
     
     var channels = [ChannelInfo]()
     
@@ -230,12 +230,12 @@ class ProgramVC: FocusedViewController {
         leftScrollView.delegate = self
         
         //topview with scale
-        let topViewSize = CGSize(width: ProgramVC.widthDayView, height:topScrollView.frame.size.height)
+        let topViewSize = CGSize(width: ProgramVC_old.widthDayView, height:topScrollView.frame.size.height)
         topView = UIView(frame: CGRect(origin: .zero, size: topViewSize ) )
         topView.backgroundColor = UIColor.lightGray
         
         var x = CGFloat(0.0)
-        let hourLabelSize = CGSize(width: ProgramVC.pixelInHour, height: topView.frame.size.height)
+        let hourLabelSize = CGSize(width: ProgramVC_old.pixelInHour, height: topView.frame.size.height)
         for i in 0...24 {
             let label = UILabel(frame:CGRect(origin:CGPoint(x:x, y:0), size:hourLabelSize))
             label.font = UIFont.systemFont(ofSize: 24)
@@ -244,7 +244,7 @@ class ProgramVC: FocusedViewController {
             label.textColor = UIColor.black
             label.text = String(format:"%02d:%02d", i, 0)
             topView.addSubview(label)
-            x += ProgramVC.pixelInHour
+            x += ProgramVC_old.pixelInHour
         }
         
         topScrollView.addSubview(topView)
@@ -270,8 +270,8 @@ class ProgramVC: FocusedViewController {
     
     func viewsUpdate() {
 
-        let heightView = (ProgramVC.heightElement + ProgramVC.shiftHeight) * CGFloat(channels.count)
-        let mainViewSize = CGSize(width:ProgramVC.widthDayView, height: heightView)
+        let heightView = (ProgramVC_old.heightElement + ProgramVC_old.shiftHeight) * CGFloat(channels.count)
+        let mainViewSize = CGSize(width:ProgramVC_old.widthDayView, height: heightView)
         let leftViewSize = CGSize(width:leftScrollView.frame.size.width, height: heightView)
 
 
@@ -289,7 +289,7 @@ class ProgramVC: FocusedViewController {
         //fill program
         let startTime = NSCalendar.current.startOfDay(for: Date())
         let stopTime = startTime.addingTimeInterval(24*60*60)
-        var y = ProgramVC.shiftHeight/2
+        var y = ProgramVC_old.shiftHeight/2
         
         let startScaleTime = startTime.addingTimeInterval(-30*60)
         let stopScaleTime  = stopTime.addingTimeInterval(30*60)
@@ -301,7 +301,7 @@ class ProgramVC: FocusedViewController {
             
             //fill main view
             if programs.count == 0 {
-                let frame = CGRect(x: 100.0, y: y, width: mainScrollView.frame.size.width - 200.0, height: ProgramVC.heightElement)
+                let frame = CGRect(x: 100.0, y: y, width: mainScrollView.frame.size.width - 200.0, height: ProgramVC_old.heightElement)
                 DispatchQueue.main.async {
                     let programCell = ProgramFocusedCell(frame: frame)
                     programCell.program = nil
@@ -325,10 +325,10 @@ class ProgramVC: FocusedViewController {
                     }
                     
                     let timeShift = start.timeIntervalSince(startScaleTime)
-                    let x = CGFloat(timeShift) * ProgramVC.pixelInSecond + ProgramVC.shiftWidth/2
+                    let x = CGFloat(timeShift) * ProgramVC_old.pixelInSecond + ProgramVC_old.shiftWidth/2
                     let timeWidth = stop.timeIntervalSince(start)
-                    let width = CGFloat(timeWidth) * ProgramVC.pixelInSecond - ProgramVC.shiftWidth
-                    let frame = CGRect(x: x, y: y, width: width, height: ProgramVC.heightElement)
+                    let width = CGFloat(timeWidth) * ProgramVC_old.pixelInSecond - ProgramVC_old.shiftWidth
+                    let frame = CGRect(x: x, y: y, width: width, height: ProgramVC_old.heightElement)
                     DispatchQueue.main.async {
                         let programCell = ProgramFocusedCell(frame: frame)
                         programCell.program = program
@@ -338,14 +338,14 @@ class ProgramVC: FocusedViewController {
             }
             
             //fill left view
-            let channelFrame = CGRect(x:ProgramVC.shiftWidth, y:y, width: ProgramVC.heightElement * 1.2, height: ProgramVC.heightElement)
+            let channelFrame = CGRect(x:ProgramVC_old.shiftWidth, y:y, width: ProgramVC_old.heightElement * 1.2, height: ProgramVC_old.heightElement)
             DispatchQueue.main.async {
                 let channelView = ChannelFocusedCell(frame: channelFrame)
                 channelView.setChannel(channel)
                 self.leftView.addSubview(channelView)
             }
             
-            y += ProgramVC.shiftHeight + ProgramVC.heightElement
+            y += ProgramVC_old.shiftHeight + ProgramVC_old.heightElement
         }
         
     }
@@ -367,7 +367,7 @@ class ProgramVC: FocusedViewController {
 
 }
 
-extension ProgramVC :  UIScrollViewDelegate {
+extension ProgramVC_old :  UIScrollViewDelegate {
 
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {// any offset changes

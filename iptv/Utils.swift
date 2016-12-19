@@ -60,6 +60,7 @@ extension Date {
         formatter.dateFormat = format
         return  formatter.string(from: self)
     }
+    
 }
 
 extension String {
@@ -69,5 +70,43 @@ extension String {
         return formatter.date(from: self)
     }
 }
+
+//Date operators
+
+extension Date {
+    
+    
+    enum FixTimeInterval : Int {
+        static let secondsInHour = 60*60
+        
+        case second = 1
+        case minute = 60
+        case hour = 3600
+        case day = 86400
+    }
+    
+    
+}
+
+func + (left: Date, right: TimeInterval)
+    -> Date
+{
+    return left.addingTimeInterval(right)
+}
+
+func - (left: Date, right: TimeInterval)
+    -> Date
+{
+    return left.addingTimeInterval(-right)
+}
+
+func += ( left: inout Date, right: TimeInterval) {
+    left.addTimeInterval(right)
+}
+
+func -= ( left: inout Date, right: TimeInterval) {
+    left.addTimeInterval(-right)
+}
+
 
 

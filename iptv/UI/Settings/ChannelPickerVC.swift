@@ -41,6 +41,7 @@ class ChannelCell : UICollectionViewCell {
             switch newElement {
             case .group(let group):
                 label.text = group.name
+                //print("set label text:\(group.name)")
                 nameIntoImage.text = group.name
                 nameIntoImage.numberOfLines = 1
                 //nameIntoImage.backgroundColor = UIColor.red
@@ -114,14 +115,14 @@ class ChannelCell : UICollectionViewCell {
     
 }
 
-protocol DirectoryStackProtocol : class {
+protocol DirectoryStackDelegate : class {
     func changeDirPath(_ path: [String])
 }
 
 class DirectoryStack:UIStackView {
     
     var _path : [String] = []
-    weak var delegate : DirectoryStackProtocol?
+    weak var delegate : DirectoryStackDelegate?
     
     
     func createButton(_ title:String, tag:Int) -> UIButton {
@@ -162,7 +163,7 @@ class DirectoryStack:UIStackView {
                 return
             }
         }
- */
+         */
         
         
         //delete all button except last item
@@ -208,35 +209,22 @@ class ChannelPickerCollectionView :UICollectionView {
     
     var focusedIndex : Int?
     
-    /*
-    override var preferredFocusEnvironments: [UIFocusEnvironment] {
-        //var ret = super.preferredFocusEnvironments
-        if focusedIndex >= 0 {
-            self.scrollToItem(at: IndexPath(row:focusedIndex, section:0), at: .centeredHorizontally, animated: false)
-            if let cell = cellForItem(at: IndexPath.init(row: focusedIndex, section: 0)) {
-                return [cell]
-            }
-        }
-        
-        return []
-    }
-    */
 }
 
-protocol ChannelPickerProtocol : class {
+protocol ChannelPickerDelegate : class {
     func focusedPath(chooseControl: ChannelPickerVC,  path:[String])
     func changePath(chooseControl: ChannelPickerVC,  path:[String])
     func selectedPath(chooseControl: ChannelPickerVC,  path:[String])
     
 }
 
-extension ChannelPickerProtocol  {
+extension ChannelPickerDelegate  {
     func focusedPath(chooseControl: ChannelPickerVC,  path:[String])    {}
     func changePath(chooseControl: ChannelPickerVC,  path:[String])     {}
     func selectedPath(chooseControl: ChannelPickerVC,  path:[String])   {}    
 }
 
-class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, DirectoryStackProtocol {
+class ChannelPickerVC : FocusedViewController, UICollectionViewDataSource, UICollectionViewDelegate, DirectoryStackDelegate {
     
     var path: [String] = [] //current directory path for DirectoryStack
     private var groupInfo : GroupInfo = ChannelManager.root //current group info for DirectroryStack
@@ -246,9 +234,8 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
     var showAllGroup = false
     var showHideGroup = false
     
-    var viewToFocus : UIFocusItem?
     
-    weak var delegate : ChannelPickerProtocol?
+    weak var delegate : ChannelPickerDelegate?
     
     @IBOutlet weak var directoryContainerView: ContainerFocused!
     @IBOutlet weak var directoryStack: DirectoryStack!
@@ -272,8 +259,26 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
             }
             return []
         }
-        setupPath(path)
+        //setupPath(path)
     }
+    
+    static func loadIB() -> ChannelPickerVC {
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let channelPickerVC = mainStoryboard.instantiateViewController(withIdentifier: "ChannelPickerVC") as! ChannelPickerVC
+        channelPickerVC.view.translatesAutoresizingMaskIntoConstraints = false
+        return channelPickerVC
+    }
+    
+    
+    static func insertToView(parentController: UIViewController, parentView: UIView) -> ChannelPickerVC {
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let channelPickerVC = mainStoryboard.instantiateViewController(withIdentifier: "ChannelPickerVC") as! ChannelPickerVC
+        channelPickerVC.view.translatesAutoresizingMaskIntoConstraints = false
+        parentController.containerAdd(childViewController: channelPickerVC, toView:parentView)
+        return channelPickerVC
+
+    }
+
     
     //setup UI for this path
     func setupPath(_ path: [String], isParent : Bool = false) {
@@ -304,31 +309,13 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
         delegate?.changePath(chooseControl: self, path: self.path)
         
         collectionView.performBatchUpdates({
-            //self.collectionView.remembersLastFocusedIndexPath = false
-            //self.collectionView.deleteSections(IndexSet(integer:0))
-            //self.collectionView.insertSections(IndexSet(integer:0))
             self.collectionView.reloadSections(IndexSet(integer:0))
-            //self.collectionView.reloadData()
         }, completion: { completed -> Void in
-            
             self.viewToFocus = self.collectionView
-            //self.collectionView.remembersLastFocusedIndexPath = true
-            //self.viewToFocus = self.collectionView
-            //self.setNeedsFocusUpdate()
-            //self.updateFocusIfNeeded()
         })
     
     }
     
-    
-    override var preferredFocusEnvironments: [UIFocusEnvironment] {
-        var ret = super.preferredFocusEnvironments
-        if viewToFocus != nil {
-            ret = [viewToFocus!]
-            viewToFocus = nil
-        }
-        return ret
-    }
     
     
     
@@ -356,6 +343,7 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
         if showAllGroup && groupInfo.groups.count > 0 {
             ret += 1
         }
+        //print("number items in section:\(ret)")
         return ret
     }
     
@@ -375,9 +363,10 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
         
         if index < groupInfo.groups.count {
             cell.element = .group(groupInfo.groups[index])
+             //print("group items \(index):\(groupInfo.groups[index].name)")
             return cell
         }
-        
+
         index -= groupInfo.groups.count
         if index < groupInfo.channels.count {
             cell.element = .channel(groupInfo.channels[index])
@@ -480,8 +469,6 @@ class ChannelPickerVC : UIViewController, UICollectionViewDataSource, UICollecti
             
         }, completion: nil)
 
-        
-        
     }
     
     

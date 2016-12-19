@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.AppleTV.Storyboard" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="AppleTV" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="9pv-A4-QxB">
+<document type="com.apple.InterfaceBuilder.AppleTV.Storyboard" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="AppleTV" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="9pv-A4-QxB">
     <device id="appleTV" orientation="landscape">
         <adaptation id="light"/>
     </device>
     <dependencies>
         <deployment identifier="tvOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -105,11 +105,49 @@
                                     <constraint firstAttribute="height" constant="10" id="wYg-qq-zcZ"/>
                                 </constraints>
                             </view>
-                            <view tag="4000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gLE-1w-Dez" userLabel="ChannelPickerView" customClass="PanelView" customModule="iptv" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="410" width="1920" height="350"/>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aqb-82-bUJ">
+                                <rect key="frame" x="0.0" y="320" width="1920" height="440"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yjf-rr-Km9" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="1920" height="90"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tv3-1U-2eW">
+                                                <rect key="frame" x="20" y="15" width="50" height="60"/>
+                                                <color key="backgroundColor" red="1" green="0.2807912669" blue="0.18054029099999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="60" id="w4r-Ac-brD"/>
+                                                </constraints>
+                                                <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                                                <state key="normal" image="close"/>
+                                                <connections>
+                                                    <action selector="buttonCloseAction:" destination="9pv-A4-QxB" eventType="primaryActionTriggered" id="Yti-Ld-M5j"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="Tv3-1U-2eW" firstAttribute="centerY" secondItem="Yjf-rr-Km9" secondAttribute="centerY" id="ORR-CO-val"/>
+                                            <constraint firstItem="Tv3-1U-2eW" firstAttribute="leading" secondItem="Yjf-rr-Km9" secondAttribute="leading" constant="20" id="QMI-z3-hcp"/>
+                                            <constraint firstAttribute="height" constant="90" id="imo-oK-RfA"/>
+                                        </constraints>
+                                    </view>
+                                    <view tag="4000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gLE-1w-Dez" userLabel="ChannelPickerView" customClass="PanelView" customModule="iptv" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="90" width="1920" height="350"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="350" id="3kA-SI-2ed"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="350" id="3kA-SI-2ed"/>
+                                    <constraint firstItem="Yjf-rr-Km9" firstAttribute="leading" secondItem="aqb-82-bUJ" secondAttribute="leading" id="0IR-ro-y3e"/>
+                                    <constraint firstAttribute="bottom" secondItem="gLE-1w-Dez" secondAttribute="bottom" id="Gqm-Xg-W8e"/>
+                                    <constraint firstItem="gLE-1w-Dez" firstAttribute="top" secondItem="Yjf-rr-Km9" secondAttribute="bottom" id="JUS-RK-vsp"/>
+                                    <constraint firstAttribute="trailing" secondItem="gLE-1w-Dez" secondAttribute="trailing" id="KAo-cI-WNP"/>
+                                    <constraint firstItem="gLE-1w-Dez" firstAttribute="leading" secondItem="aqb-82-bUJ" secondAttribute="leading" id="Oz7-IQ-UFZ"/>
+                                    <constraint firstAttribute="trailing" secondItem="Yjf-rr-Km9" secondAttribute="trailing" id="cgm-UR-J24"/>
+                                    <constraint firstItem="Yjf-rr-Km9" firstAttribute="top" secondItem="aqb-82-bUJ" secondAttribute="top" id="qvp-vp-k5p"/>
                                 </constraints>
                             </view>
                             <view tag="5000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RWR-bB-oOm">
@@ -257,17 +295,17 @@
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="RWR-bB-oOm" firstAttribute="top" secondItem="gLE-1w-Dez" secondAttribute="bottom" id="4ZP-bM-Nce"/>
+                            <constraint firstItem="RWR-bB-oOm" firstAttribute="top" secondItem="aqb-82-bUJ" secondAttribute="bottom" id="42X-k5-5eN"/>
                             <constraint firstAttribute="trailing" secondItem="iSw-KR-nIT" secondAttribute="trailing" id="6o0-Fo-mGD"/>
                             <constraint firstItem="4ug-Mw-9AY" firstAttribute="top" secondItem="RWR-bB-oOm" secondAttribute="bottom" id="I8o-Ca-3UZ"/>
                             <constraint firstItem="iSw-KR-nIT" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="KRb-wO-lJM"/>
-                            <constraint firstAttribute="trailing" secondItem="gLE-1w-Dez" secondAttribute="trailing" id="LWT-4P-WSK"/>
+                            <constraint firstAttribute="trailing" secondItem="aqb-82-bUJ" secondAttribute="trailing" id="Moq-lN-TQj"/>
                             <constraint firstItem="kbO-ei-XoE" firstAttribute="centerX" secondItem="tsR-hK-woN" secondAttribute="centerX" id="NIb-IE-l0Y"/>
-                            <constraint firstItem="gLE-1w-Dez" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="Nyo-3u-Ron"/>
                             <constraint firstItem="RWR-bB-oOm" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="QbP-7w-38n"/>
                             <constraint firstAttribute="trailing" secondItem="RWR-bB-oOm" secondAttribute="trailing" id="Vlk-oW-wFm"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Zza-hi-pPi" secondAttribute="trailing" id="WVA-lg-fd9"/>
                             <constraint firstItem="iSw-KR-nIT" firstAttribute="top" secondItem="tsR-hK-woN" secondAttribute="top" id="dR8-vF-P2F"/>
+                            <constraint firstItem="aqb-82-bUJ" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="f8e-xg-oR0"/>
                             <constraint firstItem="Zza-hi-pPi" firstAttribute="top" secondItem="Ia1-K6-d13" secondAttribute="bottom" id="ljw-80-QiV"/>
                             <constraint firstItem="Zza-hi-pPi" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leadingMargin" id="t5p-Tq-WWC"/>
                             <constraint firstItem="4ug-Mw-9AY" firstAttribute="top" secondItem="iSw-KR-nIT" secondAttribute="bottom" id="uUD-aP-qLt"/>
@@ -280,7 +318,9 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="actionButtons" destination="Mlt-XR-fcn" id="lBJ-9T-bF5"/>
+                        <outlet property="buttonChannelClose" destination="Tv3-1U-2eW" id="LcV-bY-Bpd"/>
                         <outlet property="changeProgramView" destination="Zza-hi-pPi" id="FlJ-xv-4Aw"/>
+                        <outlet property="channelChooserContainer" destination="aqb-82-bUJ" id="piE-ug-PJJ"/>
                         <outlet property="channelPickerView" destination="gLE-1w-Dez" id="aLr-fG-BD2"/>
                         <outlet property="dayLabel" destination="AVs-EL-FQz" id="Q99-hK-J62"/>
                         <outlet property="loadingActivity" destination="GiA-m6-nZs" id="4uj-fd-Irv"/>
@@ -306,6 +346,7 @@
     </scenes>
     <resources>
         <image name="PIPChange" width="40" height="40"/>
+        <image name="close" width="40" height="40"/>
         <image name="garbage" width="40" height="40"/>
         <image name="star" width="40" height="40"/>
     </resources>
