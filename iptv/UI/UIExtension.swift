@@ -54,9 +54,23 @@ extension UIViewController { //add/remove child  controller
     }
     
     func containerRemove(childViewController:UIViewController) {
-        self.willMove(toParentViewController: nil)
+        childViewController.willMove(toParentViewController: nil)
         childViewController.view.removeFromSuperview()
         childViewController.removeFromParentViewController()
+    }
+    
+    func containerReplace(fromController:UIViewController, toController:UIViewController, inView:UIView) {
+        fromController.willMove(toParentViewController: nil)
+        self.addChildViewController(toController)
+        toController.view.frame = fromController.view.frame
+        
+        //transfer from top to bottom
+        self.transition(from: fromController, to: toController, duration: 0.25, options: .transitionCrossDissolve, animations: {},
+            completion:{ (finished) in
+                fromController.removeFromParentViewController()
+                toController.didMove(toParentViewController: self)
+            }
+        )
     }
     
     //if controller into navigation controller then title add to title of previous controller

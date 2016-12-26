@@ -20,7 +20,7 @@ class EpgProviderCell : UITableViewCell {
     @IBOutlet weak var actions: UISegmentedControl!
 }
 
-class EpgProvidersVC: UIViewController {
+class EpgProvidersVC: FocusedViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -83,24 +83,6 @@ class EpgProvidersVC: UIViewController {
         }
     }
     
-    
-    var viewToFocus: UIView? = nil {
-        didSet {
-            if viewToFocus != nil {
-                self.setNeedsFocusUpdate();
-                self.updateFocusIfNeeded();
-            }
-        }
-    }
-    
-    override var preferredFocusEnvironments: [UIFocusEnvironment] {
-        var ret = super.preferredFocusEnvironments
-        if viewToFocus != nil {
-            ret = [viewToFocus!]
-            viewToFocus = nil
-        }
-        return ret
-    }
     
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         super.didUpdateFocus(in: context, with: coordinator)

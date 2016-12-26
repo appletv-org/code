@@ -105,28 +105,62 @@ class FocusedViewController : UIViewController {
 
 }
 
-/*
-class HiddenTabBarController : UITabBarController {
- 
-    override var preferredFocusEnvironments: [UIFocusEnvironment] {
-        if self.tabBar.isHidden {
-            return selectedViewController!.preferredFocusEnvironments
-        }
-        return super.preferredFocusEnvironments
-    }
-}
-*/
 
-class HiddenTabBar : UITabBar {
+class FocusedCollectionView : UICollectionView {
+    
+    var focusedIndex: IndexPath? {
+        didSet {
+            //print ("change focusedIndex: \(focusedIndex)")
+        }
+    }
+    var canFocused = true
+    
+    
+    override var canBecomeFocused : Bool {
+        get {
+            return canFocused
+        }
+    }
+    
+    
+    
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
-        if ((context.nextFocusedItem as? UIView) == self) {
-           print("next focused is I am")
+        super.didUpdateFocus(in: context, with: coordinator)
+        
+        if let nextView = context.nextFocusedView,
+           nextView.isDescendant(of: self)
+        {
+           canFocused = false
+           if   let cell = nextView as? UICollectionViewCell,
+                let indexPath = indexPath(for: cell),
+                let prevCell = context.previouslyFocusedView as? UICollectionViewCell,
+                prevCell.isDescendant(of: self)
+           {
+                focusedIndex = indexPath
+           }
         }
         else {
-           print("next focused is not I am") 
+           canFocused = true
         }
-        return super.didUpdateFocus(in:context, with:coordinator)
     }
+    
+    override var preferredFocusEnvironments: [UIFocusEnvironment] {
+        guard focusedIndex != nil,
+              focusedIndex!.section < self.numberOfSections,
+              focusedIndex!.row < self.numberOfItems(inSection: focusedIndex!.section)
+        
+        else {
+            return super.preferredFocusEnvironments
+        }
+        self.scrollToItem(at: focusedIndex!, at: .centeredHorizontally, animated: false)
+        if let cell = cellForItem(at: focusedIndex!) {
+            return [cell]
+        }
+        else {
+            return super.preferredFocusEnvironments
+        }
+    }
+
 }
 
 

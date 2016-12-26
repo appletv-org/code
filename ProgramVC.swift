@@ -19,8 +19,14 @@ class ProgramVCProgramCell : UICollectionViewCell {
                 label.text = UICommonString.programNotFound
             }
             else {
-                let time = (program!.start as! Date).toFormatString("HH:mm")
-                label.text = time + ". " +  (program!.title ?? "") + "\n" + (program!.desc ?? "")
+                var text = ""
+                let startStopTime = ProgramManager.startStopTime(program!)
+                if let start = startStopTime.start {
+                    text += start.toFormatString("HH:mm") + ". "
+                }
+                
+                text +=  (program!.title ?? "") + "\n" + (program!.desc ?? "")
+                label.text = text
                 
                 if( (program!.start as! Date) < Date() &&  (program!.stop as! Date) > Date() ) {
                     label.textColor = UIColor.red
@@ -61,7 +67,7 @@ class ProgramVCProgramCell : UICollectionViewCell {
 
 }
 
-class ProgramVCProgramCollection : UICollectionView {
+class ProgramVCProgramCollection : FocusedCollectionView {
     weak var programVC: ProgramVC!
     
     var sectionCount : Int = 1
@@ -75,13 +81,15 @@ class ProgramVCProgramCollection : UICollectionView {
                 sectionCount = (programs.count + 2)/3
             }
             self.reloadData()
+            
+            //set focused index
+            if let index = programs.index( where: {($0.start as! Date) < Date() &&  ($0.stop as! Date) > Date()} ) {
+                self.focusedIndex = indexToIndexPath(index)
+            }
+            
         }
     }
 
-}
-
-extension ProgramVCProgramCollection : UICollectionViewDataSource {
-    
     func indexToIndexPath(_ index: Int) -> IndexPath {
         if programs.count == 0 {
             return IndexPath(row: 0, section: 0)
@@ -91,10 +99,17 @@ extension ProgramVCProgramCollection : UICollectionViewDataSource {
         let section = index % sectionCount
         return IndexPath(row: row, section: section)
     }
-    
+
     func IndexPathToIndex(_ indexPath: IndexPath) -> Int {
         return indexPath.row * sectionCount + indexPath.section
     }
+
+
+}
+
+extension ProgramVCProgramCollection : UICollectionViewDataSource {
+    
+    
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return sectionCount
@@ -154,6 +169,7 @@ class ProgramVCChannelCell : UICollectionViewCell {
         
         
         label.text = channel
+        bottomLabel.text = channel
         imageView.image = UIImage(named:"channel")
     
         if provider == nil {
@@ -178,6 +194,8 @@ class ProgramVCChannelCell : UICollectionViewCell {
     }
     
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        
+        super.didUpdateFocus(in:context, with:coordinator)
         
         coordinator.addCoordinatedAnimations(
         {
@@ -215,7 +233,7 @@ class ProgramVCChannelCell : UICollectionViewCell {
     }
 }
 
-class ProgramVCChannelCollection  : UICollectionView {
+class ProgramVCChannelCollection  : FocusedCollectionView {
     weak var programVC: ProgramVC!
 
 }
@@ -365,7 +383,7 @@ class ProgramVC : FocusedViewController {
         channelCollectionView.programVC = self
         channelCollectionView.dataSource = channelCollectionView
         channelCollectionView.delegate = channelCollectionView
-        channelCollectionView.remembersLastFocusedIndexPath = true
+        channelCollectionView.remembersLastFocusedIndexPath = false
         
         programCollectionView.programVC = self
         programCollectionView.dataSource = programCollectionView
@@ -418,7 +436,9 @@ class ProgramVC : FocusedViewController {
         }
         channelCollectionView.reloadData()
         if channelNames.count > 0 {
+            channelCollectionView.focusedIndex = IndexPath(row: 0, section: 0)
             updatePrograms(channelNames[0])
+            
         }
     }
     

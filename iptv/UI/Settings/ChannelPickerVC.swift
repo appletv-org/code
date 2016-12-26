@@ -116,7 +116,7 @@ class ChannelCell : UICollectionViewCell {
 }
 
 protocol DirectoryStackDelegate : class {
-    func changeDirPath(_ path: [String])
+    func setupPath(_ path: [String], isParent : Bool)
 }
 
 class DirectoryStack:UIStackView {
@@ -129,7 +129,7 @@ class DirectoryStack:UIStackView {
         let button = UIButton(type: .roundedRect)
         button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         button.tag = tag
-        button.setTitle(title, for: .normal)
+        button.setTitle(title + " >", for: .normal)
         button.setTitleColor(tintColor, for: .disabled)
         button.addTarget(self, action: #selector(DirectoryStack.changeDirAction(_:)), for: .primaryActionTriggered)
         return button
@@ -177,38 +177,47 @@ class DirectoryStack:UIStackView {
         
         let button = createButton(ChannelManager.root.name, tag:0)
         insertArrangedSubview(button, at: 0)
-        var i = 1
-        for name in path {
-            let button = createButton(name, tag:i)
-            
-            if i == path.count {
-                button.isEnabled = false
-            }
-            insertArrangedSubview(button, at: i)
-            i += 1
+        
+        for i in 0..<path.count {
+            let button = createButton(path[i], tag:i+1)
+            insertArrangedSubview(button, at: i+1)
         }
         _path = path
     }
     
     
-    @objc func changeDirAction(_ sender:UIButton?) {
+    func changeDirAction(_ sender:UIButton?) {
         let index = sender!.tag
         
-        var newPath = [String]()
-        if index > 0 {
-            newPath = Array(path[0..<index])
-        }
-        //changePath(newPath)
-        delegate?.changeDirPath(newPath)
+        let newPath = Array(path[0..<index])
+        delegate?.setupPath(newPath, isParent: true)
     }
     
 }
 
 
-class ChannelPickerCollectionView :UICollectionView {
+class ChannelPickerCollectionView : FocusedCollectionView {
     
-    var focusedIndex : Int?
+    //var focusedIndex : Int?
     
+    /*
+    override var canBecomeFocused: Bool {
+        return true
+    }
+    */
+    
+    /*
+    override var preferredFocusEnvironments: [UIFocusEnvironment] {
+        let envs = super.preferredFocusEnvironments
+        print("Environments: \(envs)")
+        return envs
+    }
+    
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        super.didUpdateFocus(in: context, with: coordinator)
+        print("didUpdateFocus")
+    }
+    */
 }
 
 protocol ChannelPickerDelegate : class {
@@ -224,10 +233,10 @@ extension ChannelPickerDelegate  {
     func selectedPath(chooseControl: ChannelPickerVC,  path:[String])   {}    
 }
 
-class ChannelPickerVC : FocusedViewController, UICollectionViewDataSource, UICollectionViewDelegate, DirectoryStackDelegate {
+class ChannelPickerVC : FocusedViewController, DirectoryStackDelegate {
     
     var path: [String] = [] //current directory path for DirectoryStack
-    private var groupInfo : GroupInfo = ChannelManager.root //current group info for DirectroryStack
+    var groupInfo : GroupInfo = ChannelManager.root //current group info for DirectroryStack
     //private var focusedIndex: Int = 0
     var showFocusedElement = true
     
@@ -254,8 +263,8 @@ class ChannelPickerVC : FocusedViewController, UICollectionViewDataSource, UICol
         
         directoryContainerView.focusedFunc = { () -> [UIFocusEnvironment]? in
                 let stackSubViews = self.directoryStack.arrangedSubviews
-                if(stackSubViews.count >= 3) {
-                    return [stackSubViews[stackSubViews.count-3]]
+                if(stackSubViews.count >= 2) {
+                    return [stackSubViews[stackSubViews.count-2]]
             }
             return []
         }
@@ -288,14 +297,14 @@ class ChannelPickerVC : FocusedViewController, UICollectionViewDataSource, UICol
             self.path = Array(path[0..<path.count-1])
         }
         
-        self.collectionView.focusedIndex = 0
+        self.collectionView.focusedIndex = IndexPath(row: 0, section: 0)
         
         if let group =  ChannelManager.findGroup(self.path) {
             groupInfo = group
             if !isParent && path.count > 0 {  //find index
                 let index = groupInfo.findDirIndex(path.last!)
                 if index >= 0 {
-                    self.collectionView.focusedIndex = index
+                    self.collectionView.focusedIndex = IndexPath(row: index, section: 0)
                 }
             }
         }
@@ -316,22 +325,25 @@ class ChannelPickerVC : FocusedViewController, UICollectionViewDataSource, UICol
     
     }
     
-    
-    
-    
-
-    //directory Stack Protocol
-    func changeDirPath(_ path: [String]) {
-        var newPath = path
-        if self.path.count > path.count {
-           newPath = Array(self.path[0..<path.count+1])
+    /*
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        super.didUpdateFocus(in: context, with: coordinator)
+        
+        //focused dir button
+        if  let button = context.nextFocusedView as? UIButton,
+            button.isDescendant(of:directoryContainerView)
+        {
+            let index = button.tag
+            let newPath = Array(path[0..<index])
+            self.delegate?.focusedPath(chooseControl: self, path: newPath)
         }
-        setupPath(newPath)
     }
+    */
     
-    
-    
-    
+}
+
+extension ChannelPickerVC : UICollectionViewDataSource, UICollectionViewDelegate
+{
     //---- UICollectionViewDataSource ------
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -410,7 +422,7 @@ class ChannelPickerVC : FocusedViewController, UICollectionViewDataSource, UICol
     
     func indexPathForPreferredFocusedView(in collectionView: UICollectionView) -> IndexPath? {
         if(self.collectionView.focusedIndex != nil) {
-            let indexPath = IndexPath(row: self.collectionView.focusedIndex!, section: 0)
+            let indexPath =  self.collectionView.focusedIndex!
             self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
             return indexPath
         }
@@ -419,11 +431,9 @@ class ChannelPickerVC : FocusedViewController, UICollectionViewDataSource, UICol
     }
     
     
-    
- 
-    
 
     func collectionView(_ collectionView: UICollectionView, didUpdateFocusIn context: UICollectionViewFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        
         
         /*
         //change focused
@@ -444,7 +454,7 @@ class ChannelPickerVC : FocusedViewController, UICollectionViewDataSource, UICol
                     cell.selectedCell(isSelected: false)
                     //cell.channelView.transform = CGAffineTransform(scaleX:1.2, y:1.2)
                     //cell.channelView.backgroundColor = UIColor.white
-                    self.collectionView.focusedIndex = nextIndex!.row
+                    //self.collectionView.focusedIndex = nextIndex!.row
                     self.delegate?.focusedPath(chooseControl: self, path: self.path + [cell.element.name])
                 }
             }

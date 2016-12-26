@@ -117,13 +117,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view tag="10001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vvL-1F-W8Z" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
-                                <rect key="frame" x="30" y="0.0" width="1800" height="30"/>
+                                <rect key="frame" x="30" y="0.0" width="1800" height="40"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="W1F-1A-XCe" customClass="DirectoryStack" customModule="iptv" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="1800" height="30"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1800" height="40"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GGb-LF-aep">
-                                                <rect key="frame" x="0.0" y="0.0" width="1800" height="30"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="1800" height="40"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" priority="250" constant="1860" id="wwc-0r-htG"/>
@@ -136,7 +136,7 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="W1F-1A-XCe" secondAttribute="bottom" id="58U-Da-iAY"/>
-                                    <constraint firstAttribute="height" constant="30" id="8dF-dS-jpL"/>
+                                    <constraint firstAttribute="height" constant="40" id="8dF-dS-jpL"/>
                                     <constraint firstAttribute="trailing" secondItem="W1F-1A-XCe" secondAttribute="trailing" id="EVM-mZ-PJ1"/>
                                     <constraint firstItem="W1F-1A-XCe" firstAttribute="leading" secondItem="vvL-1F-W8Z" secondAttribute="leading" id="eHZ-cT-Uda"/>
                                     <constraint firstItem="W1F-1A-XCe" firstAttribute="top" secondItem="vvL-1F-W8Z" secondAttribute="top" id="fAR-SG-uwu"/>
@@ -145,7 +145,7 @@
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" tag="10002" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="iBD-e1-QyB" customClass="ChannelPickerCollectionView" customModule="iptv" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="40" width="1860" height="300"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="60" id="eo1-FP-Uf1">
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="20" minimumInteritemSpacing="40" id="eo1-FP-Uf1">
                                     <size key="itemSize" width="250" height="230"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -222,7 +222,7 @@
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="vvL-1F-W8Z" secondAttribute="trailing" constant="10" id="BNM-TD-GNO"/>
                             <constraint firstItem="vvL-1F-W8Z" firstAttribute="top" secondItem="f3Z-j0-odr" secondAttribute="topMargin" id="DUb-3p-5Dm"/>
-                            <constraint firstItem="iBD-e1-QyB" firstAttribute="top" secondItem="vvL-1F-W8Z" secondAttribute="bottom" constant="10" id="Gt8-S4-moV"/>
+                            <constraint firstItem="iBD-e1-QyB" firstAttribute="top" secondItem="vvL-1F-W8Z" secondAttribute="bottom" id="Gt8-S4-moV"/>
                             <constraint firstItem="iBD-e1-QyB" firstAttribute="leading" secondItem="f3Z-j0-odr" secondAttribute="leading" id="HXJ-S1-6Jh"/>
                             <constraint firstAttribute="bottom" secondItem="iBD-e1-QyB" secondAttribute="bottom" constant="10" id="Tgf-li-tUb"/>
                             <constraint firstItem="vvL-1F-W8Z" firstAttribute="leading" secondItem="f3Z-j0-odr" secondAttribute="leadingMargin" constant="10" id="fV6-Pv-em6"/>

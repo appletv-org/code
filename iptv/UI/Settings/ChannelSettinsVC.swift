@@ -1,3 +1,4 @@
+
 //
 //  ChannelSettinsVC.swift
 //  iptv
@@ -9,19 +10,85 @@
 import UIKit
 
 
-class ChannelSettingsVC : UIViewController, ChannelPickerDelegate {
 
+class ChannelSettingsVC : UIViewController {
+    
+    
+    static let controllerList = ["ChannelSettingInfoVC", "ChannelSettingEditVC", "ChannelSettingAddVC"]
+    enum ControllerType : Int  {
+        case info = 0, edit, add
+    }
+    
+    enum OperationType : Int {
+        case edit = 0, add, delete, copyMove, reorder
+    }
+    
+    var bottomControllers = [UIViewController]()
+    var currentBottomController : UIViewController!
+    
     var currentPath = [String]()
     
     weak var channelPickerVC : ChannelPickerVC!
+    
+
     @IBOutlet weak var channelPickerView: UIView!
     
-    @IBOutlet weak var editButton: UIButton!
-    @IBOutlet weak var currentLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
     
-    @IBAction func addAction(_ sender: AnyObject) {
-        addM3uListDialog()
+    
+    @IBOutlet weak var segmentActions: UISegmentedControl!
+    
+    @IBAction func segmentActionChanged(_ sender: UISegmentedControl) {
+        setBottomPanel()
+
+        //print("change action")
     }
+    
+    @IBOutlet weak var bottomView: UIView!
+    
+    
+    func setBottomPanel(operation:OperationType? = nil) {
+        
+        var operationType = OperationType(rawValue: segmentActions.selectedSegmentIndex)!
+        if operation != nil {
+            operationType = operation!
+            segmentActions.selectedSegmentIndex = operation!.rawValue
+        }
+        
+        
+        var path = currentPath
+        if operationType == .add && path.count > 0 {
+            _ = path.popLast()
+        }
+        
+        if let remoteGroup = ChannelManager.findParentRemoteGroup(path) {
+            if let infoVC = setBottomController(.info) as? ChannelSettingInfoVC {
+               infoVC.setParameters("you can not make changes into remote group: \(remoteGroup.name)")
+            }
+            return
+        }
+        
+        switch operationType  {
+        case .edit:
+            if let editVC = setBottomController(.edit) as? ChannelSettingEditVC {
+                editVC.setParameters(currentPath, mode: .edit)
+            }
+            
+        case .add: //Add
+            if let addVC = setBottomController(.add) as? ChannelSettingAddVC {
+               addVC.setParameters(path)
+            }
+            
+            
+        default:
+            if let infoVC = setBottomController(.info) as? ChannelSettingInfoVC {
+                infoVC.setParameters("bottom control for index \(operationType.rawValue) not realize now")
+            }
+        }
+        
+        
+    }
+    
     
     @IBAction func delAction(_ sender: AnyObject) {
         
@@ -62,83 +129,101 @@ class ChannelSettingsVC : UIViewController, ChannelPickerDelegate {
         channelPickerVC.delegate = self
         channelPickerVC.setupPath([])
 
-        super.viewDidLoad()
+        
         
         addNavigationTitle("Channels")
         
-        
-    }
-    
-    func focusedPath(chooseControl: ChannelPickerVC,  path:[String]) {
-        currentPath = path
-        currentLabel.text = path.last
-    }
-    
-    
-    func addM3uListDialog() -> Void {
-        
-        let alertController = UIAlertController(title: "New playlist", message: nil, preferredStyle: .alert)
-        
-        // Add two text fields for text entry.
-        alertController.addTextField { textField in
-            // Customize the text field.
-            //textField.text = "Приморская локальная сеть"
-            textField.text =  "Edem"
-            textField.placeholder = NSLocalizedString("Name", comment: "")
+        //initialize bottom controllers
+        let settingsStoryboard = UIStoryboard(name: "Settings", bundle: Bundle.main)
+        for name in ChannelSettingsVC.controllerList {
+            let controller = settingsStoryboard.instantiateViewController(withIdentifier: name)
+            controller.view.translatesAutoresizingMaskIntoConstraints = false
+            bottomControllers.append(controller)
         }
-        alertController.addTextField { textField in
-            textField.text = "https://edem.tv/playlists/uplist/e7deff4ce5cd4097ca4b2ef7c2f875ad/edem_pl.m3u8"
-            textField.placeholder = NSLocalizedString("Url", comment: "")
-            // Specify a custom input accessory view with a descriptive title.
-            
-        }
-        
-        
-        // Create the actions.
-        alertController.addAction(UIAlertAction(title: "Add", style: .default) { [unowned alertController] _ in
-            
-            guard let name = alertController.textFields?.first?.text , name != "",
-                  let url =  alertController.textFields?.last?.text, url != ""
-            else {
-                print("Please fill all fields")
-                return
-            }
-            
-            do {
-                try self.addM3uList(name:name, url:url)
-            }
-            catch let error {
-                let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                self.present(alert, animated: true, completion: nil)
-            }
-        })
         
         /*
-         The cancel action is created the the `Cancel` style and no title.
-         This will allow us to capture the user clicking the menu button to
-         cancel the alert while not showing a specific cancel button.
+         //add bottom controllers to parent(self) controller
+         for controller in bottomControllers {
+         self.addChildViewController(controller)
+         controller.didMove(toParentViewController: self)
+         }
          */
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
-            print("The \"Text Entry\" alert's cancel action occured.")
-        })
         
-        present(alertController, animated: true, completion: nil)
+        //set bottom controller
+        currentBottomController = bottomControllers[ControllerType.info.rawValue]
         
+        self.bottomView.addSubviewWithSomeSize(currentBottomController.view)
+        if let infoVC = currentBottomController as? ChannelSettingInfoVC {
+            infoVC.setParameters("Please, select group/channel")
+        }
+        
+        super.viewDidLoad()
     }
-    
-    
-    func addM3uList(name:String, url:String) throws -> Void {
 
-        try ChannelManager.addM3uList(name: name, url: url)
-        ChannelManager.save()
-        channelPickerVC.setupPath([name])
+    override func viewDidLayoutSubviews() {
         
-        
-        //changePath([ChannelManager.root.name])
-
     }
 
     
+    func setBottomController(_ controllerType: ControllerType) -> UIViewController {
+        let controller = bottomControllers[controllerType.rawValue]
+        if currentBottomController != controller {
+        //self.bottomView.addSubviewWithSomeSize(newBottomController.view)
+            cycleController(oldViewController: currentBottomController, toViewController: controller)
+        }
+        
+        return controller
+    }
+    
+    func cycleControllerWithoutAutoLayout(oldViewController: UIViewController, toViewController newViewController: UIViewController) {
+        self.transition(from: oldViewController, to: newViewController, duration: 0.2, options: .transitionCrossDissolve , animations: nil,
+            completion:  { (complete) in
+                if complete {
+                    self.currentBottomController = newViewController
+                    //self.bottomView.setNeedsLayout()
+                }
+            }
+        )
+
+    }
+    
+    
+    func cycleController(oldViewController: UIViewController, toViewController newViewController: UIViewController) {
+        oldViewController.willMove(toParentViewController: nil)
+        self.addChildViewController(newViewController)
+        bottomView.addSubviewWithSomeSize(newViewController.view)
+        //print( "addSubviews bottomView.subviews.count = \(bottomView.subviews.count)")
+        newViewController.view.alpha = 0
+        newViewController.view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.1,
+            animations: {
+                newViewController.view.alpha = 1
+                oldViewController.view.alpha = 0
+            },
+            completion: { finished in
+                oldViewController.view.removeFromSuperview()
+                //print( "removeFromSuperview bottomView.subviews.count = \(self.bottomView.subviews.count)")
+                oldViewController.removeFromParentViewController()
+                newViewController.didMove(toParentViewController: self)
+                self.currentBottomController = newViewController
+            }
+        )
+    }
+    
+    
+    func setEditController(mode:ChannelSettingEditVC.EditMode) {
+        if let editVC = setBottomController(.edit) as? ChannelSettingEditVC {
+            var path = currentPath
+            let _ = path.popLast()
+            editVC.setParameters(path, mode: mode)
+        }
+    }
+    
+    func reloadPath(_ path: [String]) {
+        channelPickerVC.setupPath(path)
+    }
+    
+   
     /*
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         super.didUpdateFocus(in: context, with: coordinator)
@@ -148,7 +233,7 @@ class ChannelSettingsVC : UIViewController, ChannelPickerDelegate {
             focusedItem = nextFocusedItem
             if let cellItem = nextFocusedItem as? ChannelCell {
                 currentItem = cellItem.element
-                currentLabel.text = currentItem!.name
+                titleLabel.text = currentItem!.name
             }
         }
         
@@ -164,5 +249,12 @@ class ChannelSettingsVC : UIViewController, ChannelPickerDelegate {
 
 }
 
-
+extension ChannelSettingsVC : ChannelPickerDelegate {
+    
+    func focusedPath(chooseControl: ChannelPickerVC,  path:[String]) {
+        currentPath = path
+        setBottomPanel()
+    }
+    
+}
 
