@@ -52,6 +52,13 @@ func += <K, V> ( left: inout [K:V], right: [K:V]) {
     }
 }
 
+//String
+extension String
+{
+    var  isBlank:Bool {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+}
 
 //Date to string and vice versa
 extension Date {

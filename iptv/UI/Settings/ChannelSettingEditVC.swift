@@ -8,7 +8,8 @@
 
 import UIKit
 
-class ChannelSettingEditVC : FocusedViewController {
+
+class ChannelSettingEditVC : BottomController, BottomControllerProtocol {
     
     enum EditMode {
         case edit,
@@ -16,10 +17,9 @@ class ChannelSettingEditVC : FocusedViewController {
     }
     
     
-    var path : [String]!
     var mode : EditMode = .edit
-    var dirElement: DirElement?
     
+    @IBOutlet weak var fieldsStack: UIStackView!
     @IBOutlet weak var nameStack: UIStackView!
     @IBOutlet weak var nameTextField: UITextField!
     
@@ -35,32 +35,31 @@ class ChannelSettingEditVC : FocusedViewController {
     @IBOutlet weak var cancelButton: UIButton!
     
     
-    func setParameters(_ path : [String], mode:EditMode) {
+    func refresh() {
         
-        self.path = path
-        self.mode = mode
-        self.dirElement = ChannelManager.findDirElement(path)
         
-        if dirElement == nil {
+        if channelSettingVC.dirElement == nil {
             infoLabel.text = "Path is not exist"
             return
         }
         
-        let remoteGroup = ChannelManager.findParentRemoteGroup(path)
-        let haveRemoteGroup = (remoteGroup != nil)
+        let haveRemoteGroup = (channelSettingVC.remoteGroup != nil)
         
-        let reservedIndex = ChannelManager.reservedNames.index(where:{$0 == dirElement!.name})
+        let reservedIndex = ChannelManager.reservedNames.index(where:{$0 == channelSettingVC.dirElement!.name})
         
         let editable = !( mode == .edit && (haveRemoteGroup || reservedIndex != nil) )
         
         // name
-        nameTextField.text = (mode == .edit) ? dirElement!.name : ""
+        nameTextField.text = (mode == .edit) ? channelSettingVC.dirElement!.name : ""
         nameTextField.isEnabled = editable
         
         //url 
         if mode == .edit {
-            if let url = dirElement!.url {
+            if let url = channelSettingVC.dirElement!.url {
+                print("urlStack before false:\(self.urlStack.isHidden)")
                 urlStack.isHidden = false
+                print("urlStack after false:\(self.urlStack.isHidden)")
+                
                 urlTextField.text = url
             }
             else {
@@ -69,8 +68,7 @@ class ChannelSettingEditVC : FocusedViewController {
             urlTextField.isEnabled = editable
         }
         else {
-            let urlIsHidden = (mode == .addGroup)
-            urlStack.isHidden = urlIsHidden
+            urlStack.isHidden = (mode == .addGroup)
             urlTextField.text = "http://"
         }
         urlTextField.isEnabled = editable
@@ -83,7 +81,7 @@ class ChannelSettingEditVC : FocusedViewController {
         var info = ""
         if mode == .edit {
             if haveRemoteGroup {
-                info = "You can not edit the channels/groups are located into remote group: \(remoteGroup!.name)"
+                info = "You can not edit the channels/groups are located into remote group: \(channelSettingVC.remoteGroup!.name)"
             }
             if (reservedIndex != nil) {
                 info = "You can not change reserved group"
@@ -97,8 +95,7 @@ class ChannelSettingEditVC : FocusedViewController {
         saveButton.isEnabled = editable
         cancelButton.isEnabled = editable
         
-        //self.view.setNeedsLayout()
-        //self.view.layoutIfNeeded()
+        self.view.setNeedsLayout()
         
     }
     
@@ -106,19 +103,20 @@ class ChannelSettingEditVC : FocusedViewController {
         
         var err:Error? = nil
         if mode == .edit {
-            let isChangeName = (dirElement!.name != nameTextField.text)
+            let isChangeName = (channelSettingVC.dirElement!.name != nameTextField.text)
             
             
-            if case .channel(_) = dirElement! {
-                err = ChannelManager.changeChannel(path!, name: nameTextField.text!, url: nameTextField.text!)
+            if case .channel(_) = channelSettingVC.dirElement! {
+                err = ChannelManager.changeChannel(channelSettingVC.currentPath, name: nameTextField.text!, url: nameTextField.text!)
             }
-            else if case .group(_) = dirElement! {
-                err = ChannelManager.changeGroup(path!, name: nameTextField.text!)
+            else if case .group(_) = channelSettingVC.dirElement! {
+                err = ChannelManager.changeGroup(channelSettingVC.currentPath, name: nameTextField.text!)
             }
             
             if err == nil {
                 if isChangeName {
                     if let channelSettingsVC = self.parent as? ChannelSettingsVC {
+                        var path = channelSettingVC.currentPath
                         _ = path.popLast()
                         path.append(nameTextField.text!)
                         channelSettingsVC.reloadPath(path)
@@ -127,33 +125,28 @@ class ChannelSettingEditVC : FocusedViewController {
                 }
             }
         }
+        else { //add to parent group
+            var path = channelSettingVC.currentPath
+            if channelSettingVC.isFocusedPath {
+                let _ = path.popLast()
+            }
             
-        else if mode == .addGroup {
-            err = ChannelManager.addGroup(path, name:nameTextField.text!)
+            
+            if mode == .addGroup {
+                err = ChannelManager.addGroup(path, name:nameTextField.text!)
+            }
+            else if mode == .addChannel {
+                err = ChannelManager.addChannel(path, name:nameTextField.text!, url:urlTextField.text!)
+            }
+            
+            else if mode == .addRemoteGroup {
+                err = ChannelManager.addRemoteGroup(path, name: nameTextField.text!, url: urlTextField.text!)
+            }
             if err == nil {
-                if let channelSettingsVC = self.parent as? ChannelSettingsVC {
-                    channelSettingsVC.reloadPath(path)
-                }
+                path.append(nameTextField.text!)
+                channelSettingVC.reloadPath(path)
+            }
 
-            }
-        }
-            
-        else if mode == .addChannel {
-            err = ChannelManager.addChannel(path, name:nameTextField.text!, url:urlTextField.text!)
-            if err == nil {
-                if let channelSettingsVC = self.parent as? ChannelSettingsVC {
-                    channelSettingsVC.reloadPath(path)
-                }
-            }
-        }
-        
-        else if mode == .addRemoteGroup {
-            err = ChannelManager.addRemoteGroup(path, name: nameTextField.text!, url: urlTextField.text!)
-            if err == nil {
-                if let channelSettingsVC = self.parent as? ChannelSettingsVC {
-                    channelSettingsVC.reloadPath(path)
-                }
-            }
         }
         
         infoLabel.text = err != nil ? errMsg(err!) : ""
@@ -162,8 +155,8 @@ class ChannelSettingEditVC : FocusedViewController {
     
     @IBAction func cancelAction(_ sender: Any) {
         if mode == .edit {
-            nameTextField.text = dirElement!.name
-            if let url = dirElement!.url {
+            nameTextField.text = channelSettingVC.dirElement!.name
+            if let url = channelSettingVC.dirElement!.url {
                 urlTextField.text = url
             }
         }

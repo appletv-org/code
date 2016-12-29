@@ -8,10 +8,8 @@
 
 import UIKit
 
-class ChannelSettingAddVC : FocusedViewController {
+class ChannelSettingAddVC : BottomController, BottomControllerProtocol {
     
-    var path : [String]?
-    var dirElement: DirElement?
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var addButtonsStack: UIStackView!
@@ -34,32 +32,21 @@ class ChannelSettingAddVC : FocusedViewController {
         setEditController(mode:ChannelSettingEditVC.EditMode.addChannel)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        print("viewDidLoad")
-        //addRemoteGroupButton.addTarget(self, action: #selector(ChannelSettingAddVC.addRemoteGroup), for: .touchUpInside)
-    }
-
-    override func didMove(toParentViewController parent: UIViewController?) {
-        super.didMove(toParentViewController:parent)
-        //print("didMove toParentViewController")
-
-    }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        //print("viewDidLayoutSubviews")
-    }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    func refresh() {
         
-    }
-    
-    func setParameters(_ path:[String]) {
         var groupName = ChannelManager.groupNameRoot
-        if path.count > 0 {
-            groupName = path.last!
+        let path = channelSettingVC.currentPath
+        if channelSettingVC.isFocusedPath {
+            if path.count > 1 {
+                groupName = path[path.count - 2]
+            }
+        }
+        else {
+            if path.count > 0 {
+                groupName = path.last!
+            }
         }
         titleLabel.text = "Add to group:\(groupName)"
     }
@@ -67,10 +54,7 @@ class ChannelSettingAddVC : FocusedViewController {
 
     
     func setEditController(mode:ChannelSettingEditVC.EditMode) {
-        if let channelSettings = self.parent as? ChannelSettingsVC {
-            channelSettings.setEditController(mode:mode)
-        }
-        
+        channelSettingVC.setEditController(mode:mode)
     }
     
     

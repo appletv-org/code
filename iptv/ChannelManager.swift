@@ -220,6 +220,8 @@ class ChannelManager {
     static let reservedNames = [groupNameRoot, groupNameHidden, groupNameAll, groupNameFavorites]
     
     
+    var saveTimer : Timer?
+    
     // Singleton
     static let instance = ChannelManager()
     private init() {}
@@ -245,6 +247,16 @@ class ChannelManager {
         get {
             return ChannelManager.instance.rootGroup
         }
+    }
+    
+    class func lastName(_ path : [String]) -> String {
+        if path.count > 0 {
+            return path.last!
+        }
+        else {
+            return ChannelManager.groupNameRoot
+        }
+        
     }
     
     
@@ -338,12 +350,21 @@ class ChannelManager {
     }
     
     class func findParentRemoteGroup(_ path: [String]) -> GroupInfo? {
-        let ret = getPathElements(path)
-        guard let groups = ret.groups
+        let elements = getPathElements(path)
+        guard let groups = elements.groups
         else {
              return nil
         }
-        for ind in (0..<groups.count).reversed() {
+        var lastInd = groups.count-1
+        if elements.channel == nil {
+           lastInd -= 1
+        }
+        
+        if lastInd < 1 {
+            return nil
+        }
+        
+        for ind in (1...lastInd).reversed() {
             if groups[ind].remoteInfo != nil {
                 return groups[ind]
             }
@@ -392,32 +413,48 @@ class ChannelManager {
     }
 
     class func save() {
-        let data = NSKeyedArchiver.archivedData(withRootObject: ChannelManager.root)
-        UserDefaults.standard.set(data, forKey: ChannelManager.userDefaultKey)
+        let man = ChannelManager.instance
+        if man.saveTimer != nil {
+            man.saveTimer!.invalidate()
+        }
+        man.saveTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false, block: { (timer) in
+            let data = NSKeyedArchiver.archivedData(withRootObject: ChannelManager.root)
+            UserDefaults.standard.set(data, forKey: ChannelManager.userDefaultKey)
+            print("saved channels")
+            man.saveTimer = nil
+        })
     }
     
 
-    class func delPath(_ path: [String]) -> Bool {
+    class func delPathElement(_ path: [String]) -> Error? {
         let group = findParentGroup(path)
         if(group == nil) {
-            return false
+            return Err("Not found parent group")
         }
         if let index = group!.groups.index(where: {$0.name == path.last})  {
             group!.groups.remove(at: index)
-            return true
+            ChannelManager.save()
+            return nil
         }
         if let index = group!.channels.index(where: {$0.name == path.last})  {
             group!.channels.remove(at: index)
-            return true
+            ChannelManager.save()
+            return nil
         }
-        return false
+        return Err("Not found path element:\(path.split(separator:"->"))")
     }
     
     class func changeChannel(_ path:[String], name newName:String, url newUrl:String) -> Error? {
         
-        if let _ = ChannelManager.reservedNames.index(of:newName) {
-            return Err("Reserved name")
+        if newName.isBlank {
+            return Err("You cann't use blank string")
         }
+        
+        if let _ = ChannelManager.reservedNames.index(of:newName) {
+            return Err("You cann't use reserved name: \"\(newName)\"")
+        }
+        
+        
         
         let pathElements = ChannelManager.getPathElements(path)
         if let channel = pathElements.channel,
@@ -445,7 +482,11 @@ class ChannelManager {
     }
     
     class func changeGroup(_ path:[String], name newName:String) -> Error? {
-        
+
+        if newName.isBlank {
+            return Err("You cann't use blank string")
+        }
+
         if let _ = ChannelManager.reservedNames.index(of:newName) {
             return Err("Reserved name")
         }
@@ -554,11 +595,152 @@ class ChannelManager {
         
         let parentGroup = pathElements.groups!.last!
         parentGroup.groups.append(group)
+        ChannelManager.save()
         
         return nil
     }
     
+    class func reorderPath(_ path: [String], shift: Int) -> Error?
+    {
+        let pathElements = ChannelManager.getPathElements(path)
+        if pathElements.groups == nil {
+            return Err("Not found source path:\(path.split(separator: "->"))")
+        }
+
+        if pathElements.channel != nil {
+            let group = pathElements.groups!.last!
+            if let ind = group.channels.index(of:pathElements.channel!) {
+                var newInd = ind + shift
+                if newInd < 0 {
+                    newInd = 0
+                }
+                if newInd >= group.channels.count {
+                    newInd = group.channels.count - 1
+                }
+                group.channels.remove(at: ind)
+                group.channels.insert(pathElements.channel!, at:newInd)
+                ChannelManager.save()
+            }
+        }
+        else {
+            if pathElements.groups!.count > 1 {
+                let group = pathElements.groups![pathElements.groups!.count-2]
+                let movingGroup = pathElements.groups!.last!
+                
+                if let ind = group.groups.index(of:movingGroup) {
+                    var newInd = ind + shift
+                    if newInd < 0 {
+                        newInd = 0
+                    }
+                    if newInd >= group.groups.count {
+                        newInd = group.groups.count - 1
+                    }
+                    group.groups.remove(at: ind)
+                    group.groups.insert(movingGroup, at:newInd)
+                    ChannelManager.save()
+                }
+
+            }
+        }
+        
+    }
     
+    
+    class func movePath(_ path: [String], to:[String], index:Int? = nil) -> Error?  { // if index == 0 to last group/channel
+        let pathElements = ChannelManager.getPathElements(path)
+        if pathElements.groups == nil {
+            return Err("Not found source path:\(path.split(separator: "->"))")
+        }
+
+        let pathToElements = ChannelManager.getPathElements(to)
+        if pathToElements.groups == nil {
+            return Err("Not found destination path:\(to.split(separator: "->"))")
+        }
+        
+        //check pathTo is group (not channel)
+        if pathToElements.channel != nil {
+            return Err("You can't copy/move to channel")
+        }
+        
+        //check copy/move to Remote group
+        if let remoteGroup = pathToElements.groups!.first(where: {$0.remoteInfo != nil }) {
+            return Err("You can't cope/move to Remote group:\"\(remoteGroup.name)\"")
+        }
+        
+        //check favorite
+        //      to favorite
+        if pathToElements.groups!.count == 1 && pathToElements.groups![0].name == ChannelManager.groupNameFavorites {
+            if pathElements.channel == nil {
+                return Err("You can't copy/move group to Favorite is impossible")
+            }
+        }
+        
+        //      from favorite
+        if pathElements.groups!.count == 1 && pathElements.groups![0].name == ChannelManager.groupNameFavorites {
+            if pathElements.channel == nil {
+                return Err("You can't copy/move group Favorite")
+            }
+        }
+        
+        //check recursion (copy from parent group to child group)
+        var isRecursion = false
+        if  pathElements.channel == nil,
+            pathElements.groups!.count <= pathToElements.groups!.count
+        {
+            isRecursion = true
+            for ind in (0..<pathElements.groups!.count) {
+                if pathElements.groups![ind] !=  pathToElements.groups![ind] {
+                    isRecursion = false
+                    break
+                }
+            }
+        }
+        
+        if isRecursion {
+            return Err("You can't copy/move parent group to child group")
+        }
+        
+        
+        
+        //move channel
+        let groupTo = pathToElements.groups!.last!
+        if let channel = pathElements.channel {
+            let group = pathElements.groups!.last!
+            if let ind = group.channels.index(of: channel) {
+                group.channels.remove(at: ind)
+                if index == nil || index! >= groupTo.channels.count-1 {
+                    groupTo.channels.append(channel)
+                }
+                else {
+                    groupTo.channels.insert(channel, at: index!)
+                }
+            }
+        }
+        else {
+            if pathElements.groups!.count > 1 {
+                let group = pathElements.groups![pathElements.groups!.count-2]
+                let copingGroup = pathElements.groups!.last!
+                if let ind = group.groups.index(of: copingGroup) {
+                    group.groups.remove(at: ind)
+                }
+                if index == nil || index! >= groupTo.channels.count-1 {
+                    groupTo.groups.append(copingGroup)
+                }
+                else {
+                    groupTo.groups.insert(copingGroup, at: index!)
+                }
+                
+            }
+        }
+        
+        
+    }
+    
+/*
+    class func movePath(_ path: [String], after:[String])
+    
+    class func movePath(_ path: [String], before:[String])
+*/
     
 }
 

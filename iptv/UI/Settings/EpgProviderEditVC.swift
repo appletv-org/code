@@ -108,7 +108,8 @@ class EpgProviderEditVC: UIViewController {
     //update settings
     @IBOutlet weak var updateDayButton: UIButton!
     @IBAction func updateDayAction(_ sender: UIButton) {
-        self.simpleAlertChooser(title: "Choose update day", message: "" , buttonTitles: UpdateTime.days, completion:  { (ind) in
+        self.simpleAlertChooser(title: "Choose update day", message: "" , buttonTitles: UpdateTime.days,
+            prefferButton: self.updateTime.day+1, completion:  { (ind) in
             self.updateTime.day = ind-1
             self.updateDayButton.setTitle(UpdateTime.days[ind], for: .normal)
             print("you choose \(UpdateTime.days[ind])")
@@ -122,6 +123,7 @@ class EpgProviderEditVC: UIViewController {
     @IBAction func updateNowAction(_ sender: UIButton) {
         if providerInfo != nil {
             ProgramManager.instance.updateData(providerInfo!)
+            let _ = self.navigationController?.popViewController(animated: true)
         }
     }
     
@@ -146,6 +148,7 @@ class EpgProviderEditVC: UIViewController {
     @IBAction func useForAction(_ sender: UIButton) {
         self.simpleAlertChooser(title: "Select the purpose for which the provider is used", message: "" ,
                                 buttonTitles: EpgProviderEditVC.useForVariants,
+                                prefferButton: useForIndex,
                                 completion:  { (ind) in
             self.useForIndex = ind
             self.useForButton.setTitle(EpgProviderEditVC.useForVariants[ind], for: .normal)

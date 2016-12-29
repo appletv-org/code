@@ -9,24 +9,35 @@
 
 import UIKit
 
+protocol BottomControllerProtocol {
+    func refresh()
+}
+
+class BottomController : FocusedViewController {
+    weak var channelSettingVC : ChannelSettingsVC!
+}
 
 
-class ChannelSettingsVC : UIViewController {
+class ChannelSettingsVC : FocusedViewController {
     
     
-    static let controllerList = ["ChannelSettingInfoVC", "ChannelSettingEditVC", "ChannelSettingAddVC"]
+    static let controllerList = ["ChannelSettingInfoVC", "ChannelSettingEditVC", "ChannelSettingAddVC", "ChannelSettingDeleteVC", "ChannelSettingCopyVC", "ChannelSettingReorderVC"]
     enum ControllerType : Int  {
-        case info = 0, edit, add
+        case info = 0, edit, add, delete, copy, reorder
     }
     
     enum OperationType : Int {
         case edit = 0, add, delete, copyMove, reorder
     }
     
-    var bottomControllers = [UIViewController]()
-    var currentBottomController : UIViewController!
-    
     var currentPath = [String]()
+    var dirElement : DirElement?
+    var remoteGroup : GroupInfo?
+    var isFocusedPath = false
+    
+    var bottomControllers = [BottomController]()
+    var currentBottomController : BottomController!
+    
     
     weak var channelPickerVC : ChannelPickerVC!
     
@@ -39,6 +50,11 @@ class ChannelSettingsVC : UIViewController {
     @IBOutlet weak var segmentActions: UISegmentedControl!
     
     @IBAction func segmentActionChanged(_ sender: UISegmentedControl) {
+        if segmentActions.selectedSegmentIndex == OperationType.edit.rawValue,
+            let editVC = bottomControllers[ControllerType.edit.rawValue] as? ChannelSettingEditVC
+        {
+            editVC.mode = .edit
+        }
         setBottomPanel()
 
         //print("change action")
@@ -56,72 +72,48 @@ class ChannelSettingsVC : UIViewController {
         }
         
         
-        var path = currentPath
-        if operationType == .add && path.count > 0 {
-            _ = path.popLast()
-        }
-        
-        if let remoteGroup = ChannelManager.findParentRemoteGroup(path) {
-            if let infoVC = setBottomController(.info) as? ChannelSettingInfoVC {
-               infoVC.setParameters("you can not make changes into remote group: \(remoteGroup.name)")
-            }
-            return
-        }
-        
         switch operationType  {
         case .edit:
+            
             if let editVC = setBottomController(.edit) as? ChannelSettingEditVC {
-                editVC.setParameters(currentPath, mode: .edit)
+                editVC.refresh()
             }
             
         case .add: //Add
-            if let addVC = setBottomController(.add) as? ChannelSettingAddVC {
-               addVC.setParameters(path)
-            }
             
-            
-        default:
-            if let infoVC = setBottomController(.info) as? ChannelSettingInfoVC {
-                infoVC.setParameters("bottom control for index \(operationType.rawValue) not realize now")
-            }
-        }
-        
-        
-    }
-    
-    
-    @IBAction func delAction(_ sender: AnyObject) {
-        
-        if currentPath.count >= 1 { //we cannot del root group
-            
-            //find prev elem
-            var index = 0
-            let parentGroup = ChannelManager.findParentGroup(currentPath)
-            if parentGroup != nil {
-                index = parentGroup!.findDirIndex(currentPath.last!)
-            }
-            
-            if ChannelManager.delPath(currentPath) {
-                if (parentGroup != nil && index >= 0) {
-                    if index >= parentGroup!.countDirElements() {
-                        index -= 1
-                    }
-                    if index < 0 {
-                        index = 0
-                    }
-                    currentPath = Array(currentPath[0..<currentPath.count])
-                    if let nextElement = parentGroup?.findDirElement(index: index) {
-                        currentPath += [nextElement.name]
-                    }
-                    channelPickerVC.setupPath(currentPath)
+            if remoteGroup != nil {
+                if let infoVC = setBottomController(.info) as? ChannelSettingInfoVC {
+                    infoVC.infoLabel.text = "You cann't modify elements into remote group:\(remoteGroup!.name)"
                 }
-                
-                ChannelManager.save()
+            }
+            else {
+                if let addVC = setBottomController(.add) as? ChannelSettingAddVC {
+                   addVC.refresh()
+                }
+            }
+            
+        case .delete:
+            if let delVC = setBottomController(.delete) as? ChannelSettingDeleteVC {
+                delVC.refresh()
+            }
+            
+        case .copyMove:
+            
+            if let copyVC = setBottomController(.copy) as? ChannelSettingCopyVC {
+                copyVC.refresh()
+            }
+            
+        case .reorder:
+            
+            if let orderVC = setBottomController(.reorder) as? ChannelSettingReorderVC {
+                orderVC.refresh()
             }
         }
+            
         
     }
     
+
     
     override func viewDidLoad() {
         
@@ -136,9 +128,11 @@ class ChannelSettingsVC : UIViewController {
         //initialize bottom controllers
         let settingsStoryboard = UIStoryboard(name: "Settings", bundle: Bundle.main)
         for name in ChannelSettingsVC.controllerList {
-            let controller = settingsStoryboard.instantiateViewController(withIdentifier: name)
-            controller.view.translatesAutoresizingMaskIntoConstraints = false
-            bottomControllers.append(controller)
+            if let controller = settingsStoryboard.instantiateViewController(withIdentifier: name) as? BottomController {
+                controller.view.translatesAutoresizingMaskIntoConstraints = false
+                controller.channelSettingVC = self
+                bottomControllers.append(controller)
+            }
         }
         
         /*
@@ -154,7 +148,7 @@ class ChannelSettingsVC : UIViewController {
         
         self.bottomView.addSubviewWithSomeSize(currentBottomController.view)
         if let infoVC = currentBottomController as? ChannelSettingInfoVC {
-            infoVC.setParameters("Please, select group/channel")
+            infoVC.infoLabel.text = "Please, select group/channel"
         }
         
         super.viewDidLoad()
@@ -165,7 +159,7 @@ class ChannelSettingsVC : UIViewController {
     }
 
     
-    func setBottomController(_ controllerType: ControllerType) -> UIViewController {
+    func setBottomController(_ controllerType: ControllerType) -> BottomController {
         let controller = bottomControllers[controllerType.rawValue]
         if currentBottomController != controller {
         //self.bottomView.addSubviewWithSomeSize(newBottomController.view)
@@ -174,21 +168,9 @@ class ChannelSettingsVC : UIViewController {
         
         return controller
     }
+        
     
-    func cycleControllerWithoutAutoLayout(oldViewController: UIViewController, toViewController newViewController: UIViewController) {
-        self.transition(from: oldViewController, to: newViewController, duration: 0.2, options: .transitionCrossDissolve , animations: nil,
-            completion:  { (complete) in
-                if complete {
-                    self.currentBottomController = newViewController
-                    //self.bottomView.setNeedsLayout()
-                }
-            }
-        )
-
-    }
-    
-    
-    func cycleController(oldViewController: UIViewController, toViewController newViewController: UIViewController) {
+    func cycleController(oldViewController: BottomController, toViewController newViewController: BottomController) {
         oldViewController.willMove(toParentViewController: nil)
         self.addChildViewController(newViewController)
         bottomView.addSubviewWithSomeSize(newViewController.view)
@@ -213,47 +195,41 @@ class ChannelSettingsVC : UIViewController {
     
     func setEditController(mode:ChannelSettingEditVC.EditMode) {
         if let editVC = setBottomController(.edit) as? ChannelSettingEditVC {
-            var path = currentPath
-            let _ = path.popLast()
-            editVC.setParameters(path, mode: mode)
+            editVC.mode = mode
+            editVC.refresh()
         }
     }
     
     func reloadPath(_ path: [String]) {
         channelPickerVC.setupPath(path)
+        self.viewToFocus = channelPickerVC.collectionView
     }
     
-   
-    /*
-    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
-        super.didUpdateFocus(in: context, with: coordinator)
-        
-        if let nextFocusedItem = context.nextFocusedItem {
-            //print("nextFocusedItem : \(nextFocusedItem)")
-            focusedItem = nextFocusedItem
-            if let cellItem = nextFocusedItem as? ChannelCell {
-                currentItem = cellItem.element
-                titleLabel.text = currentItem!.name
-            }
-        }
-        
-        /*
-        if let previouslyFocusedItem = context.previouslyFocusedItem {
-            print("previouslyFocusedItem : \(previouslyFocusedItem)")
-        }
-         */
-        
-    }
-     */
-
-
 }
 
 extension ChannelSettingsVC : ChannelPickerDelegate {
     
     func focusedPath(chooseControl: ChannelPickerVC,  path:[String]) {
+        print("ChannelSettingsVC.focusedPath \(path.split(separator:"->"))")
         currentPath = path
+        dirElement = ChannelManager.findDirElement(path)
+        isFocusedPath = true
+        remoteGroup = ChannelManager.findParentRemoteGroup(currentPath)
         setBottomPanel()
+    }
+    
+    func changePath(chooseControl: ChannelPickerVC,  path:[String]) {
+        print("ChannelSettingsVC.changePath \(path.split(separator:"->"))")
+        dirElement = ChannelManager.findDirElement(path)
+        if case let .group(groupInfo) = dirElement! {
+            if groupInfo.countDirElements() == 0 {
+                currentPath = path
+                isFocusedPath = false
+                remoteGroup = ChannelManager.findParentRemoteGroup(currentPath)
+                setBottomPanel()
+            }
+        }
+        
     }
     
 }

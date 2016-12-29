@@ -8,14 +8,12 @@
 
 import UIKit
 
-class ChannelSettingInfoVC : FocusedViewController {
+class ChannelSettingInfoVC : BottomController {
     
     @IBOutlet weak var infoLabel: UILabel!
- 
-    func setParameters(_ infoText:String) {
-        infoLabel.text = infoText
+    
+    func refresh() {
+        
     }
-    
-    
     
 }
