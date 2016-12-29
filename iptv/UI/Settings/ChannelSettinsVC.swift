@@ -200,9 +200,11 @@ class ChannelSettingsVC : FocusedViewController {
         }
     }
     
-    func reloadPath(_ path: [String]) {
+    func reloadPath(_ path: [String], isFocused:Bool = true) {
         channelPickerVC.setupPath(path)
-        self.viewToFocus = channelPickerVC.collectionView
+        if isFocused {
+            self.viewToFocus = channelPickerVC.collectionView
+        }
     }
     
 }

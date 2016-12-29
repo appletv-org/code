@@ -617,9 +617,11 @@ class ChannelManager {
                 if newInd >= group.channels.count {
                     newInd = group.channels.count - 1
                 }
-                group.channels.remove(at: ind)
-                group.channels.insert(pathElements.channel!, at:newInd)
-                ChannelManager.save()
+                if ind != newInd {
+                    group.channels.remove(at: ind)
+                    group.channels.insert(pathElements.channel!, at:newInd)
+                    ChannelManager.save()
+                }
             }
         }
         else {
@@ -635,14 +637,17 @@ class ChannelManager {
                     if newInd >= group.groups.count {
                         newInd = group.groups.count - 1
                     }
-                    group.groups.remove(at: ind)
-                    group.groups.insert(movingGroup, at:newInd)
-                    ChannelManager.save()
+                    
+                    if ind != newInd {
+                        group.groups.remove(at: ind)
+                        group.groups.insert(movingGroup, at:newInd)
+                        ChannelManager.save()
+                    }
                 }
 
             }
         }
-        
+        return nil        
     }
     
     
@@ -733,7 +738,7 @@ class ChannelManager {
             }
         }
         
-        
+        return nil
     }
     
 /*
