@@ -441,7 +441,7 @@ class ChannelManager {
             ChannelManager.save()
             return nil
         }
-        return Err("Not found path element:\(path.split(separator:"->"))")
+        return Err("Not found path element:\(path.joined(separator:"->"))")
     }
     
     class func changeChannel(_ path:[String], name newName:String, url newUrl:String) -> Error? {
@@ -477,7 +477,7 @@ class ChannelManager {
             
         }
         else {
-            return Err("Not found path:\(path.split(separator: "->"))")
+            return Err("Not found path:\(path.joined(separator: "->"))")
         }
     }
     
@@ -512,7 +512,7 @@ class ChannelManager {
             
         }
         else {
-            return Err("Not found path:\(path.split(separator: "->"))")
+            return Err("Not found path:\(path.joined(separator: "->"))")
         }
     }
     
@@ -540,7 +540,7 @@ class ChannelManager {
             
         }
         else {
-            return Err("Not found path:\(path.split(separator: "->"))")
+            return Err("Not found path:\(path.joined(separator: "->"))")
         }
         
     }
@@ -568,7 +568,7 @@ class ChannelManager {
             
         }
         else {
-            return Err("Not found path:\(path.split(separator: "->"))")
+            return Err("Not found path:\(path.joined(separator: "->"))")
         }
         
     }
@@ -589,7 +589,7 @@ class ChannelManager {
         
         let pathElements = ChannelManager.getPathElements(path)
         if pathElements.groups == nil {
-            return Err("Not found path:\(path.split(separator: "->"))")
+            return Err("Not found path:\(path.joined(separator: "->"))")
         }
         
         
@@ -604,7 +604,7 @@ class ChannelManager {
     {
         let pathElements = ChannelManager.getPathElements(path)
         if pathElements.groups == nil {
-            return Err("Not found source path:\(path.split(separator: "->"))")
+            return Err("Not found source path:\(path.joined(separator: "->"))")
         }
 
         if pathElements.channel != nil {
@@ -651,20 +651,28 @@ class ChannelManager {
     }
     
     
-    class func movePath(_ path: [String], to:[String], index:Int? = nil) -> Error?  { // if index == 0 to last group/channel
+    class func isAvailableMoveCopy(_ path: [String], to:[String]) -> Error? {
+
         let pathElements = ChannelManager.getPathElements(path)
         if pathElements.groups == nil {
-            return Err("Not found source path:\(path.split(separator: "->"))")
+            return Err("Not found source path:\(path.joined(separator: "->"))")
         }
-
+        
         let pathToElements = ChannelManager.getPathElements(to)
         if pathToElements.groups == nil {
-            return Err("Not found destination path:\(to.split(separator: "->"))")
+            return Err("Not found destination path:\(to.joined(separator: "->"))")
         }
+        
         
         //check pathTo is group (not channel)
         if pathToElements.channel != nil {
             return Err("You can't copy/move to channel")
+        }
+        
+        //check duplicate name
+        let sourceName = pathElements.channel != nil ? pathElements.channel!.name : pathElements.groups!.last!.name
+        if let dirElement = pathToElements.groups!.last!.findDirElement(sourceName) {
+            return Err("Group has item with the same name")
         }
         
         //check copy/move to Remote group
@@ -687,6 +695,8 @@ class ChannelManager {
             }
         }
         
+        
+        
         //check recursion (copy from parent group to child group)
         var isRecursion = false
         if  pathElements.channel == nil,
@@ -705,7 +715,32 @@ class ChannelManager {
             return Err("You can't copy/move parent group to child group")
         }
         
+        return nil
         
+    }
+    
+    class func movePath(_ path: [String], to:[String], index:Int? = nil) -> Error?  { // if index == 0 to last group/channel
+        
+        if let err = ChannelManager.isAvailableMoveCopy(path, to:to) {
+            return err
+        }
+        
+        let pathElements = ChannelManager.getPathElements(path)
+        let pathToElements = ChannelManager.getPathElements(to)
+
+        //check move from remote group
+        var lastIndex = pathElements.groups!.count - 1
+        if pathElements.channel == nil {
+            lastIndex -= 1
+        }
+        
+        if lastIndex > 1 {
+            for ind in 1...lastIndex {
+                if pathElements.groups![ind].remoteInfo != nil {
+                    return Err("You can't move from remote group:\"\(pathElements.groups![ind].name)\"")
+                }
+            }
+        }
         
         //move channel
         let groupTo = pathToElements.groups!.last!
@@ -737,9 +772,49 @@ class ChannelManager {
                 
             }
         }
+        ChannelManager.save()
         
         return nil
     }
+    
+    class func copyPath(_ path: [String], to:[String], index:Int? = nil) -> Error?  { // if index == 0 to last group/channel
+        
+        if let err = ChannelManager.isAvailableMoveCopy(path, to:to) {
+            return err
+        }
+        
+        let pathElements = ChannelManager.getPathElements(path)
+        let pathToElements = ChannelManager.getPathElements(to)
+        
+        
+        
+        //copy channel
+        let groupTo = pathToElements.groups!.last!
+        if let channel = pathElements.channel {
+            if index == nil || index! >= groupTo.channels.count-1 {
+                groupTo.channels.append(channel)
+            }
+            else {
+                groupTo.channels.insert(channel, at: index!)
+            }
+        }
+        else {
+            if pathElements.groups!.count > 1 {
+                let group = pathElements.groups![pathElements.groups!.count-2]
+                let copingGroup = pathElements.groups!.last!
+                if index == nil || index! >= groupTo.channels.count-1 {
+                    groupTo.groups.append(copingGroup)
+                }
+                else {
+                    groupTo.groups.insert(copingGroup, at: index!)
+                }
+            }
+        }
+        ChannelManager.save()
+        
+        return nil
+    }
+
     
 /*
     class func movePath(_ path: [String], after:[String])
@@ -752,6 +827,20 @@ class ChannelManager {
 
     
 extension  ChannelManager { //parsing m3u list
+    
+    
+    class func nameWithVersion(_ name:String, _ duplicateNames:inout [String:Int]) -> String {
+        let ver = duplicateNames[name]
+        if ver != nil {
+            duplicateNames[name] = ver! + 1
+            return "\(name) .\(ver!)"
+        }
+        else {
+            duplicateNames[name] = 1
+            return name
+        }
+    }
+    
     class func addM3uList(url:String, toGroup:GroupInfo) throws -> Void {
     
         let items = try parseM3u(string:url)
@@ -782,16 +871,20 @@ extension  ChannelManager { //parsing m3u list
                 let group = GroupInfo(name:nameGroup, groups:[], channels:[])
                 toGroup.groups.append(group)
                 
+                var duplicateNames = [String: Int]()
                 for item in itemList {
-                    let channel = ChannelInfo(name:item.name!, url:item.url!)
+                    let name = ChannelManager.nameWithVersion(item.name!, &duplicateNames)
+                    let channel = ChannelInfo(name:name, url:item.url!)
                     group.channels.append(channel)
                     //print("add channel:\(channel.name) to group:\(group.name)")
                 }
             }
             
             //add items without groups
-            for item in channelList {
-                let channel = ChannelInfo(name:item.name!, url:item.url!)
+            var duplicateNames = [String: Int]()
+            for item in channelList {                
+                let name = ChannelManager.nameWithVersion(item.name!, &duplicateNames)
+                let channel = ChannelInfo(name:name, url:item.url!)
                 toGroup.channels.append(channel)
             }
             

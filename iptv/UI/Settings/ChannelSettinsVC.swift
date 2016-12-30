@@ -205,6 +205,9 @@ class ChannelSettingsVC : FocusedViewController {
         if isFocused {
             self.viewToFocus = channelPickerVC.collectionView
         }
+        else {
+            
+        }
     }
     
 }
@@ -212,7 +215,7 @@ class ChannelSettingsVC : FocusedViewController {
 extension ChannelSettingsVC : ChannelPickerDelegate {
     
     func focusedPath(chooseControl: ChannelPickerVC,  path:[String]) {
-        print("ChannelSettingsVC.focusedPath \(path.split(separator:"->"))")
+        print("ChannelSettingsVC.focusedPath \(path.joined(separator:"->"))")
         currentPath = path
         dirElement = ChannelManager.findDirElement(path)
         isFocusedPath = true
@@ -221,7 +224,7 @@ extension ChannelSettingsVC : ChannelPickerDelegate {
     }
     
     func changePath(chooseControl: ChannelPickerVC,  path:[String]) {
-        print("ChannelSettingsVC.changePath \(path.split(separator:"->"))")
+        print("ChannelSettingsVC.changePath \(path.joined(separator:"->"))")
         dirElement = ChannelManager.findDirElement(path)
         if case let .group(groupInfo) = dirElement! {
             if groupInfo.countDirElements() == 0 {

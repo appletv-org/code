@@ -1085,7 +1085,7 @@
                                 <rect key="frame" x="30" y="0.0" width="1820" height="80"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="OqJ-Me-yhD">
-                                        <rect key="frame" x="10" y="7" width="381" height="66"/>
+                                        <rect key="frame" x="10" y="7" width="429" height="66"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DcE-eH-JKs">
                                                 <rect key="frame" x="0.0" y="0.0" width="77" height="66"/>
@@ -1105,7 +1105,16 @@
                                                 <rect key="frame" x="271" y="0.0" width="110" height="66"/>
                                                 <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                                 <state key="normal" title="Copy"/>
+                                                <connections>
+                                                    <action selector="copyAction:" destination="opw-wr-Uf6" eventType="primaryActionTriggered" id="wMi-8J-sPH"/>
+                                                </connections>
                                             </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WrZ-7A-Cl2">
+                                                <rect key="frame" x="421" y="0.0" width="8" height="66"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                                <color key="textColor" red="0.85986328125" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                     </stackView>
                                 </subviews>
@@ -1137,8 +1146,8 @@
                     <size key="freeformSize" width="1880" height="615"/>
                     <connections>
                         <outlet property="channelPickerToView" destination="k91-OU-ynK" id="8Ju-u7-Ky2"/>
-                        <outlet property="copyAction" destination="E2F-vO-qUQ" id="jZb-5D-Rkz"/>
                         <outlet property="copyButton" destination="E2F-vO-qUQ" id="SwB-M1-8sH"/>
+                        <outlet property="errorLabel" destination="WrZ-7A-Cl2" id="Tks-mr-7b8"/>
                         <outlet property="infoLabel" destination="DcE-eH-JKs" id="1J0-v7-mAD"/>
                         <outlet property="moveButton" destination="MFi-Je-XdE" id="ylh-YA-eN2"/>
                     </connections>
@@ -1205,20 +1214,11 @@
                                     <constraint firstItem="gPi-hY-UHP" firstAttribute="centerY" secondItem="GuS-dX-Q93" secondAttribute="centerY" id="qlR-n0-wgQ"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fhH-Ey-jke">
-                                <rect key="frame" x="40" y="240" width="1800" height="39"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="GuS-dX-Q93" secondAttribute="trailing" constant="10" id="0YC-gq-4PQ"/>
                             <constraint firstItem="GuS-dX-Q93" firstAttribute="leading" secondItem="6ly-B2-zqA" secondAttribute="leadingMargin" constant="10" id="3ir-4r-EiP"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="fhH-Ey-jke" secondAttribute="trailing" constant="20" id="7TC-Xd-3B3"/>
                             <constraint firstItem="GuS-dX-Q93" firstAttribute="top" secondItem="KhD-EL-m8C" secondAttribute="bottom" constant="100" id="cDV-vu-jL1"/>
-                            <constraint firstItem="fhH-Ey-jke" firstAttribute="leading" secondItem="6ly-B2-zqA" secondAttribute="leadingMargin" constant="20" id="hOB-ii-szW"/>
-                            <constraint firstItem="fhH-Ey-jke" firstAttribute="top" secondItem="GuS-dX-Q93" secondAttribute="bottom" constant="60" id="oWn-Qd-V9Y"/>
                         </constraints>
                     </view>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -1226,7 +1226,6 @@
                     <connections>
                         <outlet property="arrowLeftButton" destination="aT3-4B-kiF" id="tDY-ia-Prn"/>
                         <outlet property="arrowRightButton" destination="cgK-8V-K3x" id="la2-TR-vRX"/>
-                        <outlet property="infoLabel" destination="fhH-Ey-jke" id="a2K-PY-q1r"/>
                         <outlet property="movedLabel" destination="IiM-3f-dLe" id="n4f-Rt-c7p"/>
                     </connections>
                 </viewController>

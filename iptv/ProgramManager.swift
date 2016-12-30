@@ -212,6 +212,47 @@ class ProgramManager {
         
     }
     
+    func programNameShift(_ name:String) -> (name:String, shiftTime:Int) { //name withoup hour zone and version, example: chanel name +2 .3 -> +2:shifttime, .3:version
+        var components = name.components(separatedBy: " ")
+        if components.count == 1 {
+            return (name, 0)
+        }
+        
+        //remove version ( <space>.<number>)
+        var lastComp = components.last!
+        if  lastComp.characters.count >= 2,
+            lastComp.characters[lastComp.startIndex] == "."
+        {
+            let ver = String(lastComp.characters.dropFirst())
+            if Int(ver) != nil {
+                let _ = components.popLast()
+            }
+        }
+        
+        if components.count == 1 {
+            return (components[0], 0)
+        }
+
+        //remove timeShift ( <space><+/-><number>)
+        var timeShift :Int? = nil
+        lastComp = components.last!
+        if  lastComp.characters.count >= 2 {
+            let firstSymbol = lastComp.characters[lastComp.startIndex]
+            if firstSymbol == "+" ||  firstSymbol == "-" {
+                let timeShift = Int(lastComp)
+                if timeShift != nil {
+                    let _ = components.popLast()
+                }
+            }
+        }
+        
+        if timeShift == nil {
+            timeShift = 0
+        }
+        return ( components.joined(separator:" "), timeShift!)
+        
+    }
+    
     func getPrograms(channel: String, from:Date?=nil, to:Date?=nil )  -> [EpgProgram] {
         
         for provider in epgProviders  where provider.parseProgram {
@@ -226,8 +267,11 @@ class ProgramManager {
     
     func getProviderPrograms(provider:EpgProviderInfo, channel: String, from:Date?=nil, to:Date?=nil )  -> [EpgProgram] {
         
+        
+        let nameShift = programNameShift(channel)
+        
         guard let dbChannel : EpgChannel = CoreDataManager.requestFirstElement(
-                        NSPredicate(format: "name == %@ AND provider.name == %@",channel.lowercased(),  provider.name)),
+                        NSPredicate(format: "name == %@ AND provider.name == %@", nameShift.name.lowercased(),  provider.name)),
               var programs = dbChannel.programs?.allObjects as? [EpgProgram]
         else {
              return []
@@ -292,15 +336,7 @@ class ProgramManager {
     func getProviderIcon(channel: String, provider: String, completion:@escaping (Data?) -> Swift.Void )  {
         DispatchQueue.global().async {
             
-            var data : Data? = nil
-            if let dbChannel : EpgChannel = CoreDataManager.requestFirstElement(NSPredicate(format: "name==%@ AND provider.name == %@",
-                                                                                               channel.lowercased(),  provider) ),
-                let strUrl = dbChannel.icon,
-                let url = URL(string:strUrl) {
-                
-                data = try? Data(contentsOf: url)
-                
-            }
+            let data = self._getProviderIcon(channel: channel, provider: provider)
             DispatchQueue.main.async {
                 completion(data)
             }
@@ -309,8 +345,10 @@ class ProgramManager {
 
     private func _getProviderIcon(channel: String, provider: String) -> Data? {
         
+        let nameShift = self.programNameShift(channel)
+
         guard let dbChannel : EpgChannel = CoreDataManager.requestFirstElement(NSPredicate(format: "name==%@ AND provider.name == %@",
-                                                                                          channel.lowercased(),  provider) ),
+                                                                                          nameShift.name.lowercased(),  provider) ),
               let strUrl = dbChannel.icon,
               let url = URL(string:strUrl),
               let data = try? Data(contentsOf: url)

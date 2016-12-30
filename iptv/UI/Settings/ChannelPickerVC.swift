@@ -198,26 +198,6 @@ class DirectoryStack:UIStackView {
 
 class ChannelPickerCollectionView : FocusedCollectionView {
     
-    //var focusedIndex : Int?
-    
-    /*
-    override var canBecomeFocused: Bool {
-        return true
-    }
-    */
-    
-    /*
-    override var preferredFocusEnvironments: [UIFocusEnvironment] {
-        let envs = super.preferredFocusEnvironments
-        print("Environments: \(envs)")
-        return envs
-    }
-    
-    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
-        super.didUpdateFocus(in: context, with: coordinator)
-        print("didUpdateFocus")
-    }
-    */
 }
 
 protocol ChannelPickerDelegate : class {
@@ -325,20 +305,13 @@ class ChannelPickerVC : FocusedViewController, DirectoryStackDelegate {
     
     }
     
-    /*
-    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
-        super.didUpdateFocus(in: context, with: coordinator)
-        
-        //focused dir button
-        if  let button = context.nextFocusedView as? UIButton,
-            button.isDescendant(of:directoryContainerView)
-        {
-            let index = button.tag
-            let newPath = Array(path[0..<index])
-            self.delegate?.focusedPath(chooseControl: self, path: newPath)
+    func centerElement(_ name:String, animated:Bool = false) {
+        let ind = groupInfo.findDirIndex(name)
+        if ind >= 0 {
+            
+            collectionView.scrollToItem(at: IndexPath( row:ind, section:0), at: .centeredHorizontally, animated: animated)
         }
     }
-    */
     
 }
 
@@ -429,7 +402,6 @@ extension ChannelPickerVC : UICollectionViewDataSource, UICollectionViewDelegate
         return nil
         
     }
-    
     
 
     func collectionView(_ collectionView: UICollectionView, didUpdateFocusIn context: UICollectionViewFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
