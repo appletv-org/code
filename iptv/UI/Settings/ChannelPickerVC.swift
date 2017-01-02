@@ -103,11 +103,13 @@ class ChannelCell : UICollectionViewCell {
     
     func selectedCell(isSelected : Bool) {
         if(isSelected) {
-            self.label.textColor = UIColor.white
+            self.channelView.backgroundColor = UIColor.white
+            //self.label.textColor = UIColor.white
             //self.channelView.layer.borderWidth = 5.0
         }
         else {
-            self.label.textColor = UIColor.darkGray
+            self.channelView.backgroundColor = UIColor.clear
+            //self.label.textColor = UIColor.darkGray
             //self.channelView.layer.borderWidth = 0.0
          }
     }
@@ -221,7 +223,7 @@ class ChannelPickerVC : FocusedViewController, DirectoryStackDelegate {
     var showFocusedElement = true
     
     var showAllGroup = false
-    var showHideGroup = false
+    var showHiddenGroup = false
     
     
     weak var delegate : ChannelPickerDelegate?
@@ -328,6 +330,10 @@ extension ChannelPickerVC : UICollectionViewDataSource, UICollectionViewDelegate
         if showAllGroup && groupInfo.groups.count > 0 {
             ret += 1
         }
+        
+        if showHiddenGroup && groupInfo.remoteInfo != nil {
+            ret += 1
+        }
         //print("number items in section:\(ret)")
         return ret
     }
@@ -339,7 +345,7 @@ extension ChannelPickerVC : UICollectionViewDataSource, UICollectionViewDelegate
         
         if showAllGroup && groupInfo.groups.count > 0 {
             if index == 0 {
-                let group = GroupInfo(name: ChannelManager.groupNameAll, groups: [GroupInfo](), channels: [ChannelInfo]())
+                let group = GroupInfo(name: ChannelManager.groupNameAll)
                 cell.element = .group(group)
                 return cell
             }
@@ -351,8 +357,18 @@ extension ChannelPickerVC : UICollectionViewDataSource, UICollectionViewDelegate
              //print("group items \(index):\(groupInfo.groups[index].name)")
             return cell
         }
-
         index -= groupInfo.groups.count
+
+        
+        if showHiddenGroup && groupInfo.remoteInfo != nil {
+            if index == 0 {
+                let group = GroupInfo(name: ChannelManager.groupNameHidden)
+                cell.element = .group(group)
+                return cell
+            }
+            index -= 1
+        }
+
         if index < groupInfo.channels.count {
             cell.element = .channel(groupInfo.channels[index])
         }
@@ -382,8 +398,18 @@ extension ChannelPickerVC : UICollectionViewDataSource, UICollectionViewDelegate
             setupPath(newPath, isParent: true)
             return
         }
-       
         index -= groupInfo.groups.count
+        
+        if showHiddenGroup && groupInfo.remoteInfo != nil {
+            if index == 0 {
+                var newPath = path
+                newPath.append(ChannelManager.groupNameHidden)
+                setupPath(newPath, isParent: true)
+                return
+            }
+            index -= 1
+        }       
+        
         if index >= 0 && index < groupInfo.channels.count {
             delegate?.selectedPath(chooseControl: self, path: path + [groupInfo.channels[index].name])
         }
@@ -422,8 +448,8 @@ extension ChannelPickerVC : UICollectionViewDataSource, UICollectionViewDelegate
         coordinator.addCoordinatedAnimations({
             if nextIndex != nil {
                 if let cell = collectionView.cellForItem(at: nextIndex!) as? ChannelCell {
-                    cell.focusedCell(isFocused: true)
                     cell.selectedCell(isSelected: false)
+                    cell.focusedCell(isFocused: true)
                     //cell.channelView.transform = CGAffineTransform(scaleX:1.2, y:1.2)
                     //cell.channelView.backgroundColor = UIColor.white
                     //self.collectionView.focusedIndex = nextIndex!.row

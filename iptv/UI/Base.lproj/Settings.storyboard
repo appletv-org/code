@@ -8,6 +8,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -824,6 +825,7 @@
                                             <segment title="Delete"/>
                                             <segment title="Copy/Move"/>
                                             <segment title="Reorder"/>
+                                            <segment title="Preview"/>
                                         </segments>
                                         <connections>
                                             <action selector="segmentActionChanged:" destination="epq-NJ-7Pj" eventType="valueChanged" id="yyv-Dd-se2"/>
@@ -976,12 +978,76 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="1880" height="615"/>
                     <connections>
-                        <outlet property="infoLabel" destination="bX6-7v-OM8" id="MF1-lH-2bU"/>
+                        <outlet property="infoLabel" destination="bX6-7v-OM8" id="BGP-g2-oiM"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UzA-49-nXT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2362" y="-482"/>
+        </scene>
+        <!--Channel Setting PreviewVC-->
+        <scene sceneID="UhO-3G-2WB">
+            <objects>
+                <viewController storyboardIdentifier="ChannelSettingPreviewVC" id="0lO-FF-tiQ" customClass="ChannelSettingPreviewVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="goF-Pd-Vns"/>
+                        <viewControllerLayoutGuide type="bottom" id="HIQ-3O-ayF"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="xe7-IH-qzM">
+                        <rect key="frame" x="0.0" y="0.0" width="1880" height="615"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9EA-Yh-1ei" customClass="PlayerView" customModule="iptv" customModuleProvider="target">
+                                <rect key="frame" x="926" y="4" width="950" height="607"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="9EA-Yh-1ei" secondAttribute="height" multiplier="950:607" id="0v1-Ml-ifF"/>
+                                </constraints>
+                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="pC7-CK-dGD">
+                                <rect key="frame" x="20" y="41" width="693" height="39"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="6Gp-Zc-IpM">
+                                        <rect key="frame" x="0.0" y="0.0" width="693" height="39"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Video size:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eqb-wp-bYX">
+                                                <rect key="frame" x="0.0" y="0.0" width="153" height="39"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="undefined" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gey-O0-aJK">
+                                                <rect key="frame" x="193" y="0.0" width="500" height="39"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="500" id="evd-nH-eQH"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="9EA-Yh-1ei" secondAttribute="trailing" constant="4" id="HFI-y9-rjz"/>
+                            <constraint firstItem="pC7-CK-dGD" firstAttribute="top" secondItem="goF-Pd-Vns" secondAttribute="bottom" constant="41" id="MkX-bT-vNJ"/>
+                            <constraint firstItem="HIQ-3O-ayF" firstAttribute="top" secondItem="9EA-Yh-1ei" secondAttribute="bottom" constant="4" id="a7X-ZC-X1l"/>
+                            <constraint firstItem="pC7-CK-dGD" firstAttribute="leading" secondItem="xe7-IH-qzM" secondAttribute="leadingMargin" id="dGM-om-3uy"/>
+                            <constraint firstItem="9EA-Yh-1ei" firstAttribute="top" secondItem="goF-Pd-Vns" secondAttribute="bottom" constant="4" id="eVe-yK-Qzc"/>
+                        </constraints>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="1880" height="615"/>
+                    <connections>
+                        <outlet property="playerView" destination="9EA-Yh-1ei" id="92z-h5-PvH"/>
+                        <outlet property="videoSizeLabel" destination="gey-O0-aJK" id="qpp-9U-ovw"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Maz-bw-bvu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2362" y="-1279.5"/>
         </scene>
         <!--Channel Setting DeleteVC-->
         <scene sceneID="Qdv-ce-Y8N">

@@ -480,7 +480,7 @@ extension ChannelsVC: PlayerViewDelegate {
             //loading channel
             loadingErrorLabel.isHidden = false
             loadingActivity.isHidden = true
-            print("statusPlayer error: \(error)")
+            print("AVPlayerItemStatus error: \(error)")
             return
         }
         
@@ -501,7 +501,7 @@ extension ChannelsVC: PlayerViewDelegate {
     
     
     func playerVideo(player: PlayerView, statusPlayer: PVStatus, error: Error?) {
-        print()
+        print("playerVideo")
     }
     
 }

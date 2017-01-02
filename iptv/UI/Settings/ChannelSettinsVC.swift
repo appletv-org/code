@@ -21,13 +21,13 @@ class BottomController : FocusedViewController {
 class ChannelSettingsVC : FocusedViewController {
     
     
-    static let controllerList = ["ChannelSettingInfoVC", "ChannelSettingEditVC", "ChannelSettingAddVC", "ChannelSettingDeleteVC", "ChannelSettingCopyVC", "ChannelSettingReorderVC"]
+    static let controllerList = ["ChannelSettingInfoVC", "ChannelSettingEditVC", "ChannelSettingAddVC", "ChannelSettingDeleteVC", "ChannelSettingCopyVC", "ChannelSettingReorderVC", "ChannelSettingPreviewVC"]
     enum ControllerType : Int  {
-        case info = 0, edit, add, delete, copy, reorder
+        case info = 0, edit, add, delete, copy, reorder, preview
     }
     
     enum OperationType : Int {
-        case edit = 0, add, delete, copyMove, reorder
+        case edit = 0, add, delete, copyMove, reorder, preview
     }
     
     var currentPath = [String]()
@@ -108,9 +108,15 @@ class ChannelSettingsVC : FocusedViewController {
             if let orderVC = setBottomController(.reorder) as? ChannelSettingReorderVC {
                 orderVC.refresh()
             }
-        }
-            
         
+        case .preview:
+        
+            if let previewVC = setBottomController(.preview) as? ChannelSettingPreviewVC {
+                previewVC.refresh()
+            }
+    }
+    
+    
     }
     
 
@@ -118,6 +124,7 @@ class ChannelSettingsVC : FocusedViewController {
     override func viewDidLoad() {
         
         channelPickerVC = ChannelPickerVC.insertToView(parentController: self, parentView: channelPickerView)
+        channelPickerVC.showHiddenGroup = true
         channelPickerVC.delegate = self
         channelPickerVC.setupPath([])
 

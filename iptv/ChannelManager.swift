@@ -267,7 +267,11 @@ class ChannelManager {
         }
         
         if let parentGroup = findParentGroup(path) {
-            return parentGroup.findDirElement(path.last!)
+            let name = path.last!
+            if name == ChannelManager.groupNameHidden && parentGroup.remoteInfo != nil {
+                return DirElement.group(parentGroup.remoteInfo!.hiddenGroup)
+            }
+            return parentGroup.findDirElement(name)
         }
         return nil
     }
@@ -290,6 +294,12 @@ class ChannelManager {
         if path.count == 1 && path[0] == ChannelManager.groupNameAll  {
             let channels = ChannelManager.allChannels(group)
             return GroupInfo(name: ChannelManager.groupNameAll, groups: [GroupInfo](), channels: channels)
+        }
+        
+        if path[0] == ChannelManager.groupNameHidden,
+           let hiddenGroup = group.remoteInfo?.hiddenGroup
+        {
+            return findGroup( Array(path[1..<path.count]), group:hiddenGroup )
         }
         
         if let findedGroup = group.groups.first(where: {$0.name == path[0]}) {
@@ -335,9 +345,6 @@ class ChannelManager {
             }
         }
         for group in group.groups {
-            if group.name == groupNameHidden {
-                continue
-            }
             self._addChannels(group, setLink: &setLink, channels: &channels)
         }
     }
