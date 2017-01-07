@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ChannelInfo : NSObject, NSCoding {
+class ChannelInfo : NSObject, NSCoding, NSCopying {
     
     var name : String
     var url: String
@@ -35,9 +35,15 @@ class ChannelInfo : NSObject, NSCoding {
         coder.encode(self.name, forKey: "name")
         coder.encode(self.url, forKey: "url")
     }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = ChannelInfo(name: name, url:url)
+        return copy
+    }
+
 }
 
-class RemoteGroupInfo: NSObject, NSCoding {
+class RemoteGroupInfo: NSObject, NSCoding, NSCopying {
     var url: String
     var hiddenGroup : GroupInfo
     var lastUpdate: Date?
@@ -68,11 +74,17 @@ class RemoteGroupInfo: NSObject, NSCoding {
             coder.encode(self.hiddenGroup, forKey:"hidden")
         }
     }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = RemoteGroupInfo(url: url, hiddenGroup: hiddenGroup.copy() as! GroupInfo)
+        return copy
+    }
+
 
 }
 
 
-class GroupInfo : NSObject, NSCoding {
+class GroupInfo : NSObject, NSCoding, NSCopying {
     var name: String
     var groups: [GroupInfo]
     var channels: [ChannelInfo]
@@ -106,8 +118,13 @@ class GroupInfo : NSObject, NSCoding {
         if let remoteInfo = decoder.decodeObject(forKey: "remote") as? RemoteGroupInfo {
             self.remoteInfo = remoteInfo
         }
-        
-
+    }
+    
+    required init(original:GroupInfo) {
+        name = original.name
+        channels = original.channels
+        groups = original.groups
+        remoteInfo = original.remoteInfo
     }
     
     func encode(with coder: NSCoder) {
@@ -124,6 +141,21 @@ class GroupInfo : NSObject, NSCoding {
                 coder.encode(self.channels, forKey:"channels")
             }
         }
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = GroupInfo(name: name)
+        for channel in channels {
+            copy.channels.append(channel.copy() as! ChannelInfo)
+        }
+        for group in groups {
+            copy.groups.append(group.copy() as! GroupInfo)
+        }
+        if remoteInfo != nil {
+            copy.remoteInfo = remoteInfo!.copy() as? RemoteGroupInfo
+        }
+        
+        return copy
     }
     
     func findDirElement(_ name:String) -> DirElement? {
@@ -231,11 +263,15 @@ class ChannelManager {
         if let data = UserDefaults.standard.object(forKey: ChannelManager.userDefaultKey) as? NSData {
             var root = NSKeyedUnarchiver.unarchiveObject(with: data as Data) as! GroupInfo
             ChannelManager.instance.loadRemoteGroups(group:root)
+            
+            if root.groups.index(where:{$0.name == ChannelManager.groupNameFavorites}) == nil {
+                root.groups.append( GroupInfo(name: ChannelManager.groupNameFavorites) )
+            }
             return root
         }
         else {
             var root = GroupInfo( name:ChannelManager.groupNameRoot, groups: [], channels: [])
-            root.groups.append( GroupInfo(name: ChannelManager.groupNameFavorites, groups: [], channels: []) )
+            root.groups.append( GroupInfo(name: ChannelManager.groupNameFavorites) )
             return root
         }
         
@@ -243,9 +279,33 @@ class ChannelManager {
     }()
     
     
+    
     class var root : GroupInfo {
         get {
             return ChannelManager.instance.rootGroup
+        }
+    }
+    
+    lazy var favoriteGroup : GroupInfo = {
+        var favorite = ChannelManager.root.groups.first(where:{$0.name == ChannelManager.groupNameFavorites})
+        return favorite!
+    }()
+
+    
+    class func favoriteIndex(_ channel:ChannelInfo) -> Int? {
+        return ChannelManager.instance.favoriteGroup.channels.index(where:{$0.name == channel.name})
+    }
+    
+    
+    class func changeFavoriteChannel(_ channel:ChannelInfo) {
+        
+        let favGroup = ChannelManager.instance.favoriteGroup
+        let ind = ChannelManager.favoriteIndex(channel)
+        if ind != nil {
+            favGroup.channels.remove(at:ind!)
+        }
+        else {
+            favGroup.channels.append(channel)
         }
     }
     
@@ -319,9 +379,17 @@ class ChannelManager {
         var currentGroup = ChannelManager.instance.rootGroup
         for ind in 0..<path.count {
             let name = path[ind]
-            if let group = currentGroup.groups.first(where:{$0.name == name}) {
-                groups.append(group)
-                currentGroup = group
+            
+            var group : GroupInfo? = nil
+            if name == ChannelManager.groupNameHidden && currentGroup.remoteInfo != nil {
+                group = currentGroup.remoteInfo?.hiddenGroup
+            }
+            else {
+                group = currentGroup.groups.first(where:{$0.name == name})
+            }
+            if group != nil {
+                groups.append(group!)
+                currentGroup = group!
                 continue
             }
             
@@ -379,8 +447,8 @@ class ChannelManager {
         return nil
     }
     
-    func loadRemoteGroups(group:GroupInfo) {
-        for group in group.groups {
+    func loadRemoteGroups(group parentGroup:GroupInfo) {
+        for group in parentGroup.groups {
             if group.remoteInfo != nil {
                 try? ChannelManager.addM3uList(url: group.remoteInfo!.url, toGroup:group)
                 removeHiddenElements(group)
@@ -395,6 +463,13 @@ class ChannelManager {
     func removeHiddenElements(_ group:GroupInfo) {
         let hiddenGroup = group.remoteInfo!.hiddenGroup
         _removeHiddenElements(group: group, hiddenGroup: hiddenGroup)
+        
+        //remove empty groups
+        for ind in (0..<group.groups.count).reversed() {
+            if group.groups[ind].countDirElements() == 0 {
+                group.groups.remove(at: ind)
+            }
+        }
         
     }
     
@@ -419,6 +494,7 @@ class ChannelManager {
         }
     }
 
+    
     class func save() {
         let man = ChannelManager.instance
         if man.saveTimer != nil {
@@ -434,34 +510,168 @@ class ChannelManager {
     
 
     class func delPathElement(_ path: [String]) -> Error? {
-        let group = findParentGroup(path)
-        if(group == nil) {
-            return Err("Not found parent group")
+        
+        let pathElements = ChannelManager.getPathElements(path)
+        guard let groups = pathElements.groups
+        else {
+            return Err("Not found path:\(path.joined(separator: "->"))")
         }
-        if let index = group!.groups.index(where: {$0.name == path.last})  {
-            group!.groups.remove(at: index)
-            ChannelManager.save()
-            return nil
+        
+        //check reserved name
+        if  pathElements.channel == nil,
+            let _ = ChannelManager.reservedNames.index(of:pathElements.groups!.last!.name)
+        {
+            return Err("You can't delete reserved group:\"\(pathElements.groups!.last!.name)\"")
         }
-        if let index = group!.channels.index(where: {$0.name == path.last})  {
-            group!.channels.remove(at: index)
-            ChannelManager.save()
-            return nil
+
+        
+        var delGroup : GroupInfo? = nil
+        var remoteGroup : GroupInfo? = nil
+        var addHiddenGroup : GroupInfo? = nil
+
+        var delChannel = pathElements.channel
+        var parentGroup = groups.last!
+        if delChannel == nil {
+            delGroup = parentGroup
+            parentGroup = groups[groups.count - 2]
         }
+        
+        
+        if parentGroup.remoteInfo != nil { //add group/channel in hidden group
+            remoteGroup = parentGroup
+            addHiddenGroup = parentGroup.remoteInfo!.hiddenGroup
+        }
+        else if delChannel != nil && groups.count > 1 && groups[groups.count - 2].remoteInfo != nil { //add channel in group into hidden group
+            remoteGroup = groups[groups.count - 2]
+            let hiddenGroup = remoteGroup!.remoteInfo!.hiddenGroup
+            addHiddenGroup = hiddenGroup.groups.first(where:{$0.name == parentGroup.name})
+            if addHiddenGroup == nil {
+                addHiddenGroup = GroupInfo(name:parentGroup.name)
+                hiddenGroup.groups.append(addHiddenGroup!)
+            }
+        }
+        
+        
+        if delChannel != nil { //delete channel
+            if addHiddenGroup != nil {
+                addHiddenGroup!.channels.append(delChannel!)
+            }
+            
+            if let index = parentGroup.channels.index(where: {$0.name == path.last})  {
+                parentGroup.channels.remove(at: index)
+                ChannelManager.save()
+                return nil
+            }
+        }
+        else { //delete group
+            if addHiddenGroup != nil {
+                if let group =  addHiddenGroup!.groups.first(where:{$0.name == delGroup!.name}) {
+                    //copy rest channels from delGroup to group
+                    for channel in delGroup!.channels {
+                        group.channels.append(channel)
+                    }
+                }
+                else {
+                    addHiddenGroup!.groups.append(delGroup!)
+                }
+            }
+            
+            if let index = parentGroup.groups.index(where: {$0.name == path.last})  {
+                parentGroup.groups.remove(at: index)
+                ChannelManager.save()
+                return nil
+            }
+        }
+        
+        
         return Err("Not found path element:\(path.joined(separator:"->"))")
     }
     
-    class func changeChannel(_ path:[String], name newName:String, url newUrl:String) -> Error? {
+    class func unhidePath(_ path: [String]) -> Error? {
+        let pathElements = ChannelManager.getPathElements(path)
+        guard let groups = pathElements.groups
+            else {
+                return Err("Not found path:\(path.joined(separator: "->"))")
+        }
         
-        if newName.isBlank {
+        if pathElements.channel != nil { //unhide channel
+
+            let groupFrom = groups.last!
+            var groupTo : GroupInfo? = nil
+            
+            if groupFrom.name == ChannelManager.groupNameHidden {
+                groupTo = groups[groups.count-2] //remoteGroup
+            }
+            else if groups[groups.count-2].name == ChannelManager.groupNameHidden {
+                let remoteGroup = groups[groups.count-3]
+                groupTo = remoteGroup.groups.first(where:{$0.name == groupFrom.name})
+                if groupTo == nil {
+                    return Err("not found group \(groupFrom.name) in hidden group")
+                }
+            }
+            else {
+                return Err("not found hidden group")
+            }
+            let index = groupFrom.channels.index(where:{$0.name == pathElements.channel!.name})
+            if index == nil {
+                return Err("not found \"\(pathElements.channel!.name)\" in hidden group")
+            }
+            groupFrom.channels.remove(at: index!)
+            groupTo!.channels.append(pathElements.channel!)
+            
+        }
+        else {
+            //restore group
+            if groups.count < 3 {
+                return Err("not found remote group")
+            }
+            let group = groups[groups.count-1]
+            let hiddenGroup = groups[groups.count-2]
+            if hiddenGroup.name != ChannelManager.groupNameHidden {
+                return Err("not found hidden group")
+            }
+            let remoteGroup = groups[groups.count-3]
+            var groupTo = remoteGroup.groups.first(where:{$0.name == group.name})
+            
+            //find or add new group in remote group
+            if groupTo == nil {
+                groupTo = GroupInfo(name:group.name)
+                remoteGroup.groups.append(groupTo!)
+            }
+            
+            //add channels from hidden group to remote group
+            for channel in group.channels {
+                groupTo!.channels.append(channel)
+            }
+            
+            //delete group from hidden
+            if let index = hiddenGroup.groups.index(of:group) {
+                hiddenGroup.groups.remove(at:index)
+            }
+            
+        }
+        return nil
+    }
+    
+    
+    class func checkCorrectName(_ name:String, _ parentGroup:GroupInfo) -> Error? {
+        if name.isBlank {
             return Err("You cann't use blank string")
         }
         
-        if let _ = ChannelManager.reservedNames.index(of:newName) {
-            return Err("You cann't use reserved name: \"\(newName)\"")
+        if let _ = ChannelManager.reservedNames.index(of:name) {
+            return Err("You cann't use reserved name: \"\(name)\"")
         }
         
+        if parentGroup.findDirElement(name) != nil {
+            return Err("Name \"\(name)\" is already in use, please choose another name")
+        }
         
+        return nil
+        
+    }
+    
+    class func changeChannel(_ path:[String], name newName:String, url newUrl:String) -> Error? {
         
         let pathElements = ChannelManager.getPathElements(path)
         if let channel = pathElements.channel,
@@ -472,8 +682,10 @@ class ChannelManager {
                 return nil
             }
             
-            if newName != channel.name && parentGroup.findDirElement(newName) != nil {
-                return Err("Duplicate name")
+            if newName != channel.name {
+                if let err = checkCorrectName(newName, parentGroup) {
+                    return err
+                }
             }
             
             channel.name = newName
@@ -490,28 +702,21 @@ class ChannelManager {
     
     class func changeGroup(_ path:[String], name newName:String) -> Error? {
 
-        if newName.isBlank {
-            return Err("You cann't use blank string")
-        }
-
-        if let _ = ChannelManager.reservedNames.index(of:newName) {
-            return Err("Reserved name")
-        }
-
         
         let pathElements = ChannelManager.getPathElements(path)
-        if  let groups = pathElements.groups,
+        if  pathElements.channel == nil,
+            let groups = pathElements.groups,
             groups.count > 1
         {
             let group = groups.last!
+            let parentGroup = groups[groups.count - 2]
+
             if newName == group.name {
                 return nil
             }
-
-            let parentGroup = groups[groups.count - 2]
             
-            if parentGroup.findDirElement(newName) != nil {
-                return Err("Duplicate name")
+            if let err = ChannelManager.checkCorrectName(newName, parentGroup) {
+                return err
             }
             group.name = newName
             ChannelManager.save()
@@ -525,21 +730,17 @@ class ChannelManager {
     
     class func addGroup(_ path:[String], name:String) -> Error? {
         
-        if let _ = ChannelManager.reservedNames.index(of:name) {
-            return Err("Reserved name")
-        }
-        
         let pathElements = ChannelManager.getPathElements(path)
         
-        if  let groups = pathElements.groups,
+        if  pathElements.channel == nil,
+            let groups = pathElements.groups,
             groups.count > 0
         {
             let parentGroup = groups.last!
             
-            if parentGroup.findDirElement(name) != nil {
-                return Err("Duplicate name")
+            if let err = ChannelManager.checkCorrectName(name, parentGroup) {
+                return err
             }
-            
             
             parentGroup.groups.append( GroupInfo(name:name) )
             ChannelManager.save()
@@ -554,19 +755,16 @@ class ChannelManager {
 
     class func addChannel(_ path:[String], name:String, url:String) -> Error? {
         
-        if let _ = ChannelManager.reservedNames.index(of:name) {
-            return Err("Reserved name")
-        }
-        
         let pathElements = ChannelManager.getPathElements(path)
         
-        if  let groups = pathElements.groups,
+        if  pathElements.channel == nil,
+            let groups = pathElements.groups,
             groups.count > 0
         {
             let parentGroup = groups.last!
             
-            if parentGroup.findDirElement(name) != nil {
-                return Err("Duplicate name")
+            if let err = ChannelManager.checkCorrectName(name, parentGroup) {
+                return err
             }
             
             parentGroup.channels.append( ChannelInfo(name:name, url:url) )
@@ -581,30 +779,40 @@ class ChannelManager {
     }
     
     class func addRemoteGroup(_ path:[String], name newName:String, url newUrl:String) -> Error? {
-        //check url
-        let group = GroupInfo(name:newName)
-        do {
-            try ChannelManager.addM3uList(url: newUrl, toGroup: group)
-        }
-        catch {
-            return error
-        }
-        if group.groups.count == 0 && group.channels.count == 0 {
-            return Err("Not found groups or channels for:\(newUrl)")
-        }
-        group.remoteInfo = RemoteGroupInfo(url: newUrl)
+        
         
         let pathElements = ChannelManager.getPathElements(path)
-        if pathElements.groups == nil {
+        
+        if  pathElements.channel == nil,
+            let groups = pathElements.groups,
+            groups.count > 0
+        {
+            let parentGroup = groups.last!
+            
+            if let err = ChannelManager.checkCorrectName(newName, parentGroup) {
+                return err
+            }
+        
+            //check url
+            let group = GroupInfo(name:newName)
+            do {
+                try ChannelManager.addM3uList(url: newUrl, toGroup: group)
+            }
+            catch {
+                return error
+            }
+            
+            if group.groups.count == 0 && group.channels.count == 0 {
+                return Err("Not found groups or channels for:\(newUrl)")
+            }
+            group.remoteInfo = RemoteGroupInfo(url: newUrl)
+            parentGroup.groups.append(group)
+            ChannelManager.save()
+            return nil
+        }
+        else {
             return Err("Not found path:\(path.joined(separator: "->"))")
         }
-        
-        
-        let parentGroup = pathElements.groups!.last!
-        parentGroup.groups.append(group)
-        ChannelManager.save()
-        
-        return nil
     }
     
     class func reorderPath(_ path: [String], shift: Int) -> Error?
@@ -689,17 +897,15 @@ class ChannelManager {
         
         //check favorite
         //      to favorite
-        if pathToElements.groups!.count == 1 && pathToElements.groups![0].name == ChannelManager.groupNameFavorites {
-            if pathElements.channel == nil {
-                return Err("You can't copy/move group to Favorite is impossible")
-            }
+        if  pathToElements.groups!.last!.name == ChannelManager.groupNameFavorites,
+            pathElements.channel == nil
+        {
+            return Err("You can't copy/move group to Favorite")
         }
         
-        //      from favorite
-        if pathElements.groups!.count == 1 && pathElements.groups![0].name == ChannelManager.groupNameFavorites {
-            if pathElements.channel == nil {
-                return Err("You can't copy/move group Favorite")
-            }
+        //check copy/move reserved group
+        if let _ = ChannelManager.reservedNames.index(of:pathElements.groups!.last!.name) {
+            return Err("You can't copy/move reserved group:\"\(pathElements.groups!.last!.name)\"")
         }
         
         
@@ -741,7 +947,7 @@ class ChannelManager {
             lastIndex -= 1
         }
         
-        if lastIndex > 1 {
+        if lastIndex >= 1 {
             for ind in 1...lastIndex {
                 if pathElements.groups![ind].remoteInfo != nil {
                     return Err("You can't move from remote group:\"\(pathElements.groups![ind].name)\"")
@@ -794,21 +1000,19 @@ class ChannelManager {
         let pathToElements = ChannelManager.getPathElements(to)
         
         
-        
         //copy channel
         let groupTo = pathToElements.groups!.last!
         if let channel = pathElements.channel {
             if index == nil || index! >= groupTo.channels.count-1 {
-                groupTo.channels.append(channel)
+                groupTo.channels.append(channel.copy() as! ChannelInfo)
             }
             else {
-                groupTo.channels.insert(channel, at: index!)
+                groupTo.channels.insert(channel.copy() as! ChannelInfo, at: index!)
             }
         }
         else {
             if pathElements.groups!.count > 1 {
-                let group = pathElements.groups![pathElements.groups!.count-2]
-                let copingGroup = pathElements.groups!.last!
+                let copingGroup = pathElements.groups!.last!.copy() as! GroupInfo
                 if index == nil || index! >= groupTo.channels.count-1 {
                     groupTo.groups.append(copingGroup)
                 }

@@ -241,7 +241,7 @@
                                                             <constraint firstAttribute="width" constant="320" id="Kx0-NV-Wwk"/>
                                                         </constraints>
                                                         <segments>
-                                                            <segment title="" image="star"/>
+                                                            <segment title="" image="favoriteOff"/>
                                                             <segment title="" image="garbage"/>
                                                             <segment title="" image="PIPChange"/>
                                                         </segments>
@@ -347,7 +347,7 @@
     <resources>
         <image name="PIPChange" width="40" height="40"/>
         <image name="close" width="40" height="40"/>
+        <image name="favoriteOff" width="40" height="40"/>
         <image name="garbage" width="40" height="40"/>
-        <image name="star" width="40" height="40"/>
     </resources>
 </document>

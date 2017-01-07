@@ -21,9 +21,9 @@ class BottomController : FocusedViewController {
 class ChannelSettingsVC : FocusedViewController {
     
     
-    static let controllerList = ["ChannelSettingInfoVC", "ChannelSettingEditVC", "ChannelSettingAddVC", "ChannelSettingDeleteVC", "ChannelSettingCopyVC", "ChannelSettingReorderVC", "ChannelSettingPreviewVC"]
+    static let controllerList = ["ChannelSettingInfoVC", "ChannelSettingEditVC", "ChannelSettingAddVC", "ChannelSettingDeleteVC", "ChannelSettingHideVC", "ChannelSettingCopyVC", "ChannelSettingReorderVC", "ChannelSettingPreviewVC"]
     enum ControllerType : Int  {
-        case info = 0, edit, add, delete, copy, reorder, preview
+        case info = 0, edit, add, delete, hide, copy, reorder, preview
     }
     
     enum OperationType : Int {
@@ -33,7 +33,9 @@ class ChannelSettingsVC : FocusedViewController {
     var currentPath = [String]()
     var dirElement : DirElement?
     var remoteGroup : GroupInfo?
-    var isFocusedPath = false
+    var isHiddenGroup : Bool = false
+    var isFocusedPath = false //focus set to channel/group (else we choose group without elements)
+    var isReservedName = false
     
     var bottomControllers = [BottomController]()
     var currentBottomController : BottomController!
@@ -65,6 +67,23 @@ class ChannelSettingsVC : FocusedViewController {
     
     func setBottomPanel(operation:OperationType? = nil) {
         
+        //title for delete/hide/show
+        var title = "Delete"
+        if remoteGroup != nil {
+            if isHiddenGroup {
+                title = "Restore"
+            }
+            else {
+                title = "Hide"
+            }
+        }
+        let index = OperationType.delete.rawValue
+        if segmentActions.titleForSegment(at: index) != title {
+            segmentActions.setTitle(title, forSegmentAt: OperationType.delete.rawValue)
+        }
+
+        
+        
         var operationType = OperationType(rawValue: segmentActions.selectedSegmentIndex)!
         if operation != nil {
             operationType = operation!
@@ -83,7 +102,7 @@ class ChannelSettingsVC : FocusedViewController {
             
             if remoteGroup != nil {
                 if let infoVC = setBottomController(.info) as? ChannelSettingInfoVC {
-                    infoVC.infoLabel.text = "You cann't modify elements into remote group:\(remoteGroup!.name)"
+                    infoVC.infoLabel.text = "You cann't modify elements located inside remote group:\(remoteGroup!.name)"
                 }
             }
             else {
@@ -93,8 +112,15 @@ class ChannelSettingsVC : FocusedViewController {
             }
             
         case .delete:
-            if let delVC = setBottomController(.delete) as? ChannelSettingDeleteVC {
-                delVC.refresh()
+            if remoteGroup != nil {
+                if let hideVC = setBottomController(.hide) as? ChannelSettingHideVC {
+                    hideVC.refresh()
+                }
+            }
+            else {
+                if let delVC = setBottomController(.delete) as? ChannelSettingDeleteVC {
+                    delVC.refresh()
+                }
             }
             
         case .copyMove:
@@ -142,13 +168,6 @@ class ChannelSettingsVC : FocusedViewController {
             }
         }
         
-        /*
-         //add bottom controllers to parent(self) controller
-         for controller in bottomControllers {
-         self.addChildViewController(controller)
-         controller.didMove(toParentViewController: self)
-         }
-         */
         
         //set bottom controller
         currentBottomController = bottomControllers[ControllerType.info.rawValue]
@@ -217,6 +236,34 @@ class ChannelSettingsVC : FocusedViewController {
         }
     }
     
+    func prevNextName() -> (prev:String?, next:String?) {
+        guard  isFocusedPath,
+                let parentGroup = ChannelManager.findParentGroup(currentPath)
+        else {
+            return (nil, nil)
+        }
+        let ind = parentGroup.findDirIndex(dirElement!.name)
+        if ind < 0 {
+            return (nil, nil)
+        }
+        let prevElem = parentGroup.findDirElement(index: ind-1)
+        let nextElem = parentGroup.findDirElement(index: ind+1)
+        return (prevElem?.name, nextElem?.name)
+    }
+    
+    func nextPath() -> [String] { //for move and delete: get path prev element, if first then next element
+        
+        var path = Array(currentPath[0..<currentPath.count-1])
+        let prevNextName = self.prevNextName()
+        if prevNextName.next != nil {
+            path.append(prevNextName.next!)
+        }
+        else if prevNextName.prev != nil{
+            path.append(prevNextName.prev!)
+        }        
+        return path
+    }
+    
 }
 
 extension ChannelSettingsVC : ChannelPickerDelegate {
@@ -226,8 +273,7 @@ extension ChannelSettingsVC : ChannelPickerDelegate {
         currentPath = path
         dirElement = ChannelManager.findDirElement(path)
         isFocusedPath = true
-        remoteGroup = ChannelManager.findParentRemoteGroup(currentPath)
-        setBottomPanel()
+        changePath()
     }
     
     func changePath(chooseControl: ChannelPickerVC,  path:[String]) {
@@ -237,11 +283,17 @@ extension ChannelSettingsVC : ChannelPickerDelegate {
             if groupInfo.countDirElements() == 0 {
                 currentPath = path
                 isFocusedPath = false
-                remoteGroup = ChannelManager.findParentRemoteGroup(currentPath)
-                setBottomPanel()
+                changePath()
             }
         }
         
+    }
+    
+    func changePath() {
+        remoteGroup = ChannelManager.findParentRemoteGroup(currentPath)
+        isHiddenGroup = currentPath.index(of:ChannelManager.groupNameHidden) != nil
+        setBottomPanel()
+
     }
     
 }

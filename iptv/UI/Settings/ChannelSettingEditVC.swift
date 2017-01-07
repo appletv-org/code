@@ -56,26 +56,23 @@ class ChannelSettingEditVC : BottomController, BottomControllerProtocol {
         //url 
         if mode == .edit {
             if let url = channelSettingVC.dirElement!.url {
-                print("urlStack before false:\(self.urlStack.isHidden)")
-                urlStack.isHidden = false
-                print("urlStack after false:\(self.urlStack.isHidden)")
                 
+                urlStack.setSureHidden(false)
                 urlTextField.text = url
             }
             else {
-                urlStack.isHidden = true
+                urlStack.setSureHidden(true)
             }
-            urlTextField.isEnabled = editable
         }
         else {
-            urlStack.isHidden = (mode == .addGroup)
+            urlStack.setSureHidden(mode == .addGroup)
             urlTextField.text = "http://"
         }
         urlTextField.isEnabled = editable
         
         
         //public
-        publicStack.isHidden = (mode != .addRemoteGroup)
+        publicStack.setSureHidden(mode != .addRemoteGroup)
         
         //info (always visible)
         var info = ""
@@ -90,7 +87,7 @@ class ChannelSettingEditVC : BottomController, BottomControllerProtocol {
         infoLabel.text =  info
         
         //buttons
-        saveButton.titleLabel?.text = (mode == .edit) ? "Save" : "Add"
+        saveButton.setTitleForAllStates((mode == .edit) ? "Save" : "Add")
         
         saveButton.isEnabled = editable
         cancelButton.isEnabled = editable
@@ -115,13 +112,10 @@ class ChannelSettingEditVC : BottomController, BottomControllerProtocol {
             
             if err == nil {
                 if isChangeName {
-                    if let channelSettingsVC = self.parent as? ChannelSettingsVC {
-                        var path = channelSettingVC.currentPath
-                        _ = path.popLast()
-                        path.append(nameTextField.text!)
-                        channelSettingsVC.reloadPath(path)
-                    }
-                
+                    var path = channelSettingVC.currentPath
+                    let _ = path.popLast()
+                    path.append(nameTextField.text!)
+                    channelSettingVC.reloadPath(path)
                 }
             }
         }

@@ -1299,6 +1299,55 @@
             </objects>
             <point key="canvasLocation" x="-327" y="305"/>
         </scene>
+        <!--Channel Setting HideVC-->
+        <scene sceneID="2cV-gQ-OU1">
+            <objects>
+                <viewController storyboardIdentifier="ChannelSettingHideVC" id="5bF-mL-lWD" customClass="ChannelSettingHideVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="7Ib-4F-8co"/>
+                        <viewControllerLayoutGuide type="bottom" id="gbo-NB-P0k"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="DNS-FT-FOC">
+                        <rect key="frame" x="0.0" y="0.0" width="1880" height="615"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yNL-Hj-50f">
+                                <rect key="frame" x="860" y="220" width="160" height="86"/>
+                                <inset key="contentEdgeInsets" minX="40" minY="20" maxX="40" maxY="20"/>
+                                <state key="normal" title="Hide"/>
+                                <connections>
+                                    <action selector="hideAction:" destination="5bF-mL-lWD" eventType="primaryActionTriggered" id="ObT-9Z-sQ0"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6FK-pm-w5X">
+                                <rect key="frame" x="30" y="76" width="1820" height="67"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="yjN-jq-C4n"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="yNL-Hj-50f" firstAttribute="top" secondItem="6FK-pm-w5X" secondAttribute="bottom" constant="100" id="Wjf-8D-oQp"/>
+                            <constraint firstItem="yNL-Hj-50f" firstAttribute="centerX" secondItem="DNS-FT-FOC" secondAttribute="centerX" id="XWN-kS-uhn"/>
+                            <constraint firstItem="6FK-pm-w5X" firstAttribute="top" secondItem="7Ib-4F-8co" secondAttribute="bottom" constant="20" id="XzD-gJ-e5C"/>
+                            <constraint firstItem="6FK-pm-w5X" firstAttribute="leading" secondItem="DNS-FT-FOC" secondAttribute="leadingMargin" constant="10" id="erp-EZ-f4X"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="6FK-pm-w5X" secondAttribute="trailing" constant="10" id="u0T-wh-lLT"/>
+                        </constraints>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="1880" height="615"/>
+                    <connections>
+                        <outlet property="hideButton" destination="yNL-Hj-50f" id="yev-uJ-YwC"/>
+                        <outlet property="infoLabel" destination="6FK-pm-w5X" id="BeW-YY-6ra"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BWy-NY-CVT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-327" y="-1280.5"/>
+        </scene>
     </scenes>
     <resources>
         <image name="add" width="60" height="60"/>

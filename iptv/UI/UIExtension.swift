@@ -43,6 +43,21 @@ extension UIView {
         }
         return nil
     }
+    
+    func setSureHidden(_ isHidden: Bool) {
+        var attempts = 0
+        while self.isHidden != isHidden {
+            self.isHidden = isHidden
+            attempts += 1
+            if attempts >= 100 {
+                break
+            }
+        }
+        if attempts > 1 {
+            print("setSureHidden::attempts:\(attempts)")
+        }
+    }
+
 }
 
 extension UIViewController { //add/remove child  controller
@@ -124,4 +139,12 @@ extension UIViewController { //simple alert actions
 
 }
 
+extension UIButton {
+    func setTitleForAllStates(_ title: String) {
+        self.setTitle(title, for: .normal)
+        self.setTitle(title, for: .focused)
+        self.setTitle(title, for: .selected)
+
+    }
+}
 

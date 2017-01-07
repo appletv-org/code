@@ -17,6 +17,9 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
     
     weak var dayLabel: UILabel!
     
+    
+    weak var actionButtons: UISegmentedControl!
+    
     weak var programCollectionView: UICollectionView! {
         didSet {
             programCollectionView.dataSource = self
@@ -50,6 +53,7 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         }
         labelDayUpdate()
         
+                
         return isFindProgram
         
     }

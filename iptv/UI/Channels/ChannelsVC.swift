@@ -69,7 +69,8 @@ class ChannelsVC : FocusedViewController {
     //pip show/hide
     var isPipView : Bool = false
 
-
+    let  imageFavoriteOn = UIImage(named: "favoriteOn")
+    let  imageFavoriteOff = UIImage(named: "favoriteOff")
     
  
     @IBOutlet weak var mainPlayer: PlayerView!
@@ -139,6 +140,7 @@ class ChannelsVC : FocusedViewController {
         //program guide
         programView.programCollectionView = programCollectionView
         programView.dayLabel = dayLabel
+        programView.actionButtons = actionButtons
         
         let tapActionButton = UITapGestureRecognizer( target: self, action:  #selector(programAction))
         actionButtons.addGestureRecognizer(tapActionButton)
@@ -242,12 +244,44 @@ class ChannelsVC : FocusedViewController {
                
             case .pip:
                 pipShow(animated: true, !isPipView)
+            
+            
+            case .favorite:
+                
+                if currentChannelIndex < groupInfo.channels.count {
+                    let channel = groupInfo.channels[currentChannelIndex]
+                    ChannelManager.changeFavoriteChannel(channel)
+                    let favImage = ChannelManager.favoriteIndex(channel) != nil ? imageFavoriteOn : imageFavoriteOff
+                    actionButtons.setImage(favImage, forSegmentAt: 0)
+                }
+            
+                
+                
+            case .delete:
+                
+                if currentChannelIndex < groupInfo.channels.count {
+                    let channel = groupInfo.channels[currentChannelIndex]
+                    simpleAlertChooser(title: "Delete channel \"\(channel.name)\"",
+                                            message: "Are you sure?",
+                                            buttonTitles: ["Yes", "No"],
+                                            prefferButton:0,
+                                            completion: { (ind) in
+                        if ind == 0 {
+                            let _ = ChannelManager.delPathElement(self.currentChannelPath!)
+                            self.switchProgram(0)
+                        }
+                    })
+                    
+                }
+                
                 
             default:
                 print("tap \(actionButtons.selectedSegmentIndex)")
             }
         }
     }
+    
+    
 
     
     func saveCurrentChannel() {
@@ -361,6 +395,12 @@ class ChannelsVC : FocusedViewController {
         mainPlayer.resetPlayer()
         mainPlayer.url = URL(string:channel.url)
         mainPlayer.play()
+        
+        
+        //set favorite button
+        let favImage = ChannelManager.favoriteIndex(channel) != nil ? imageFavoriteOn : imageFavoriteOff
+        actionButtons.setImage(favImage, forSegmentAt: 0)
+
         
         if programView.update(channel) {
             programShow(animated: true, hideTime: 4.0)
