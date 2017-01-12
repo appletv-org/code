@@ -132,10 +132,7 @@ class ChannelsVC : FocusedViewController {
         channelPickerVC.setupPath([])
         channelPickerVC.delegate = self
         
-        
         loadingView.isHidden = true  // hide loading view
-        
-
         
         //program guide
         programView.programCollectionView = programCollectionView
