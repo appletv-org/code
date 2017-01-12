@@ -150,7 +150,20 @@ class ChannelsVC : FocusedViewController {
         
         //hide pip view
         pipHide(animated: false)
-        
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: InAppPurchaseManager.changeStateNotification), object: nil, queue: nil) { (notification) in
+            if let product = notification.object as? InAppProduct {
+                if self.isPipView {
+                    if product.state == .expire {
+                        self.pipHide(animated: true)
+                    }
+                }
+                else {
+                    if product.state == .tryPeriod || product.state == .bought {
+                        self.pipShow(animated: true)
+                    }
+                }
+            }
+        }
         //mainPlayer
         mainPlayer.backgroundColor = UIColor.black
         mainPlayer.fillMode = .resize
@@ -218,6 +231,10 @@ class ChannelsVC : FocusedViewController {
             }
         }
         
+    }
+    
+    deinit {
+       NotificationCenter.default.removeObserver(self)
     }
     
     func switchProgram(_ to:Int) {
@@ -549,6 +566,21 @@ extension ChannelsVC: PlayerViewDelegate {
 extension ChannelsVC { //pip show/hide
     
     func pipShow( animated:Bool, _ isShow:Bool = true) {
+        
+        if isShow {
+            if var pipProduct = InAppPurchaseManager.getProductById(InAppPurchaseManager.productPipId) {
+                 if pipProduct.state == .noInit ||  pipProduct.state == .expire {
+                    let pipPaymentVC = PIPPaymentVC.loadFromIB()
+                    present(pipPaymentVC, animated: true, completion: nil)
+                    return
+                }
+            }
+            else {
+                print("error: not found pip product")
+            }
+            
+        }
+        
         if isShow {
             pipviewTrailingConstraint.constant = 0
         }

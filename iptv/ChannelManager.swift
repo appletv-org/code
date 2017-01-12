@@ -272,6 +272,11 @@ class ChannelManager {
         else {
             var root = GroupInfo( name:ChannelManager.groupNameRoot, groups: [], channels: [])
             root.groups.append( GroupInfo(name: ChannelManager.groupNameFavorites) )
+            
+            var demo = GroupInfo(name: "Demo")
+            demo.remoteInfo = RemoteGroupInfo(url: "http://tvorg.alevko.com/playlists/demo.m3u")
+            root.groups.append(demo)
+            ChannelManager.instance.loadRemoteGroups(group:root)
             return root
         }
         

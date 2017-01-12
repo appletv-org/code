@@ -18,8 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         StyleManager.applyStyle("default")
-        
         ProgramManager.instance.checkUpdateTimer()
+        InAppPurchaseManager.instance.requestProductData()
         return true
     }
 

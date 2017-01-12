@@ -37,10 +37,10 @@ class SelectChannelGroupVC : FocusedViewController {
     }
     
     
-    static func IBLoad() -> SelectChannelGroupVC {
+    static func loadFromIB() -> SelectChannelGroupVC {
         let mainStoryboard = UIStoryboard(name: "Program", bundle: Bundle.main)
-        let selectChannelGroupVC = mainStoryboard.instantiateViewController(withIdentifier: "SelectChannelGroupVC") as? SelectChannelGroupVC
-        return selectChannelGroupVC!
+        let selectChannelGroupVC = mainStoryboard.instantiateViewController(withIdentifier: "SelectChannelGroupVC") as! SelectChannelGroupVC
+        return selectChannelGroupVC
     }
     
     override func viewDidLoad() {

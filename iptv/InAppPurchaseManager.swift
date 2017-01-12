@@ -9,94 +9,124 @@
 import Foundation
 import StoreKit
 
-struct InAppProduct {
+class InAppProduct {
     
     enum State {
         case noInit, tryPeriod, expire, bought
     }
     
     let id:String
-    var state: State = .noInit
-    var startTryDate: Date?
-    var expireTime  = TimeInterval(24*60*60)
     
-    var skProduct : SKProduct?
+    fileprivate var _state: State = .noInit {
+        didSet {
+            print("set _state \(_state)")
+        }
+    }
+    
+    var state: State { //get
+        if _state == .tryPeriod {
+            checkTryPeriod()
+            if _state != .tryPeriod {
+                write()
+            }
+        }
+        return _state
+    }
+    
+    
+    fileprivate var startTryDate: Date?
+    fileprivate var expireTime  = TimeInterval(3*60) // TimeInterval(24*60*60)
+    
+    var expireTryDate: Date? {
+        if startTryDate != nil {
+            return startTryDate?.addingTimeInterval(expireTime)
+        }
+        return nil
+    }
+    
+    var skProduct : SKProduct? {
+        didSet {
+            print("set skProduct \(skProduct?.price)")
+        }
+    }
     
     init(_ id:String) {
+        print("Init product: \(id)")
         self.id = id
     }
     
     static let dateFormat = "yy.MM.dd hh:mm"
     
-    mutating func stateFromString(_ str: String) {
+    private func stateFromString(_ str: String) {
         if str == "no" {
-            state = .noInit
+            _state = .noInit
         }
         else if str == "bought" {
-            state = .bought
+            _state = .bought
         }
         else if str == "expire" {
-            state = .expire
+            _state = .expire
         }
         else {
             startTryDate = str.toFormatDate(InAppProduct.dateFormat)
             if startTryDate != nil {
-                state = .tryPeriod
+                _state = .tryPeriod
                 checkTryPeriod()
             }
             else {
-                state = .noInit
+                _state = .noInit
             }
         }
     }
     
-    mutating func checkTryPeriod() {
+    fileprivate func checkTryPeriod() {
         if startTryDate != nil {
-            if startTryDate! < Date() || startTryDate!.addingTimeInterval(expireTime) > Date() {
-                state = .expire
+            if startTryDate! > Date() || startTryDate!.addingTimeInterval(expireTime) < Date()  {
+                _state = .expire
             }
         }
     }
     
-    mutating func stateToString() -> String {
+    private func stateToString() -> String {
         
-        if state == .tryPeriod {
+        if _state == .tryPeriod {
             checkTryPeriod()
         }
         
-        if state == .noInit {
+        if _state == .noInit {
             return "no"
         }
-        else if state == .bought {
+        else if _state == .bought {
             return "bought"
         }
-        else if state == .expire {
+        else if _state == .expire {
             return "expire"
         }
-        else if state == .tryPeriod &&  startTryDate != nil {
+        else if _state == .tryPeriod &&  startTryDate != nil {
             return startTryDate!.toFormatString(InAppProduct.dateFormat)
         }
         return "no"
     }
     
-    mutating func save() {
+    fileprivate func write() {
         UserDefaults.standard.set(stateToString() as? NSString, forKey: "product." + id)
+        UserDefaults.standard.synchronize()
     }
     
-    mutating func read() {
+    fileprivate func read() {
         if let strState = UserDefaults.standard.object(forKey: "product." + id) as? NSString {
             stateFromString(strState as String)
         }
     }
     
+
+    
 }
 
 
-class InAppPurchaseManager : NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
+class InAppPurchaseManager :  NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserver {
     
-    static let purchaseNotification = "PurchaseNotification"
-    
-    
+    static let changeStateNotification = "ChangeStateNotification"
     
     static let productPipId = "pip"
     static let productIds = [productPipId]
@@ -105,28 +135,82 @@ class InAppPurchaseManager : NSObject, SKProductsRequestDelegate, SKPaymentTrans
     
     lazy var products : [InAppProduct] = {
         
-        var products = [InAppProduct]()
+        var productList = [InAppProduct]()
         for productId in InAppPurchaseManager.productIds {
             var product  = InAppProduct(productId)
-            //get state from UserDefault
+            //get _state from UserDefault
             product.read()
-            products.append(product)
+            productList.append(product)
         }
-        return products
+        return productList
     }()
     
+    var tryTimer : Timer?
+    
     // Singleton
-    static let instance = InAppPurchaseManager()
+    static let instance = InAppPurchaseManager()    
     
-    
-    func getProductById(_ productIdentifier: String) -> InAppProduct? {
-        let shortId = productIdentifier.components(separatedBy: ".").last!
-        if let product = products.first(where:{$0.id == shortId}) {
-            return product
+    func getProductByIdentifier(_ productIdentifier: String) -> InAppProduct? {
+        if let shortId = productIdentifier.components(separatedBy: ".").last {
+            return _getProductById(shortId)
         }
         return nil
     }
     
+    private func _getProductById(_ id: String) -> InAppProduct? {
+        return  products.first(where:{$0.id == id})
+    }
+    
+    class func getProductById(_ id: String) -> InAppProduct? {
+        return InAppPurchaseManager.instance._getProductById(id)
+    }
+    
+    func startTryPeriod(_ product: InAppProduct) {
+        if product._state == .noInit {
+            product._state = .tryPeriod
+            product.startTryDate = Date()
+            product.write()
+            resetTryTimer()
+            NotificationCenter.default.post(name: Notification.Name(InAppPurchaseManager.changeStateNotification),
+                                            object: product)
+        }
+    }
+    
+    
+    
+    fileprivate func resetTryTimer() {
+        if tryTimer != nil {
+            tryTimer!.invalidate()
+            tryTimer = nil
+        }
+        
+        //get product
+        var tryProduct : InAppProduct? = nil
+        for product in products {
+            if product._state == .tryPeriod {
+                product.checkTryPeriod()
+                if product._state == .tryPeriod {
+                    if tryProduct == nil || tryProduct!.expireTryDate! > product.expireTryDate! {
+                        tryProduct = product
+                    }
+                }
+            }
+        }
+        
+        //set timer
+        if tryProduct != nil {
+            let timeInterval = tryProduct!.expireTryDate!.timeIntervalSinceNow + 0.5
+            tryTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false, block: { (_) in
+                if tryProduct!._state == .tryPeriod {
+                    tryProduct!.checkTryPeriod()
+                    NotificationCenter.default.post(name: Notification.Name(InAppPurchaseManager.changeStateNotification),
+                                                    object: tryProduct!)
+                }
+                self.resetTryTimer()
+            })
+        }
+        
+    }
     
     func requestProductData()
     {
@@ -138,13 +222,15 @@ class InAppPurchaseManager : NSObject, SKProductsRequestDelegate, SKPaymentTrans
         currentRequest = SKProductsRequest(productIdentifiers:productIdentifiers)
         currentRequest?.delegate = self
         currentRequest?.start()
+        
+        resetTryTimer()
     }
     
     
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         
         for skProduct in response.products {
-            if var product = getProductById(skProduct.productIdentifier) {
+            if let product = getProductByIdentifier(skProduct.productIdentifier) {
                 product.skProduct = skProduct
             }
             else {
@@ -169,16 +255,21 @@ class InAppPurchaseManager : NSObject, SKProductsRequestDelegate, SKPaymentTrans
     
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         
+        
         for transaction in transactions {
             
-            var product = getProductById(transaction.payment.productIdentifier)
+            let product = getProductByIdentifier(transaction.payment.productIdentifier)
             
             switch transaction.transactionState {
                 
             case SKPaymentTransactionState.purchased:
                 if product != nil {
-                    product!.state = .bought
-                    product!.save()
+                    if product!._state != .bought {
+                        product!._state = .bought
+                        product!.write()
+                        NotificationCenter.default.post(name: Notification.Name(InAppPurchaseManager.changeStateNotification),
+                                                        object: product!)
+                    }
                 }
                 SKPaymentQueue.default().finishTransaction(transaction)
                 
@@ -187,10 +278,6 @@ class InAppPurchaseManager : NSObject, SKProductsRequestDelegate, SKPaymentTrans
             default:
                 break
             }
-            let userInfo : [String:Any] = ["id" : transaction.payment.productIdentifier, "result": transaction.transactionState]
-            NotificationCenter.default.post(name: Notification.Name(InAppPurchaseManager.purchaseNotification),
-                                            object: nil,
-                                            userInfo: userInfo )
             
         }
     }
@@ -201,20 +288,22 @@ class InAppPurchaseManager : NSObject, SKProductsRequestDelegate, SKPaymentTrans
     }
     
     func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
+        
         for transaction in queue.transactions {
-            var product = getProductById(transaction.payment.productIdentifier)
+            let product = getProductByIdentifier(transaction.payment.productIdentifier)
             if product != nil {
-                product!.state = .bought
-                product!.save()
+                if product!._state != .bought {
+                    product!._state = .bought
+                    product!.write()
+                    NotificationCenter.default.post(name: Notification.Name(InAppPurchaseManager.changeStateNotification),
+                                                    object: product!)
+                }
             }
             else {
                 print("not found product with identifier: \(transaction.payment.productIdentifier)")
             }
-            let userInfo : [String:Any] = ["id" : transaction.payment.productIdentifier, "result": transaction.transactionState]
-            NotificationCenter.default.post(name: Notification.Name(InAppPurchaseManager.purchaseNotification),
-                                            object: nil,
-                                            userInfo: userInfo )
         }
+        
     }
     
 }

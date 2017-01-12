@@ -343,6 +343,135 @@
             </objects>
             <point key="canvasLocation" x="4358" y="-1782"/>
         </scene>
+        <!--PaymentVC-->
+        <scene sceneID="JCo-E7-ZFa">
+            <objects>
+                <viewController storyboardIdentifier="PIPPaymentVC" modalPresentationStyle="overCurrentContext" id="qwR-fg-6WS" customClass="PIPPaymentVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="f1a-RG-9Fo"/>
+                        <viewControllerLayoutGuide type="bottom" id="WoW-kM-7lq"/>
+                    </layoutGuides>
+                    <view key="view" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="HRR-pd-laG">
+                        <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yxb-ro-Cfh">
+                                <rect key="frame" x="710" y="80" width="1150" height="900"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PiP is a paid feature " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z1L-MP-WY2">
+                                        <rect key="frame" x="0.0" y="8" width="1150" height="60"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="60" id="Z3P-9g-4YX"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="48"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You can:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AbT-9f-x52">
+                                        <rect key="frame" x="20" y="128" width="150" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="150" id="Ppd-yE-mam"/>
+                                            <constraint firstAttribute="height" constant="40" id="en3-CY-fRC"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="skC-MO-JZe">
+                                        <rect key="frame" x="155" y="113" width="840" height="613"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Trial period has expired" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gU1-LF-DlO">
+                                                <rect key="frame" x="0.0" y="0.0" width="840" height="39"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AWe-Ey-uEr">
+                                                <rect key="frame" x="0.0" y="69" width="840" height="86"/>
+                                                <inset key="contentEdgeInsets" minX="40" minY="20" maxX="40" maxY="20"/>
+                                                <state key="normal" title="Start  24-hour trial period"/>
+                                                <connections>
+                                                    <action selector="startTrialAction:" destination="qwR-fg-6WS" eventType="primaryActionTriggered" id="3Qi-2g-lI5"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You can't perform In App purchases. Please check Settings." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="8F8-vy-Y6c">
+                                                <rect key="frame" x="0.0" y="185" width="840" height="80"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="80" id="g83-e3-9IE"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RGH-II-kmO">
+                                                <rect key="frame" x="0.0" y="295" width="840" height="86"/>
+                                                <inset key="contentEdgeInsets" minX="40" minY="20" maxX="40" maxY="20"/>
+                                                <state key="normal" title="Buy"/>
+                                                <connections>
+                                                    <action selector="buyAction:" destination="qwR-fg-6WS" eventType="primaryActionTriggered" id="xdH-IO-Vu5"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S1X-mB-DhU">
+                                                <rect key="frame" x="0.0" y="411" width="840" height="86"/>
+                                                <inset key="contentEdgeInsets" minX="40" minY="20" maxX="40" maxY="20"/>
+                                                <state key="normal" title="Restore"/>
+                                                <connections>
+                                                    <action selector="restoreAction:" destination="qwR-fg-6WS" eventType="primaryActionTriggered" id="7PG-lM-vib"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ckh-bZ-GuZ">
+                                                <rect key="frame" x="0.0" y="527" width="840" height="86"/>
+                                                <inset key="contentEdgeInsets" minX="40" minY="20" maxX="40" maxY="20"/>
+                                                <state key="normal" title="Cancel"/>
+                                                <connections>
+                                                    <action selector="cancelAction:" destination="qwR-fg-6WS" eventType="primaryActionTriggered" id="lm0-Po-tes"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dJZ-yo-xSt">
+                                        <rect key="frame" x="20" y="727" width="1110" height="153"/>
+                                        <string key="text">Attention:  1. the incoming Internet traffic may double  2. Some OTT providers limit the transmission of multiple channels from a single IP address</string>
+                                        <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="1150" id="0sp-cj-fo2"/>
+                                    <constraint firstItem="dJZ-yo-xSt" firstAttribute="leading" secondItem="Yxb-ro-Cfh" secondAttribute="leading" constant="20" id="1n4-G6-gEN"/>
+                                    <constraint firstItem="z1L-MP-WY2" firstAttribute="leading" secondItem="Yxb-ro-Cfh" secondAttribute="leading" id="OF4-KZ-Uqu"/>
+                                    <constraint firstAttribute="trailing" secondItem="dJZ-yo-xSt" secondAttribute="trailing" constant="20" id="T9J-wY-Jou"/>
+                                    <constraint firstAttribute="trailing" secondItem="z1L-MP-WY2" secondAttribute="trailing" id="UTn-XN-2wE"/>
+                                    <constraint firstItem="skC-MO-JZe" firstAttribute="centerX" secondItem="Yxb-ro-Cfh" secondAttribute="centerX" id="YAL-KG-iMq"/>
+                                    <constraint firstItem="z1L-MP-WY2" firstAttribute="top" secondItem="Yxb-ro-Cfh" secondAttribute="top" constant="8" id="cpw-3S-PKZ"/>
+                                    <constraint firstItem="AbT-9f-x52" firstAttribute="leading" secondItem="Yxb-ro-Cfh" secondAttribute="leading" constant="20" id="d7A-DE-xl2"/>
+                                    <constraint firstItem="skC-MO-JZe" firstAttribute="top" secondItem="z1L-MP-WY2" secondAttribute="bottom" constant="45" id="dCQ-Fb-P5h"/>
+                                    <constraint firstAttribute="height" constant="900" id="rMV-j1-8TH"/>
+                                    <constraint firstItem="AbT-9f-x52" firstAttribute="top" secondItem="z1L-MP-WY2" secondAttribute="bottom" constant="60" id="tcO-0Q-PvN"/>
+                                    <constraint firstAttribute="bottom" secondItem="dJZ-yo-xSt" secondAttribute="bottom" constant="20" id="v1O-7t-8h7"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="WoW-kM-7lq" firstAttribute="top" secondItem="Yxb-ro-Cfh" secondAttribute="bottom" constant="100" id="ZYr-kt-FN7"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Yxb-ro-Cfh" secondAttribute="trailing" constant="40" id="srP-18-v5X"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="buyButton" destination="RGH-II-kmO" id="UTe-5H-FnS"/>
+                        <outlet property="containerView" destination="Yxb-ro-Cfh" id="glP-wu-cJp"/>
+                        <outlet property="trialButton" destination="AWe-Ey-uEr" id="xmi-88-2Yo"/>
+                        <outlet property="tryExpireLabel" destination="gU1-LF-DlO" id="Pg1-Sc-cEy"/>
+                        <outlet property="unablePaymentLabel" destination="8F8-vy-Y6c" id="x1I-G3-ekf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7cD-tF-S3R" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4358" y="-441"/>
+        </scene>
     </scenes>
     <resources>
         <image name="PIPChange" width="40" height="40"/>
