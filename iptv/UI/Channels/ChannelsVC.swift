@@ -287,11 +287,8 @@ class ChannelsVC : FocusedViewController {
                     })
                     
                 }
-                
-                
-            default:
-                print("tap \(actionButtons.selectedSegmentIndex)")
             }
+            
         }
     }
     
@@ -445,7 +442,7 @@ extension ChannelsVC : ChannelPickerDelegate {
     func focusedPath(chooseControl: ChannelPickerVC,  path:[String])    {
         if let dirElement = ChannelManager.findDirElement(path) {
             if case let .channel(channelInfo) = dirElement {
-                programView.update(channelInfo)
+                let _ = programView.update(channelInfo)
             }
         }
     }
@@ -565,7 +562,7 @@ extension ChannelsVC { //pip show/hide
     func pipShow( animated:Bool, _ isShow:Bool = true) {
         
         if isShow {
-            if var pipProduct = InAppPurchaseManager.getProductById(InAppPurchaseManager.productPipId) {
+            if let pipProduct = InAppPurchaseManager.getProductById(InAppPurchaseManager.productPipId) {
                  if pipProduct.state == .noInit ||  pipProduct.state == .expire {
                     let pipPaymentVC = PIPPaymentVC.loadFromIB()
                     present(pipPaymentVC, animated: true, completion: nil)

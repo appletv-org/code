@@ -703,7 +703,7 @@ extension ProgramManager { //upload data (programs, icons) by url
                     continue
                 }
                 
-                var channel = channels[id!]
+                let channel = channels[id!]
                 if(channel == nil) {
                     print("channel id  \(id) not exist for programme")
                     continue
@@ -745,7 +745,7 @@ extension ProgramManager { //upload data (programs, icons) by url
     
     func _saveProgramsToDB(_ provider:EpgProviderInfo, _ channels:  [String: ParserChannelWithProgram]) {
         
-        let moc = CoreDataManager.context()
+        //let moc = CoreDataManager.context()
         let dbcontext = CoreDataManager.concurrentContext()
         
         

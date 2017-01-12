@@ -32,7 +32,7 @@ struct TimeShift {
     }
     
     func toInt() -> Int {
-        var number = (hour*60 + minute)*60
+        let number = (hour*60 + minute)*60
         return sign ? number : -number
     }
     

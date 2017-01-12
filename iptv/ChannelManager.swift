@@ -534,7 +534,7 @@ class ChannelManager {
         var remoteGroup : GroupInfo? = nil
         var addHiddenGroup : GroupInfo? = nil
 
-        var delChannel = pathElements.channel
+        let delChannel = pathElements.channel
         var parentGroup = groups.last!
         if delChannel == nil {
             delGroup = parentGroup

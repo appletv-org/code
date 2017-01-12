@@ -63,36 +63,37 @@ class PIPPaymentVC : FocusedViewController {
         
         pipProduct = InAppPurchaseManager.getProductById(InAppPurchaseManager.productPipId)
         
-        if  pipProduct != nil,
-            let skProduct = pipProduct!.skProduct
+        if  pipProduct != nil
         {
             //trial
             if pipProduct!.state == .noInit {
-                tryExpireLabel.isHidden = true
-                trialButton.isHidden = false
+                tryExpireLabel.setSureHidden(true)
+                trialButton.setSureHidden(false)
             }
             else {
-                tryExpireLabel.isHidden = false
-                trialButton.isHidden = true
+                tryExpireLabel.setSureHidden(false)
+                trialButton.setSureHidden(true)
             }
             
             //buy
             if SKPaymentQueue.canMakePayments() {
                 
-                unablePaymentLabel.isHidden = true
-                buyButton.isHidden = false
+                unablePaymentLabel.setSureHidden(true)
+                buyButton.setSureHidden(false)
                 
-                let numberFormatter = NumberFormatter()
-                numberFormatter.formatterBehavior = .behavior10_4
-                numberFormatter.numberStyle = .currency
-                numberFormatter.locale = skProduct.priceLocale
-                if let formattedPrice = numberFormatter.string(from: skProduct.price) {
-                    buyButton.setTitleForAllStates("Buy for \(formattedPrice)")
+                if let skProduct = pipProduct!.skProduct {
+                    let numberFormatter = NumberFormatter()
+                    numberFormatter.formatterBehavior = .behavior10_4
+                    numberFormatter.numberStyle = .currency
+                    numberFormatter.locale = skProduct.priceLocale
+                    if let formattedPrice = numberFormatter.string(from: skProduct.price) {
+                        buyButton.setTitleForAllStates("Buy for \(formattedPrice)")
+                    }
                 }
             }
             else {
-                unablePaymentLabel.isHidden = false
-                buyButton.isHidden = true
+                unablePaymentLabel.setSureHidden(false)
+                buyButton.setSureHidden(true)
             }
         }
         

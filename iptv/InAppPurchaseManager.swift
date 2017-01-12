@@ -109,7 +109,7 @@ class InAppProduct {
     }
     
     fileprivate func write() {
-        UserDefaults.standard.set(stateToString() as? NSString, forKey: "product." + id)
+        UserDefaults.standard.set(stateToString() as NSString, forKey: "product." + id)
         UserDefaults.standard.synchronize()
     }
     
