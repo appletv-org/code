@@ -46,6 +46,8 @@
 		FA843F641DEB4EC900F95DAE /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA843F631DEB4EC900F95DAE /* StyleManager.swift */; };
 		FA843F6B1DF17E5C00F95DAE /* ProgramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA843F6A1DF17E5C00F95DAE /* ProgramView.swift */; };
 		FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */; };
+		FAE2307C1E27A7F200210B64 /* libFlurrytvOS_1.0.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE2307B1E27A7F200210B64 /* libFlurrytvOS_1.0.0.a */; };
+		FAE2307F1E27C70900210B64 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE2307E1E27C70900210B64 /* Analytics.swift */; };
 		FAEE2EEB1DB4E60900D0F4C3 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE2EEA1DB4E60900D0F4C3 /* PlayerView.swift */; };
 		FAF0E4131DFECBDC00897B88 /* ProgramVC_old.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0E4121DFECBDC00897B88 /* ProgramVC_old.swift */; };
 		FAF0E4151E00166E00897B88 /* ProgramVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0E4141E00166E00897B88 /* ProgramVC.swift */; };
@@ -106,6 +108,10 @@
 		FA843F6A1DF17E5C00F95DAE /* ProgramView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramView.swift; path = iptv/UI/Channels/ProgramView.swift; sourceTree = "<group>"; };
 		FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChannelManager.swift; path = iptv/ChannelManager.swift; sourceTree = "<group>"; };
 		FAD2A1B91D9509120047AE3F /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		FAE2307A1E27A7F200210B64 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
+		FAE2307B1E27A7F200210B64 /* libFlurrytvOS_1.0.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurrytvOS_1.0.0.a; sourceTree = "<group>"; };
+		FAE2307D1E27A9E300210B64 /* iptv-Bridging_Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "iptv-Bridging_Header.h"; path = "iptv/iptv-Bridging_Header.h"; sourceTree = "<group>"; };
+		FAE2307E1E27C70900210B64 /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		FAEE2EEA1DB4E60900D0F4C3 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = 3lib/PlayerView/PlayerView.swift; sourceTree = "<group>"; };
 		FAF0E4121DFECBDC00897B88 /* ProgramVC_old.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramVC_old.swift; path = iptv/UI/Program/ProgramVC_old.swift; sourceTree = "<group>"; };
 		FAF0E4141E00166E00897B88 /* ProgramVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramVC.swift; path = iptv/UI/Program/ProgramVC.swift; sourceTree = "<group>"; };
@@ -126,6 +132,7 @@
 				FA2060CB1E2120CA008951A4 /* StoreKit.framework in Frameworks */,
 				FA4341221DC146460075CE77 /* libz.tbd in Frameworks */,
 				FA6944E11D92B26C005B854A /* CoreData.framework in Frameworks */,
+				FAE2307C1E27A7F200210B64 /* libFlurrytvOS_1.0.0.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,6 +153,7 @@
 		FA2E2EEF1DBDFD6F00CE8F7F /* 3lib */ = {
 			isa = PBXGroup;
 			children = (
+				FAE230791E27A7F200210B64 /* FlurrytvOS */,
 				FA2383551DC5283F0007A006 /* Swiftzlib */,
 				FA2E2EF01DBDFD8900CE8F7F /* AEXML */,
 				FAEE2EEA1DB4E60900D0F4C3 /* PlayerView.swift */,
@@ -222,6 +230,8 @@
 				FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */,
 				FA2E2EE51DB7A42000CE8F7F /* ProgramManager.swift */,
 				FA2060CF1E212AD1008951A4 /* InAppPurchaseManager.swift */,
+				FAE2307D1E27A9E300210B64 /* iptv-Bridging_Header.h */,
+				FAE2307E1E27C70900210B64 /* Analytics.swift */,
 			);
 			name = iptv;
 			sourceTree = "<group>";
@@ -291,6 +301,16 @@
 				FA830D8D1D8C3361000BD36E /* Settings.storyboard */,
 			);
 			name = Base.lproj;
+			sourceTree = "<group>";
+		};
+		FAE230791E27A7F200210B64 /* FlurrytvOS */ = {
+			isa = PBXGroup;
+			children = (
+				FAE2307A1E27A7F200210B64 /* Flurry.h */,
+				FAE2307B1E27A7F200210B64 /* libFlurrytvOS_1.0.0.a */,
+			);
+			name = FlurrytvOS;
+			path = 3lib/Flurry_tvOS_1.0.0/FlurrytvOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -375,6 +395,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA210EC51DCA0344002B9592 /* UIExtension.swift in Sources */,
+				FAE2307F1E27C70900210B64 /* Analytics.swift in Sources */,
 				FA5C61371D928084005E8EBD /* iptv.xcdatamodeld in Sources */,
 				FAF0E4151E00166E00897B88 /* ProgramVC.swift in Sources */,
 				FA7589CA1DD10DBF009D2327 /* EpgProviderEditVC.swift in Sources */,
@@ -551,10 +572,15 @@
 				);
 				INFOPLIST_FILE = iptv/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/3lib/Flurry_tvOS_1.0.0/FlurrytvOS",
+				);
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alevko.tvorg;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/3lib/Swiftzlib";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/iptv/iptv-Bridging_Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -570,10 +596,15 @@
 				);
 				INFOPLIST_FILE = iptv/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/3lib/Flurry_tvOS_1.0.0/FlurrytvOS",
+				);
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alevko.tvorg;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/3lib/Swiftzlib";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/iptv/iptv-Bridging_Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

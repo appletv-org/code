@@ -28,7 +28,7 @@ class PIPPaymentVC : FocusedViewController {
         {
             InAppPurchaseManager.instance.startTryPeriod(pipProduct!)
         }
-        
+        self.dismiss(animated: true, completion: nil)
     }
     
     

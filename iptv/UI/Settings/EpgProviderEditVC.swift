@@ -194,6 +194,7 @@ class EpgProviderEditVC: UIViewController {
             
         }
         else {
+            urlField.text = "http://"
             addNavigationTitle("New provider")
         }
         
@@ -258,7 +259,7 @@ class EpgProviderEditVC: UIViewController {
     func loadFields(_ provider:EpgProviderInfo?) {
         if(provider == nil) {
             nameField.text = ""
-            urlField.text = ""
+            urlField.text = "http://"
         }
         else {
             nameField.text = provider!.name

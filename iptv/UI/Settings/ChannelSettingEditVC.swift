@@ -19,6 +19,8 @@ class ChannelSettingEditVC : BottomController, BottomControllerProtocol {
     
     var mode : EditMode = .edit
     
+    var isPublic = true
+    
     @IBOutlet weak var fieldsStack: UIStackView!
     @IBOutlet weak var nameStack: UIStackView!
     @IBOutlet weak var nameTextField: UITextField!
@@ -27,13 +29,21 @@ class ChannelSettingEditVC : BottomController, BottomControllerProtocol {
     @IBOutlet weak var urlTextField: UITextField!
     
     @IBOutlet weak var publicStack: UIStackView!
-    @IBOutlet weak var updateStack: UIStackView!
+    @IBOutlet weak var publicButton: UIButton!
+    @IBAction func publicChangeAction(_ sender: Any) {
+        isPublic = !isPublic
+        setPublicButton()
+    }
     @IBOutlet weak var infoLabel: UILabel!
     
     @IBOutlet weak var saveButton: UIButton!
     
     @IBOutlet weak var cancelButton: UIButton!
     
+    
+    override func viewDidLoad() {
+        setPublicButton()
+    }
     
     func refresh() {
         
@@ -72,7 +82,7 @@ class ChannelSettingEditVC : BottomController, BottomControllerProtocol {
         
         
         //public
-        publicStack.setSureHidden(mode != .addRemoteGroup)
+        publicStack.setSureHidden(mode != .addRemoteGroup && mode != .addChannel)
         
         //info (always visible)
         var info = ""
@@ -94,6 +104,13 @@ class ChannelSettingEditVC : BottomController, BottomControllerProtocol {
         
         self.view.setNeedsLayout()
         
+    }
+    
+    func setPublicButton() {
+        var imageName = isPublic ? "checkboxOn" : "checkboxOff"
+        if let image = UIImage(named: imageName) {
+            publicButton.setImageForAllStates(image)
+        }
     }
     
     @IBAction func saveAction(_ sender: Any) {
@@ -130,11 +147,11 @@ class ChannelSettingEditVC : BottomController, BottomControllerProtocol {
                 err = ChannelManager.addGroup(path, name:nameTextField.text!)
             }
             else if mode == .addChannel {
-                err = ChannelManager.addChannel(path, name:nameTextField.text!, url:urlTextField.text!)
+                err = ChannelManager.addChannel(path, name:nameTextField.text!, url:urlTextField.text!, isPublic:isPublic)
             }
             
             else if mode == .addRemoteGroup {
-                err = ChannelManager.addRemoteGroup(path, name: nameTextField.text!, url: urlTextField.text!)
+                err = ChannelManager.addRemoteGroup(path, name: nameTextField.text!, url: urlTextField.text!, isPublic:isPublic)
             }
             if err == nil {
                 path.append(nameTextField.text!)

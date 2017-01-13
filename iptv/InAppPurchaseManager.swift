@@ -35,7 +35,12 @@ class InAppProduct {
     
     
     fileprivate var startTryDate: Date?
-    fileprivate var expireTime  = TimeInterval(3*60) // TimeInterval(24*60*60)
+    
+    #if DEBUG
+        fileprivate var expireTime  = TimeInterval(1*60) 
+    #else
+        fileprivate var expireTime  = TimeInterval(24*60*60)
+    #endif
     
     var expireTryDate: Date? {
         if startTryDate != nil {
@@ -83,6 +88,7 @@ class InAppProduct {
         if startTryDate != nil {
             if startTryDate! > Date() || startTryDate!.addingTimeInterval(expireTime) < Date()  {
                 _state = .expire
+                Analytics.logDevice("tryFinish", params: ["product": self.id])
             }
         }
     }
@@ -171,8 +177,11 @@ class InAppPurchaseManager :  NSObject, SKProductsRequestDelegate, SKPaymentTran
             product.startTryDate = Date()
             product.write()
             resetTryTimer()
+            
             NotificationCenter.default.post(name: Notification.Name(InAppPurchaseManager.changeStateNotification),
                                             object: product)
+            
+            Analytics.logDevice("tryStart", params:["product": product.id])
         }
     }
     
@@ -247,6 +256,7 @@ class InAppPurchaseManager :  NSObject, SKProductsRequestDelegate, SKPaymentTran
         if let skProduct = product.skProduct {
             let payment = SKPayment(product: skProduct)
             SKPaymentQueue.default().add(payment)
+            Analytics.logDevice("buyStart", params:["product": product.id])
         }
         else {
             print("Not found skproduct property for product: \(product.id)")
@@ -269,12 +279,14 @@ class InAppPurchaseManager :  NSObject, SKProductsRequestDelegate, SKPaymentTran
                         product!.write()
                         NotificationCenter.default.post(name: Notification.Name(InAppPurchaseManager.changeStateNotification),
                                                         object: product!)
+                        Analytics.logDevice("buySuccess", params:["product": product!.id])
                     }
                 }
                 SKPaymentQueue.default().finishTransaction(transaction)
                 
             case SKPaymentTransactionState.failed:
                 SKPaymentQueue.default().finishTransaction(transaction)
+                Analytics.logDevice("buyFailed", params:["product": product?.id ?? "undefine"])
             default:
                 break
             }
@@ -285,6 +297,7 @@ class InAppPurchaseManager :  NSObject, SKProductsRequestDelegate, SKPaymentTran
     func restorePurchases() {
         SKPaymentQueue.default().add(self)
         SKPaymentQueue.default().restoreCompletedTransactions()
+        Analytics.logDevice("restoreStart", params:[:])
     }
     
     func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
@@ -297,6 +310,7 @@ class InAppPurchaseManager :  NSObject, SKProductsRequestDelegate, SKPaymentTran
                     product!.write()
                     NotificationCenter.default.post(name: Notification.Name(InAppPurchaseManager.changeStateNotification),
                                                     object: product!)
+                    Analytics.logDevice("restoreProduct", params:["product": product!.id])
                 }
             }
             else {

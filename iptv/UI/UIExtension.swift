@@ -144,7 +144,12 @@ extension UIButton {
         self.setTitle(title, for: .normal)
         self.setTitle(title, for: .focused)
         self.setTitle(title, for: .selected)
-
+    }
+    
+    func setImageForAllStates(_ image: UIImage) {
+        self.setImage(image, for: .normal)
+        self.setImage(image, for: .focused)
+        self.setImage(image, for: .selected)
     }
 }
 

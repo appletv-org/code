@@ -371,6 +371,8 @@ class ProgramManager {
         _epgProviders!.append(provider)
         save()
         
+        Analytics.logCountry("addEPGProvider", params:["url":provider.url, "name":provider.name, "updateTime": String(provider.updateTime)])
+        
         //update programs and icons in DB
         updateData(provider, isNew:true)
 

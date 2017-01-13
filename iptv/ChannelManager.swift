@@ -758,7 +758,7 @@ class ChannelManager {
         
     }
 
-    class func addChannel(_ path:[String], name:String, url:String) -> Error? {
+    class func addChannel(_ path:[String], name:String, url:String, isPublic:Bool = true) -> Error? {
         
         let pathElements = ChannelManager.getPathElements(path)
         
@@ -774,6 +774,14 @@ class ChannelManager {
             
             parentGroup.channels.append( ChannelInfo(name:name, url:url) )
             ChannelManager.save()
+            
+            var logUrl = url
+            if !isPublic {
+                let url = NSURL(string: url)
+                logUrl = url?.host ?? "undefine"
+            }
+            Analytics.logCountry("addChannel", params:["url":logUrl, "name":name])
+            
             return nil
             
         }
@@ -783,7 +791,7 @@ class ChannelManager {
         
     }
     
-    class func addRemoteGroup(_ path:[String], name newName:String, url newUrl:String) -> Error? {
+    class func addRemoteGroup(_ path:[String], name newName:String, url newUrl:String, isPublic:Bool = true) -> Error? {
         
         
         let pathElements = ChannelManager.getPathElements(path)
@@ -813,6 +821,14 @@ class ChannelManager {
             group.remoteInfo = RemoteGroupInfo(url: newUrl)
             parentGroup.groups.append(group)
             ChannelManager.save()
+            
+            var logUrl = newUrl
+            if !isPublic {
+                let url = NSURL(string: newUrl)
+                logUrl = url?.host ?? "undefine"
+            }
+            Analytics.logCountry("addRemoteGroup", params:["url":logUrl, "name":newName])
+            
             return nil
         }
         else {
