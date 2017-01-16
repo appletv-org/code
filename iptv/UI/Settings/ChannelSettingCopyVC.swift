@@ -60,14 +60,17 @@ class ChannelSettingCopyVC : BottomController {
     
     
     override func viewDidLoad() {
+        
         channelPickerToVC = ChannelPickerVC.insertToView(parentController: self, parentView: channelPickerToView)
         channelPickerToVC.delegate = self
         //channelPickerToVC.setupPath([])
-        
     }
     
     
     func refresh() {
+        
+        
+        moveButton.isEnabled = channelSettingVC.remoteGroup == nil
         
         let infoText = "\"\(ChannelManager.lastName(channelSettingVC.currentPath))\" to \"\(ChannelManager.lastName(toPath))\""
         infoLabel.text = infoText

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA1245891E291431007349C8 /* ProgramDescriptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1245881E291431007349C8 /* ProgramDescriptionVC.swift */; };
+		FA12458B1E2A7DDE007349C8 /* AddEpgLinkVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA12458A1E2A7DDE007349C8 /* AddEpgLinkVC.swift */; };
 		FA2060CB1E2120CA008951A4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA2060CA1E2120CA008951A4 /* StoreKit.framework */; };
 		FA2060D01E212AD1008951A4 /* InAppPurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2060CF1E212AD1008951A4 /* InAppPurchaseManager.swift */; };
 		FA2060D21E22659C008951A4 /* PipPaymentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2060D11E22659C008951A4 /* PipPaymentVC.swift */; };
@@ -51,7 +53,6 @@
 		FAEE2EEB1DB4E60900D0F4C3 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE2EEA1DB4E60900D0F4C3 /* PlayerView.swift */; };
 		FAF0E4131DFECBDC00897B88 /* ProgramVC_old.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0E4121DFECBDC00897B88 /* ProgramVC_old.swift */; };
 		FAF0E4151E00166E00897B88 /* ProgramVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0E4141E00166E00897B88 /* ProgramVC.swift */; };
-		FAF0E4171E0155E600897B88 /* ProgramInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0E4161E0155E600897B88 /* ProgramInfo.swift */; };
 		FAF0E4191E017EDD00897B88 /* SelectChannelGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0E4181E017EDD00897B88 /* SelectChannelGroupVC.swift */; };
 		FAFC8F301DF9829900350A2B /* ProgramCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFC8F2F1DF9829900350A2B /* ProgramCollectionCell.swift */; };
 		FAFC8F321DFAD87E00350A2B /* Program.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAFC8F311DFAD87E00350A2B /* Program.storyboard */; };
@@ -61,6 +62,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA1245881E291431007349C8 /* ProgramDescriptionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramDescriptionVC.swift; path = iptv/UI/Program/ProgramDescriptionVC.swift; sourceTree = "<group>"; };
+		FA12458A1E2A7DDE007349C8 /* AddEpgLinkVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddEpgLinkVC.swift; path = iptv/UI/Program/AddEpgLinkVC.swift; sourceTree = "<group>"; };
 		FA2060CA1E2120CA008951A4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		FA2060CF1E212AD1008951A4 /* InAppPurchaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InAppPurchaseManager.swift; path = iptv/InAppPurchaseManager.swift; sourceTree = "<group>"; };
 		FA2060D11E22659C008951A4 /* PipPaymentVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PipPaymentVC.swift; path = iptv/UI/Channels/PipPaymentVC.swift; sourceTree = "<group>"; };
@@ -111,11 +114,10 @@
 		FAE2307A1E27A7F200210B64 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
 		FAE2307B1E27A7F200210B64 /* libFlurrytvOS_1.0.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurrytvOS_1.0.0.a; sourceTree = "<group>"; };
 		FAE2307D1E27A9E300210B64 /* iptv-Bridging_Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "iptv-Bridging_Header.h"; path = "iptv/iptv-Bridging_Header.h"; sourceTree = "<group>"; };
-		FAE2307E1E27C70900210B64 /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
+		FAE2307E1E27C70900210B64 /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Analytics.swift; path = iptv/Analytics.swift; sourceTree = "<group>"; };
 		FAEE2EEA1DB4E60900D0F4C3 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerView.swift; path = 3lib/PlayerView/PlayerView.swift; sourceTree = "<group>"; };
 		FAF0E4121DFECBDC00897B88 /* ProgramVC_old.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramVC_old.swift; path = iptv/UI/Program/ProgramVC_old.swift; sourceTree = "<group>"; };
 		FAF0E4141E00166E00897B88 /* ProgramVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramVC.swift; path = iptv/UI/Program/ProgramVC.swift; sourceTree = "<group>"; };
-		FAF0E4161E0155E600897B88 /* ProgramInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramInfo.swift; path = iptv/UI/ProgramInfo.swift; sourceTree = "<group>"; };
 		FAF0E4181E017EDD00897B88 /* SelectChannelGroupVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SelectChannelGroupVC.swift; path = iptv/UI/Program/SelectChannelGroupVC.swift; sourceTree = "<group>"; };
 		FAFC8F2F1DF9829900350A2B /* ProgramCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramCollectionCell.swift; path = iptv/UI/Channels/ProgramCollectionCell.swift; sourceTree = "<group>"; };
 		FAFC8F311DFAD87E00350A2B /* Program.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Program.storyboard; path = iptv/UI/Base.lproj/Program.storyboard; sourceTree = "<group>"; };
@@ -247,7 +249,6 @@
 				FAFE305C1D9D15760042A3EB /* FocusedView.swift */,
 				FA210EC41DCA0344002B9592 /* UIExtension.swift */,
 				FA843F631DEB4EC900F95DAE /* StyleManager.swift */,
-				FAF0E4161E0155E600897B88 /* ProgramInfo.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -269,6 +270,8 @@
 				FAF0E4121DFECBDC00897B88 /* ProgramVC_old.swift */,
 				FAF0E4141E00166E00897B88 /* ProgramVC.swift */,
 				FAF0E4181E017EDD00897B88 /* SelectChannelGroupVC.swift */,
+				FA12458A1E2A7DDE007349C8 /* AddEpgLinkVC.swift */,
+				FA1245881E291431007349C8 /* ProgramDescriptionVC.swift */,
 			);
 			name = Programs;
 			sourceTree = "<group>";
@@ -413,6 +416,7 @@
 				FA51F7A21DC7740300CA1758 /* ChannelSettinsVC.swift in Sources */,
 				FA830D8C1D8C21B1000BD36E /* ChannelsVC.swift in Sources */,
 				FA830D701D8C1F53000BD36E /* AppDelegate.swift in Sources */,
+				FA12458B1E2A7DDE007349C8 /* AddEpgLinkVC.swift in Sources */,
 				FA2E2EE81DB8DAA700CE8F7F /* EpgProvidersVC.swift in Sources */,
 				FA25FEE01E12955900578C4F /* ChannelSettingDeleteVC.swift in Sources */,
 				FA6944E31D92B8D0005B854A /* CoreDataExtension.swift in Sources */,
@@ -422,13 +426,13 @@
 				FA830D861D8C20AA000BD36E /* SettingsVC.swift in Sources */,
 				FAFEFCE81E1C07270041585F /* ChannelSettingHideVC.swift in Sources */,
 				FA2060D01E212AD1008951A4 /* InAppPurchaseManager.swift in Sources */,
+				FA1245891E291431007349C8 /* ProgramDescriptionVC.swift in Sources */,
 				FA5C61341D92798C005E8EBD /* CoreDataManager.swift in Sources */,
 				FA51F7A41DC7746D00CA1758 /* ChannelPickerVC.swift in Sources */,
 				FA2E2F021DBDFD8900CE8F7F /* Parser.swift in Sources */,
 				FAFE305D1D9D15760042A3EB /* FocusedView.swift in Sources */,
 				FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */,
 				FA6ACE921E18066900658CAE /* ChannelSettingPreviewVC.swift in Sources */,
-				FAF0E4171E0155E600897B88 /* ProgramInfo.swift in Sources */,
 				FA2060D21E22659C008951A4 /* PipPaymentVC.swift in Sources */,
 				FA54F3611E1518B300061835 /* ChannelSettingReorderVC.swift in Sources */,
 				FAF0E4131DFECBDC00897B88 /* ProgramVC_old.swift in Sources */,

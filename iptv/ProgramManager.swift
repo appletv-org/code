@@ -130,7 +130,9 @@ class EpgProviderInfo : NSObject, NSCoding {
 
 class ProgramManager {
     
-    static let userDefaultKey = "epgProviders"
+    static let providerUserDefaultKey = "epgProviders"
+    static let linkUserDefaultKey = "epgLinks"
+    
     
     static let epgNotification = Notification.Name("EpgNotification")
     
@@ -152,7 +154,7 @@ class ProgramManager {
         get {
             if(_epgProviders == nil) {
                 _epgProviders = [EpgProviderInfo]()
-                if let data = UserDefaults.standard.object(forKey: ProgramManager.userDefaultKey) as? NSData {
+                if let data = UserDefaults.standard.object(forKey: ProgramManager.providerUserDefaultKey) as? NSData {
                     if let providers = NSKeyedUnarchiver.unarchiveObject(with: data as Data) as? [EpgProviderInfo] {
                         _epgProviders = providers
                     }
@@ -163,6 +165,15 @@ class ProgramManager {
     }
     
     
+    lazy var channelLinks : [String:String] = {
+        if let links = UserDefaults.standard.dictionary(forKey: ProgramManager.linkUserDefaultKey) as? [String:String] {
+            return links
+        }
+        return [:]
+    }()
+    
+    
+    
     static let instance = ProgramManager()
     private init() {
     }
@@ -170,7 +181,7 @@ class ProgramManager {
     
     func save() {
         let data = NSKeyedArchiver.archivedData(withRootObject: _epgProviders!)
-        UserDefaults.standard.set(data, forKey: ProgramManager.userDefaultKey)
+        UserDefaults.standard.set(data, forKey: ProgramManager.providerUserDefaultKey)
     }
 
     func getProvider(_ name: String) -> EpgProviderInfo? {
@@ -212,45 +223,48 @@ class ProgramManager {
         
     }
     
-    func programNameShift(_ name:String) -> (name:String, shiftTime:Int) { //name withoup hour zone and version, example: chanel name +2 .3 -> +2:shifttime, .3:version
+    func epgName(_ name:String) -> String {
+        var nameForEpg = componentName(name).name
+        if let linkName = channelLinks[nameForEpg] {
+            nameForEpg = linkName
+        }
+        return nameForEpg
+    }
+    
+    func componentName(_ name:String) -> (name:String, shiftTime:Int) { //name withoup hour zone and version, example: BBC +2 .3 -> +2:shifttime, .3:version
+        
+        var shiftTime = 0
+        
         var components = name.components(separatedBy: " ")
-        if components.count == 1 {
-            return (name, 0)
-        }
+        if components.count != 1 {
         
-        //remove version ( <space>.<number>)
-        var lastComp = components.last!
-        if  lastComp.characters.count >= 2,
-            lastComp.characters[lastComp.startIndex] == "."
-        {
-            let ver = String(lastComp.characters.dropFirst())
-            if Int(ver) != nil {
-                let _ = components.popLast()
-            }
-        }
-        
-        if components.count == 1 {
-            return (components[0], 0)
-        }
-
-        //remove timeShift ( <space><+/-><number>)
-        var timeShift :Int? = nil
-        lastComp = components.last!
-        if  lastComp.characters.count >= 2 {
-            let firstSymbol = lastComp.characters[lastComp.startIndex]
-            if firstSymbol == "+" ||  firstSymbol == "-" {
-                let timeShift = Int(lastComp)
-                if timeShift != nil {
+            //remove version ( <space>.<number>)
+            var lastComp = components.last!
+            if  lastComp.characters.count >= 2,
+                lastComp.characters[lastComp.startIndex] == "."
+            {
+                let ver = String(lastComp.characters.dropFirst())
+                if Int(ver) != nil {
                     let _ = components.popLast()
+                }
+            }
+            
+            //remove timeShift ( <space><+/-><number>)
+            if components.count != 1 {
+                lastComp = components.last!
+                if  lastComp.characters.count >= 2 {
+                    let firstSymbol = lastComp.characters[lastComp.startIndex]
+                    if  firstSymbol == "+" ||  firstSymbol == "-",
+                        let timeShift = Int(lastComp)
+                    {
+                        shiftTime = timeShift
+                        let _ = components.popLast()
+                    }
                 }
             }
         }
         
-        if timeShift == nil {
-            timeShift = 0
-        }
-        return ( components.joined(separator:" "), timeShift!)
-        
+        return (components.joined(separator:" "), shiftTime)
     }
     
     func getPrograms(channel: String, from:Date?=nil, to:Date?=nil )  -> [EpgProgram] {
@@ -268,10 +282,10 @@ class ProgramManager {
     func getProviderPrograms(provider:EpgProviderInfo, channel: String, from:Date?=nil, to:Date?=nil )  -> [EpgProgram] {
         
         
-        let nameShift = programNameShift(channel)
+        let nameEpg = epgName(channel)
         
         guard let dbChannel : EpgChannel = CoreDataManager.requestFirstElement(
-                        NSPredicate(format: "name == %@ AND provider.name == %@", nameShift.name.lowercased(),  provider.name)),
+                        NSPredicate(format: "name == %@ AND provider.name == %@", nameEpg.lowercased(),  provider.name)),
               var programs = dbChannel.programs?.allObjects as? [EpgProgram]
         else {
              return []
@@ -290,7 +304,7 @@ class ProgramManager {
             }
             
             let filterPrograms = programs.filter {
-                ($0.stop as! Date) > fromDate && ($0.start as! Date) < toDate
+                ($0.stop as! Date) > fromDate && ($0.start as! Date) <= toDate
             }
             programs = filterPrograms
         }
@@ -345,10 +359,10 @@ class ProgramManager {
 
     private func _getProviderIcon(channel: String, provider: String) -> Data? {
         
-        let nameShift = self.programNameShift(channel)
+        let nameEpg = self.epgName(channel)
 
         guard let dbChannel : EpgChannel = CoreDataManager.requestFirstElement(NSPredicate(format: "name==%@ AND provider.name == %@",
-                                                                                          nameShift.name.lowercased(),  provider) ),
+                                                                                          nameEpg.lowercased(),  provider) ),
               let strUrl = dbChannel.icon,
               let url = URL(string:strUrl),
               let data = try? Data(contentsOf: url)
@@ -473,6 +487,22 @@ class ProgramManager {
             save()
         }
         
+    }
+    
+    func existChannelLink(_ channel:String) -> Bool {
+        let nameShift = componentName( channel )
+        return (channelLinks[nameShift.name] != nil)
+    }
+
+    func addChannelLink(channel:String, epg:String) {
+        let nameShift = componentName( channel )
+        channelLinks[nameShift.name] = epg
+        UserDefaults.standard.setValue(channelLinks, forKey: ProgramManager.linkUserDefaultKey)
+    }
+    func delChannelLink(_ channel:String) {
+        let nameShift = componentName( channel )
+        channelLinks.removeValue(forKey: nameShift.name)
+        UserDefaults.standard.setValue(channelLinks, forKey: ProgramManager.linkUserDefaultKey)
     }
     
     
@@ -828,11 +858,15 @@ extension ProgramManager { //upload data (programs, icons) by url
             fetchRequestDate.predicate = NSPredicate(format:"channel.provider.name == %@", provider.name)
             fetchRequestDate.fetchLimit = 1
             fetchRequestDate.sortDescriptors = [NSSortDescriptor(key: "start", ascending: true)]
-            if let result = try? dbcontext.fetch(fetchRequestDate) {
+            if  let result = try? dbcontext.fetch(fetchRequestDate),
+                result.count > 0
+            {
                 minDate = result[0].start as Date?
             }
             fetchRequestDate.sortDescriptors = [NSSortDescriptor(key: "stop", ascending: false)]
-            if let result = try? dbcontext.fetch(fetchRequestDate) {
+            if  let result = try? dbcontext.fetch(fetchRequestDate),
+                result.count > 0
+            {
                 maxDate = result[0].stop as Date?
             }
         

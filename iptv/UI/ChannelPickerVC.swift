@@ -16,12 +16,14 @@ class ChannelCell : UICollectionViewCell {
     
     static let imageGroup = UIImage(named: "group")
     static let imageChannel = UIImage(named: "channel")
+    static let imageRemoteGroup = UIImage(named: "reload")
     
     
     @IBOutlet weak var channelView: UIView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var nameIntoImage: UILabel!
+    @IBOutlet weak var remoteImageView: UIImageView!
     
     @IBOutlet weak var niiHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var niiWidthConstraint: NSLayoutConstraint!
@@ -38,6 +40,7 @@ class ChannelCell : UICollectionViewCell {
         }
         set(newElement) {
             _element = newElement
+            var remoteImage : UIImage? = nil
             switch newElement {
             case .group(let group):
                 label.text = group.name
@@ -50,6 +53,10 @@ class ChannelCell : UICollectionViewCell {
                 niiWidthConstraint.constant = -46
                 niiHeightConstraint.constant = -92
                 imageView.image = ChannelCell.imageGroup
+                
+                if group.remoteInfo != nil {
+                    remoteImage = ChannelCell.imageRemoteGroup
+                }
                 
             case .channel(let channel):
                 label.text = channel.name
@@ -70,6 +77,7 @@ class ChannelCell : UICollectionViewCell {
                     }
                 })
             }
+            remoteImageView.image = remoteImage
         }
     }
     

@@ -16,10 +16,7 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
     var programs : [EpgProgram] = []
     
     weak var dayLabel: UILabel!
-    
-    
     weak var actionButtons: UISegmentedControl!
-    
     weak var programCollectionView: UICollectionView! {
         didSet {
             programCollectionView.dataSource = self
@@ -28,8 +25,15 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         }
     }
     
+    weak var channelsVC: ChannelsVC! {
+        didSet {
+            dayLabel = channelsVC.dayLabel
+            actionButtons = channelsVC.actionButtons
+            programCollectionView = channelsVC.programCollectionView
+        }
+    }
     
-    func update(_ channel:ChannelInfo) -> Bool {
+    func update(_ channel:ChannelInfo) -> Bool {//return - find program with current time
         self.channel = channel
         
         let beginDay = NSCalendar.current.startOfDay(for: Date())
@@ -46,72 +50,80 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         //programCollectionView.reloadData()
         programCollectionView.reloadSections(IndexSet(integer:0))
         //scroll to now element
-        var isFindProgram = false
-        if let ind = findIndexNow() {
-            isFindProgram = true
-            programCollectionView.scrollToItem(at: IndexPath(row:ind, section:0), at: .left, animated: false)
+        
+        let indNow = findIndexNow()
+        if let index = indNow.index {
+            programCollectionView.scrollToItem(at: IndexPath(row:index, section:0), at: .left, animated: false)
         }
         labelDayUpdate()
         
                 
-        return isFindProgram
+        return indNow.isNow
         
     }
     
-    func findIndexNow() -> Int? {
+    func findIndexNow() -> (index:Int?, isNow:Bool) {
+        
+        if programs.count == 0 {
+            return (nil,false)
+        }
+        
+        //find near index
+        let now = Date()
+        var nearIndex = 0
+        var minStartTimeInterval = TimeInterval(10000000)
         
         for i in 0 ..< programs.count {
             let startStop = ProgramManager.startStopTime(programs[i])
+            
             if      let start = startStop.start,
-                    let stop = startStop.stop,
-                    start <= Date(), stop > Date() {
-                return i
-            }
-        }
-        return nil
-        
-    }
-    
-    
-    func labelDayUpdate() {
-        
-        let dayinSec = TimeInterval(24.0*60*60)
-        
-        var programDate = Date()
-        
-        let visibleIndexPaths = programCollectionView.indexPathsForVisibleItems
-        if programs.count > 0 && visibleIndexPaths.count > 0 {
-            let indexPath = visibleIndexPaths[0]
-            if (indexPath.row < programs.count) {
-                if let date = programs[indexPath.row].start as? Date {
-                    programDate = date
+                    let stop = startStop.stop
+            {
+                if start <= now && stop > now {
+                    return (i, true)
+                }
+                let timeInterval = abs(start.timeIntervalSinceNow)
+                if timeInterval < minStartTimeInterval {
+                    nearIndex = i
+                    minStartTimeInterval = timeInterval
                 }
             }
         }
+        return (nearIndex, false)
+    }
+    
+    
+    func labelDayUpdate(_ programDate:Date? = nil) {
         
-        
+        let dayinSec = TimeInterval(24.0*60*60)
+                
         var text = ""
-        let beginDay = NSCalendar.current.startOfDay(for: Date())
-        
-        let interval = programDate.timeIntervalSince(beginDay)
-        if(interval > 0) {
-            if(interval <= dayinSec) {
-                text += "Today "
-            }
-            else if(interval > dayinSec && interval < dayinSec*2) {
-                text += "Tommorow "
-            }
-        }
-        else {
-            if interval > -dayinSec {
-                text += "Yestarday "
-            }
-        }
-        text += programDate.toFormatString("dd.MM")
-        
         if channel != nil {
-            text += ": \(channel!.name)"
+            text += "\(channel!.name)"
         }
+
+        if programDate != nil {
+            text += ":    "
+            //current day
+            let beginDay = NSCalendar.current.startOfDay(for: Date())
+            
+            let interval = programDate!.timeIntervalSince(beginDay)
+            if(interval > 0) {
+                if(interval <= dayinSec) {
+                    text += "Today "
+                }
+                else if(interval > dayinSec && interval < dayinSec*2) {
+                    text += "Tommorow "
+                }
+            }
+            else {
+                if interval > -dayinSec {
+                    text += "Yesterday "
+                }
+            }
+            text += programDate!.toFormatString("dd.MM")
+        }
+        
         
         dayLabel.text = text
         
@@ -137,6 +149,7 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         var program :EpgProgram? = nil
         if index < programs.count {
             program = programs[index]
+            print( "cellForItemAt \(programs[index].title)")
         }
         cell.setProgram(program)
         
@@ -144,18 +157,42 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         
     }
     
-/*
-    func indexPathForPreferredFocusedView(in collectionView: UICollectionView) -> IndexPath? {
-        if let ind = findIndexNow() {
-            print("set to index: \(ind), time: \(programs[ind].start)")
-            return IndexPath(row: ind, section: 0)
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let index = indexPath.row
+        if index < programs.count {
+            //print( "didSelectItemAt \(programs[index].title)")
+            if let channelName = channel?.name,
+               let startTime = programs[index].start as? Date
+            {
+                let programDescriptionVC = ProgramDescriptionVC.loadFromIB()
+                programDescriptionVC.channelName = channelName
+                programDescriptionVC.startTime = startTime
+                channelsVC.present(programDescriptionVC, animated: true, completion: nil)
+            }
         }
-        return nil
+        else {
+            if let channelName = channel?.name {
+                let addEpgLinkVC = AddEpgLinkVC.loadFromIB()
+                addEpgLinkVC.channelName = channelName
+                channelsVC.present(addEpgLinkVC, animated: true, completion: nil)
+            }
+            
+        }
+        
     }
- */
+
     
     
     func collectionView(_: UICollectionView, didUpdateFocusIn: UICollectionViewFocusUpdateContext, with: UIFocusAnimationCoordinator)  {
+        if let indexPath = didUpdateFocusIn.nextFocusedIndexPath,
+           indexPath.row < programs.count
+        {
+            let program = programs[indexPath.row]
+            print( "didUpdateFocusIn \(programs[indexPath.row].title)")
+            labelDayUpdate(program.start as? Date)
+        }
+    
+        
         //print("programView update focus")
     }
     

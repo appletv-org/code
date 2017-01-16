@@ -153,3 +153,16 @@ extension UIButton {
     }
 }
 
+
+extension UITextView {
+    override open func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        if (context.nextFocusedView == self) {
+            self.backgroundColor = UIColor.white
+        }
+        else {
+            self.backgroundColor = UIColor.clear
+        }
+    }
+    
+}
+

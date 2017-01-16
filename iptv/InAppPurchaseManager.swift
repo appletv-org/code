@@ -148,6 +148,8 @@ class InAppPurchaseManager :  NSObject, SKProductsRequestDelegate, SKPaymentTran
             product.read()
             productList.append(product)
         }
+        
+        SKPaymentQueue.default().add(self)
         return productList
     }()
     

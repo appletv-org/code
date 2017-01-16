@@ -231,7 +231,7 @@
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AVs-EL-FQz">
                                                         <rect key="frame" x="8" y="0.0" width="1077" height="60"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <segmentedControl opaque="NO" tag="5121" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="Mlt-XR-fcn">
@@ -414,7 +414,7 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S1X-mB-DhU">
                                                 <rect key="frame" x="0.0" y="411" width="840" height="86"/>
                                                 <inset key="contentEdgeInsets" minX="40" minY="20" maxX="40" maxY="20"/>
-                                                <state key="normal" title="Restore"/>
+                                                <state key="normal" title="Restore purchases"/>
                                                 <connections>
                                                     <action selector="restoreAction:" destination="qwR-fg-6WS" eventType="primaryActionTriggered" id="7PG-lM-vib"/>
                                                 </connections>
@@ -431,7 +431,7 @@
                                     </stackView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dJZ-yo-xSt">
                                         <rect key="frame" x="20" y="727" width="1110" height="153"/>
-                                        <string key="text">Attention:  1. the incoming Internet traffic may double  2. Some OTT providers limit the transmission of multiple channels from a single IP address</string>
+                                        <string key="text">Attention:  1. the incoming Internet traffic could double  2. Some OTT providers can limit the transmission of multiple channels from a single IP address</string>
                                         <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>

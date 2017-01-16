@@ -88,7 +88,7 @@ class ChannelSettingEditVC : BottomController, BottomControllerProtocol {
         var info = ""
         if mode == .edit {
             if haveRemoteGroup {
-                info = "You can not edit the channels/groups are located into remote group: \(channelSettingVC.remoteGroup!.name)"
+                info = "You cann't modify elements located inside remote group: \(channelSettingVC.remoteGroup!.name)"
             }
             if (reservedIndex != nil) {
                 info = "You can not change reserved group"

@@ -135,9 +135,7 @@ class ChannelsVC : FocusedViewController {
         loadingView.isHidden = true  // hide loading view
         
         //program guide
-        programView.programCollectionView = programCollectionView
-        programView.dayLabel = dayLabel
-        programView.actionButtons = actionButtons
+        programView.channelsVC = self
         
         let tapActionButton = UITapGestureRecognizer( target: self, action:  #selector(programAction))
         actionButtons.addGestureRecognizer(tapActionButton)
@@ -229,6 +227,15 @@ class ChannelsVC : FocusedViewController {
         }
         
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if  let channel = programView.channel
+        {
+            programView.update(channel)
+        }        
+    }
+
     
     deinit {
        NotificationCenter.default.removeObserver(self)
@@ -375,6 +382,7 @@ class ChannelsVC : FocusedViewController {
                 self.programHide(animated:true)            
             }
         }
+        
         
         
         /*

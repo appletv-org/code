@@ -112,6 +112,14 @@ class ChannelSettingsVC : FocusedViewController {
             }
             
         case .delete:
+            if  let name = dirElement?.name,
+                let _ = ChannelManager.reservedNames.index(of:name),
+                let infoVC = setBottomController(.info) as? ChannelSettingInfoVC
+            {
+                infoVC.infoLabel.text = "You cann't modify reserved group:\(name)"
+                return
+            }
+            
             if remoteGroup != nil {
                 if let hideVC = setBottomController(.hide) as? ChannelSettingHideVC {
                     hideVC.refresh()
@@ -124,6 +132,15 @@ class ChannelSettingsVC : FocusedViewController {
             }
             
         case .copyMove:
+            
+            if  let name = dirElement?.name,
+                let _ = ChannelManager.reservedNames.index(of:name),
+                let infoVC = setBottomController(.info) as? ChannelSettingInfoVC
+            {
+                infoVC.infoLabel.text = "You cann't copy/move reserved group:\(name)"
+                return
+            }
+
             
             if let copyVC = setBottomController(.copy) as? ChannelSettingCopyVC {
                 copyVC.refresh()
@@ -140,9 +157,7 @@ class ChannelSettingsVC : FocusedViewController {
             if let previewVC = setBottomController(.preview) as? ChannelSettingPreviewVC {
                 previewVC.refresh()
             }
-    }
-    
-    
+        }
     }
     
 
@@ -194,6 +209,7 @@ class ChannelSettingsVC : FocusedViewController {
         
         return controller
     }
+    
         
     
     func cycleController(oldViewController: BottomController, toViewController newViewController: BottomController) {

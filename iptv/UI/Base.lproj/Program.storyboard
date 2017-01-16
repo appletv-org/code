@@ -89,7 +89,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-431" y="2652"/>
+            <point key="canvasLocation" x="70" y="2595"/>
         </scene>
         <!--ProgramVC-->
         <scene sceneID="dIn-Ld-QSk">
@@ -224,27 +224,11 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yav-82-h7r" userLabel="FilterView">
                                         <rect key="frame" x="10" y="10" width="1890" height="70"/>
                                         <subviews>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Channel" borderStyle="roundedRect" placeholder="Search channel" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uDJ-X5-8lv">
-                                                <rect key="frame" x="5" y="0.0" width="150" height="70"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="70" id="YCv-9U-0K8"/>
-                                                    <constraint firstAttribute="width" constant="150" id="gZe-ko-MXF"/>
-                                                </constraints>
-                                                <nil key="textColor"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                <textInputTraits key="textInputTraits" returnKeyType="search"/>
-                                            </textField>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="100" translatesAutoresizingMaskIntoConstraints="NO" id="uNM-Er-HnR">
-                                                <rect key="frame" x="216" y="5" width="1305" height="60"/>
+                                                <rect key="frame" x="216" y="5" width="1023" height="60"/>
                                                 <subviews>
-                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="program" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="RHS-Y3-ZOT">
-                                                        <rect key="frame" x="0.0" y="0.0" width="182" height="60"/>
-                                                        <nil key="textColor"/>
-                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
-                                                        <textInputTraits key="textInputTraits" returnKeyType="search"/>
-                                                    </textField>
                                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="SaI-eC-9VZ">
-                                                        <rect key="frame" x="282" y="0.0" width="206" height="60"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="206" height="60"/>
                                                         <subviews>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LIY-gu-AFr">
                                                                 <rect key="frame" x="0.0" y="0.0" width="50" height="60"/>
@@ -277,7 +261,7 @@
                                                         </subviews>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="KTD-qF-pwR">
-                                                        <rect key="frame" x="588" y="0.0" width="419" height="60"/>
+                                                        <rect key="frame" x="306" y="0.0" width="419" height="60"/>
                                                         <subviews>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cRm-NN-01Q">
                                                                 <rect key="frame" x="0.0" y="0.0" width="200" height="60"/>
@@ -299,7 +283,7 @@
                                                         </subviews>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="dmg-dq-JAa">
-                                                        <rect key="frame" x="1107" y="0.0" width="198" height="60"/>
+                                                        <rect key="frame" x="825" y="0.0" width="198" height="60"/>
                                                         <subviews>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tcP-vc-21h">
                                                                 <rect key="frame" x="0.0" y="0.0" width="153" height="60"/>
@@ -323,9 +307,7 @@
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="70" id="kTJ-gQ-7xm"/>
-                                            <constraint firstItem="uDJ-X5-8lv" firstAttribute="centerY" secondItem="Yav-82-h7r" secondAttribute="centerY" id="koP-vX-Mz3"/>
                                             <constraint firstItem="uNM-Er-HnR" firstAttribute="centerY" secondItem="Yav-82-h7r" secondAttribute="centerY" id="pks-n6-CAB"/>
-                                            <constraint firstItem="uDJ-X5-8lv" firstAttribute="leading" secondItem="Yav-82-h7r" secondAttribute="leading" constant="5" id="uMk-Q1-spg"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -363,6 +345,123 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Es-kB-rRg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+        </scene>
+        <!--Add Epg LinkVC-->
+        <scene sceneID="mlu-QC-1L1">
+            <objects>
+                <viewController storyboardIdentifier="AddEpgLinkVC" id="3mJ-7E-S6K" customClass="AddEpgLinkVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="LgB-FA-6Ak"/>
+                        <viewControllerLayoutGuide type="bottom" id="hi3-x8-KYt"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="R9T-AQ-8O6">
+                        <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RDG-Fn-sRF" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="20" width="1920" height="80"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Channel name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wM8-nt-ztG">
+                                        <rect key="frame" x="20" y="21" width="211" height="39"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="32"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="nYv-tC-aFC">
+                                        <rect key="frame" x="1481" y="10" width="419" height="60"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Filter:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qsX-Bn-deK">
+                                                <rect key="frame" x="0.0" y="0.0" width="79" height="60"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kgU-hT-AJS">
+                                                <rect key="frame" x="119" y="0.0" width="300" height="60"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="300" id="DKT-ve-pOd"/>
+                                                    <constraint firstAttribute="height" constant="60" id="I12-Hi-sfD"/>
+                                                </constraints>
+                                                <nil key="textColor"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="nYv-tC-aFC" secondAttribute="trailing" constant="20" id="0aW-Bz-PKk"/>
+                                    <constraint firstItem="wM8-nt-ztG" firstAttribute="leading" secondItem="RDG-Fn-sRF" secondAttribute="leading" constant="20" id="A83-M0-ZC1"/>
+                                    <constraint firstItem="wM8-nt-ztG" firstAttribute="centerY" secondItem="RDG-Fn-sRF" secondAttribute="centerY" id="JlC-u1-VH9"/>
+                                    <constraint firstAttribute="height" constant="80" id="S5t-el-xpf"/>
+                                    <constraint firstItem="nYv-tC-aFC" firstAttribute="centerY" secondItem="RDG-Fn-sRF" secondAttribute="centerY" id="TOg-K3-j43"/>
+                                </constraints>
+                            </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="100" sectionHeaderHeight="66" sectionFooterHeight="66" translatesAutoresizingMaskIntoConstraints="NO" id="68h-zx-uMp">
+                                <rect key="frame" x="40" y="120" width="1840" height="940"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChooseEpgChannelCell" id="9U5-9Y-ZMC" customClass="ChooseEpgChannelCell" customModule="iptv" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="66" width="1840" height="100"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9U5-9Y-ZMC" id="9Ir-Pf-QUw">
+                                            <rect key="frame" x="0.0" y="0.0" width="1824" height="100"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="EPG Channel name " lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HTn-Qo-j3f">
+                                                    <rect key="frame" x="5" y="5" width="400" height="90"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="400" id="psh-Kc-qYe"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="32"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Current program " textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tSe-mF-ErJ">
+                                                    <rect key="frame" x="435" y="5" width="1395" height="90"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="tSe-mF-ErJ" secondAttribute="bottom" constant="5" id="9s5-6Q-S0x"/>
+                                                <constraint firstAttribute="trailing" secondItem="tSe-mF-ErJ" secondAttribute="trailing" constant="10" id="JhF-Y6-jm7"/>
+                                                <constraint firstItem="tSe-mF-ErJ" firstAttribute="top" secondItem="9Ir-Pf-QUw" secondAttribute="top" constant="5" id="LOY-Bq-Chm"/>
+                                                <constraint firstItem="tSe-mF-ErJ" firstAttribute="leading" secondItem="HTn-Qo-j3f" secondAttribute="trailing" constant="30" id="czm-xI-zCE"/>
+                                                <constraint firstItem="HTn-Qo-j3f" firstAttribute="leading" secondItem="9Ir-Pf-QUw" secondAttribute="leading" constant="5" id="oxr-nL-hNH"/>
+                                                <constraint firstItem="HTn-Qo-j3f" firstAttribute="top" secondItem="9Ir-Pf-QUw" secondAttribute="top" constant="5" id="vc5-1K-Sn2"/>
+                                                <constraint firstAttribute="bottom" secondItem="HTn-Qo-j3f" secondAttribute="bottom" constant="5" id="yYY-K8-pzU"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="currentProgramLabel" destination="tSe-mF-ErJ" id="u3j-dh-KPu"/>
+                                            <outlet property="epgChannelNameLabel" destination="HTn-Qo-j3f" id="Qsw-wc-qp2"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="68h-zx-uMp" firstAttribute="leading" secondItem="R9T-AQ-8O6" secondAttribute="leadingMargin" constant="20" id="BkA-wR-6ca"/>
+                            <constraint firstAttribute="trailing" secondItem="RDG-Fn-sRF" secondAttribute="trailing" id="QRL-ez-XMD"/>
+                            <constraint firstItem="RDG-Fn-sRF" firstAttribute="leading" secondItem="R9T-AQ-8O6" secondAttribute="leading" id="Wko-As-Q8r"/>
+                            <constraint firstItem="68h-zx-uMp" firstAttribute="top" secondItem="RDG-Fn-sRF" secondAttribute="bottom" constant="20" id="lpy-cu-aTC"/>
+                            <constraint firstItem="hi3-x8-KYt" firstAttribute="top" secondItem="68h-zx-uMp" secondAttribute="bottom" constant="20" id="m94-uh-M1g"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="68h-zx-uMp" secondAttribute="trailing" constant="20" id="qZ6-tF-bpO"/>
+                            <constraint firstItem="RDG-Fn-sRF" firstAttribute="top" secondItem="LgB-FA-6Ak" secondAttribute="bottom" constant="20" id="wll-7V-r4H"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="channelNameLabel" destination="wM8-nt-ztG" id="acr-n3-YKV"/>
+                        <outlet property="epgTableView" destination="68h-zx-uMp" id="ErQ-Sd-mek"/>
+                        <outlet property="filterTextField" destination="kgU-hT-AJS" id="THT-W2-aPH"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="emt-a2-JIu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="70" y="1333"/>
         </scene>
         <!--Select Channel GroupVC-->
         <scene sceneID="eQR-DR-lpm">
@@ -477,6 +576,86 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6bO-sv-G3f" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2268" y="114"/>
+        </scene>
+        <!--Program DescriptionVC-->
+        <scene sceneID="xIK-J7-hIl">
+            <objects>
+                <viewController storyboardIdentifier="ProgramDescriptionVC" id="gYR-wR-iNz" customClass="ProgramDescriptionVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="lEN-Ok-4N2"/>
+                        <viewControllerLayoutGuide type="bottom" id="Vdy-V1-MlM"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="9ay-qr-LMo">
+                        <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EsN-a1-PHq">
+                                <rect key="frame" x="0.0" y="0.0" width="1920" height="80"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jjq-p9-Brp">
+                                        <rect key="frame" x="1600" y="10" width="300" height="60"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="60" id="LHd-Yd-5cB"/>
+                                            <constraint firstAttribute="width" constant="300" id="ygm-19-4Ed"/>
+                                        </constraints>
+                                        <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" title="remove EPG link"/>
+                                        <connections>
+                                            <action selector="removeEpgAction:" destination="gYR-wR-iNz" eventType="primaryActionTriggered" id="Uf3-Xd-h2R"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Channel and time" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ODY-v3-JX6">
+                                        <rect key="frame" x="20" y="20" width="1880" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="qZi-PX-nUl"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="36"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="jjq-p9-Brp" firstAttribute="centerY" secondItem="EsN-a1-PHq" secondAttribute="centerY" id="C1X-g2-L4g"/>
+                                    <constraint firstAttribute="trailing" secondItem="jjq-p9-Brp" secondAttribute="trailing" constant="20" id="a5v-Vt-7a1"/>
+                                    <constraint firstAttribute="height" constant="80" id="bt2-AB-Nb5"/>
+                                    <constraint firstItem="ODY-v3-JX6" firstAttribute="centerY" secondItem="EsN-a1-PHq" secondAttribute="centerY" id="ep0-W9-Xbp"/>
+                                    <constraint firstItem="ODY-v3-JX6" firstAttribute="leading" secondItem="EsN-a1-PHq" secondAttribute="leading" constant="20" id="gJh-Ah-1Ar"/>
+                                    <constraint firstAttribute="trailing" secondItem="ODY-v3-JX6" secondAttribute="trailing" constant="20" id="rss-EF-trL"/>
+                                </constraints>
+                            </view>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zMa-yA-lhA">
+                                <rect key="frame" x="20" y="80" width="1880" height="1000"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="llegum odioque civiuda.">
+                                        <attributes>
+                                            <font key="NSFont" size="32" name=".SFNSText"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="EsN-a1-PHq" secondAttribute="trailing" id="1R6-Qw-aLl"/>
+                            <constraint firstItem="zMa-yA-lhA" firstAttribute="top" secondItem="EsN-a1-PHq" secondAttribute="bottom" id="4fg-7U-VLg"/>
+                            <constraint firstItem="EsN-a1-PHq" firstAttribute="leading" secondItem="9ay-qr-LMo" secondAttribute="leading" id="SIf-KL-hbk"/>
+                            <constraint firstItem="EsN-a1-PHq" firstAttribute="top" secondItem="9ay-qr-LMo" secondAttribute="top" id="a4m-Wi-6hN"/>
+                            <constraint firstItem="zMa-yA-lhA" firstAttribute="leading" secondItem="9ay-qr-LMo" secondAttribute="leadingMargin" id="bNM-Of-qJw"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="zMa-yA-lhA" secondAttribute="trailing" id="py1-bb-rRY"/>
+                            <constraint firstItem="Vdy-V1-MlM" firstAttribute="top" secondItem="zMa-yA-lhA" secondAttribute="bottom" id="rTf-ci-5Rw"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="channelInfo" destination="ODY-v3-JX6" id="KY6-yb-VFx"/>
+                        <outlet property="programDescription" destination="zMa-yA-lhA" id="CHg-mE-KUK"/>
+                        <outlet property="removeEpgButton" destination="jjq-p9-Brp" id="7pO-J2-H6W"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vyL-Fq-Ehm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2268" y="1333"/>
         </scene>
     </scenes>
     <resources>
