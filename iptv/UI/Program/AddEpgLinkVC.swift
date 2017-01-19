@@ -106,7 +106,7 @@ extension AddEpgLinkVC : UITableViewDataSource, UITableViewDelegate {
         else { return }
         
         let epgChannelName = filterPrograms[indexPath.row]
-        if let epgProgram = epgPrograms[epgChannelName] {
+        if epgPrograms[epgChannelName] != nil {
         
             
             var buttons = [String]()

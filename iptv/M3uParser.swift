@@ -31,9 +31,9 @@ enum M3uError : Error {
     case codingError(String)
 }
 
-func parseM3u(string: String) throws -> [M3uItem] {
-    guard let url = URL(string:string) else {
-        throw M3uError.urlError("Incorrect url:\(string)")
+func parseM3u(urlString: String) throws -> [M3uItem] {
+    guard let url = URL(string:urlString) else {
+        throw M3uError.urlError("Incorrect url:\(urlString)")
     }
     return try parseM3u(url:url)
 }
@@ -44,13 +44,13 @@ func parseM3u(url: URL) throws -> [M3uItem] {
     let data = try Data(contentsOf: url)
 
     for code in [String.Encoding.utf8, String.Encoding.windowsCP1252] {
-        
         content = String(data:data, encoding: code)
         if(content != nil) {
             break
         }
 
     }
+    
     if(content == nil) {
         throw M3uError.loadingError("incorrect code of file")
     }

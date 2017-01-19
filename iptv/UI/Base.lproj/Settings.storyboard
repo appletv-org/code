@@ -26,7 +26,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="66" sectionHeaderHeight="66" sectionFooterHeight="66" translatesAutoresizingMaskIntoConstraints="NO" id="L2a-Ub-00N">
-                                <rect key="frame" x="0.0" y="-8" width="640" height="1080"/>
+                                <rect key="frame" x="0.0" y="-8" width="640" height="413"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="640" id="yw2-wW-4v7"/>
                                 </constraints>
@@ -58,7 +58,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="564" height="66"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="EPG Providers" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VHG-mN-FqW">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="EPG sources" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VHG-mN-FqW">
                                                     <rect key="frame" x="20" y="0.0" width="544" height="66"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="38"/>
@@ -74,6 +74,13 @@
                                 </prototypes>
                                 <sections/>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jcz-b0-lvs">
+                                <rect key="frame" x="20" y="605" width="608" height="475"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <constraints>
                             <constraint firstItem="L2a-Ub-00N" firstAttribute="leading" secondItem="TRq-F1-yVm" secondAttribute="leading" id="Wgs-LO-Mya"/>
@@ -82,6 +89,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="infoLabel" destination="Jcz-b0-lvs" id="bhU-Bt-8mg"/>
                         <outlet property="tableView" destination="L2a-Ub-00N" id="ZxV-gq-p3T"/>
                     </connections>
                 </viewController>
@@ -287,7 +295,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="pMZ-Dm-j9W">
-                                <rect key="frame" x="30" y="20" width="1820" height="112"/>
+                                <rect key="frame" x="30" y="20" width="1820" height="192"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="PqY-he-cqk">
                                         <rect key="frame" x="0.0" y="0.0" width="1820" height="46"/>
@@ -324,16 +332,16 @@
                                         </subviews>
                                     </stackView>
                                     <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="RMj-mj-O3A">
-                                        <rect key="frame" x="0.0" y="112" width="1820" height="0.0"/>
+                                        <rect key="frame" x="0.0" y="132" width="1820" height="60"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Public:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CW4-Oy-eak">
-                                                <rect key="frame" x="0.0" y="0.0" width="101" height="0.0"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="101" height="60"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="32"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zGm-Ls-scf">
-                                                <rect key="frame" x="141" y="0.0" width="60" height="0.0"/>
+                                                <rect key="frame" x="141" y="0.0" width="60" height="60"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="60" id="MgY-tx-wi7"/>
                                                     <constraint firstAttribute="height" constant="60" id="g3c-xl-v8H"/>
@@ -345,7 +353,7 @@
                                                 </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(the most popular public links may appear in the next version of the program)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RNm-x9-qmt">
-                                                <rect key="frame" x="241" y="0.0" width="1579" height="0.0"/>
+                                                <rect key="frame" x="241" y="0.0" width="1579" height="60"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -430,7 +438,7 @@
         <!--EPG Provider Edit-->
         <scene sceneID="hJH-cI-vFy">
             <objects>
-                <viewController storyboardIdentifier="EpgProviderEditVC" title="Settings/EPGProviders/Create New" id="hWi-Lo-65m" userLabel="EPG Provider Edit" customClass="EpgProviderEditVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="EpgProviderEditVC" title="Settings/EPG sources/Create New" id="hWi-Lo-65m" userLabel="EPG Provider Edit" customClass="EpgProviderEditVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Q72-h0-yjV"/>
                         <viewControllerLayoutGuide type="bottom" id="0rR-00-ymM"/>

@@ -11,7 +11,11 @@ import UIKit
 class SettingsVC: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var infoLabel: UILabel!
     
+    lazy var urlString:String? = {
+        return HttpServer.instance().serverURL?.absoluteString
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +24,10 @@ class SettingsVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
+        infoLabel.text = ""
+        
     }
+    
     
     
     override func didReceiveMemoryWarning() {
@@ -46,8 +53,22 @@ extension SettingsVC: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
+    
+    func tableView(_ tableView: UITableView, didUpdateFocusIn context: UITableViewFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        if let index = context.nextFocusedIndexPath?.row,
+            urlString != nil {
+            var text = "You can go to link: \n\"\(urlString!)\"\n in your browser to "
+            if index == 0 {
+                text += "add m3u file and quickly add channel and remote group"
+            }
+            else {
+                text += "quickly add epg sources"
+            }
+            text += " (use copy/paste to enter url)"
+            infoLabel.text = text
+        }
+    }
 
-        
 }
 
 

@@ -1,0 +1,69 @@
+<html>
+<body>
+<h2> Channel  settings</h2>
+
+<form action="/add_channel" method="post">
+    Add channel:
+    <br>
+    Channel name:
+    <input type="text" name="name" id="channel_name">
+    <br>
+     Channel url:
+    <input type="text" name="url" id="channel_url" value="http://">
+    <br>
+     Public:
+    <input type="checkbox" name="public" id="channel_public" checked>
+    <br>
+    <input type="submit" value="Add Channel" name="submit">
+</form> 
+
+<br>
+<br>
+
+<form action="/add_remote_group" method="post">
+    Add remote group:
+    <br>
+    Group name: 
+    <input type="text" name="name" id="group_name">
+    <br>
+    Croup url:
+    <input type="text" name="url" id="group_url" value="http://">
+    <br>
+    Public:
+    <input type="checkbox" name="public" id="group_public" checked>
+    <br>
+    <input type="submit" value="Add remote group" name="submit">
+</form> 
+
+<br>
+<br>
+<form action="/upload_m3u" method="post" enctype="multipart/form-data">
+    Add m3u file: <br>
+    Group name: 
+    <input type="text" name="name">
+    <br>
+    File:
+    <input type="file" name="file" id="fileToUpload">
+    <br>
+    <input type="submit" value="Upload m3u file" name="submit">
+</form> 
+
+<br>
+<br>
+
+<form action="/add_m3u_text" method="post">
+    Add m3u context:
+    <br>
+    Group name: 
+    <input type="text" name="name">
+    <br>
+    Context:
+    <textarea rows="10" name="context">
+    </textarea>
+    <br>
+    <input type="submit" value="Add context" name="submit">
+</form> 
+
+
+</body>
+</html>

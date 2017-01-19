@@ -8,10 +8,14 @@
 
 import UIKit
 
+
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    
+    var webServer : HttpServer?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -22,6 +26,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         InAppPurchaseManager.instance.requestProductData()
         
         Analytics.start()
+        
+        let httpServer = HttpServer()
+        httpServer.start(withPort: 8080, bonjourName: nil)
+        print("Visit \(httpServer.serverURL) in your web browser")
+        self.webServer = httpServer
         
         return true
     }

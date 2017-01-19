@@ -107,7 +107,7 @@ class ChannelSettingEditVC : BottomController, BottomControllerProtocol {
     }
     
     func setPublicButton() {
-        var imageName = isPublic ? "checkboxOn" : "checkboxOff"
+        let imageName = isPublic ? "checkboxOn" : "checkboxOff"
         if let image = UIImage(named: imageName) {
             publicButton.setImageForAllStates(image)
         }

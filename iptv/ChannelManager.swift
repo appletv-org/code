@@ -455,7 +455,7 @@ class ChannelManager {
     func loadRemoteGroups(group parentGroup:GroupInfo) {
         for group in parentGroup.groups {
             if group.remoteInfo != nil {
-                try? ChannelManager.addM3uList(url: group.remoteInfo!.url, toGroup:group)
+                try? ChannelManager.addM3uList(urlString: group.remoteInfo!.url, toGroup:group)
                 removeHiddenElements(group)
             }
             else {
@@ -809,7 +809,7 @@ class ChannelManager {
             //check url
             let group = GroupInfo(name:newName)
             do {
-                try ChannelManager.addM3uList(url: newUrl, toGroup: group)
+                try ChannelManager.addM3uList(urlString: newUrl, toGroup: group)
             }
             catch {
                 return error
@@ -1073,9 +1073,23 @@ extension  ChannelManager { //parsing m3u list
         }
     }
     
-    class func addM3uList(url:String, toGroup:GroupInfo) throws -> Void {
+    class func addM3uList(urlString:String, toGroup:GroupInfo) throws -> Void {
+        let items = try parseM3u(urlString:urlString)
+        ChannelManager.addM3uList(items:items, toGroup:toGroup)
+    }
     
-        let items = try parseM3u(string:url)
+    class func addM3uList(url:URL, toGroup:GroupInfo) throws -> Void {
+        let items = try parseM3u(url:url)
+        ChannelManager.addM3uList(items:items, toGroup:toGroup)
+    }
+
+    class func addM3uList(content:String, toGroup:GroupInfo) -> Void {
+        let items = parseM3u(content:content)
+        ChannelManager.addM3uList(items:items, toGroup:toGroup)
+    }
+
+    class func addM3uList(items:[M3uItem], toGroup:GroupInfo) -> Void {
+        
         if items.count > 0  {
             
             //set items by groups

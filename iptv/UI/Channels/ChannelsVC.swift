@@ -232,7 +232,7 @@ class ChannelsVC : FocusedViewController {
         super.viewDidAppear(animated)
         if  let channel = programView.channel
         {
-            programView.update(channel)
+            let _ = programView.update(channel)
         }        
     }
 

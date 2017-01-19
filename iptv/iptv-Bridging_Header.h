@@ -10,6 +10,13 @@
 #define iptv_Bridging_Header_h
 
 #import "Flurry.h"
+
+#import "GCDWebServer.h"
+#import "GCDWebServerDataResponse.h"
+#import "GCDWebServerMultiPartFormRequest.h"
+#import "GCDWebServerURLEncodedFormRequest.h"
+
+
 #import <CommonCrypto/CommonCrypto.h>
 
 #endif /* iptv_Bridging_Header_h */

@@ -49,7 +49,7 @@ class EpgProvidersVC: FocusedViewController {
         tableView.remembersLastFocusedIndexPath = true
         tableView.isEditing = false
         
-        addNavigationTitle("EPG providers")
+        addNavigationTitle("EPG sources")
         
         
         NotificationCenter.default.addObserver(forName: ProgramManager.epgNotification, object: nil, queue: nil) { (notification) in

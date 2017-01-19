@@ -15,6 +15,21 @@
 		FA210EC51DCA0344002B9592 /* UIExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA210EC41DCA0344002B9592 /* UIExtension.swift */; };
 		FA2383591DC5283F0007A006 /* Data+Gzip.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2383561DC5283F0007A006 /* Data+Gzip.swift */; };
 		FA25FEE01E12955900578C4F /* ChannelSettingDeleteVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA25FEDF1E12955900578C4F /* ChannelSettingDeleteVC.swift */; };
+		FA2DBC7A1E2E2E2E009A93B8 /* GCDWebServer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC5D1E2E2E2E009A93B8 /* GCDWebServer.m */; };
+		FA2DBC7B1E2E2E2E009A93B8 /* GCDWebServerConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC5F1E2E2E2E009A93B8 /* GCDWebServerConnection.m */; };
+		FA2DBC7C1E2E2E2E009A93B8 /* GCDWebServerFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC611E2E2E2E009A93B8 /* GCDWebServerFunctions.m */; };
+		FA2DBC7D1E2E2E2E009A93B8 /* GCDWebServerRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC651E2E2E2E009A93B8 /* GCDWebServerRequest.m */; };
+		FA2DBC7E1E2E2E2E009A93B8 /* GCDWebServerResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC671E2E2E2E009A93B8 /* GCDWebServerResponse.m */; };
+		FA2DBC7F1E2E2E2E009A93B8 /* GCDWebServerDataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC6A1E2E2E2E009A93B8 /* GCDWebServerDataRequest.m */; };
+		FA2DBC801E2E2E2E009A93B8 /* GCDWebServerFileRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC6C1E2E2E2E009A93B8 /* GCDWebServerFileRequest.m */; };
+		FA2DBC811E2E2E2E009A93B8 /* GCDWebServerMultiPartFormRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC6E1E2E2E2E009A93B8 /* GCDWebServerMultiPartFormRequest.m */; };
+		FA2DBC821E2E2E2E009A93B8 /* GCDWebServerURLEncodedFormRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC701E2E2E2E009A93B8 /* GCDWebServerURLEncodedFormRequest.m */; };
+		FA2DBC831E2E2E2E009A93B8 /* GCDWebServerDataResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC731E2E2E2E009A93B8 /* GCDWebServerDataResponse.m */; };
+		FA2DBC841E2E2E2E009A93B8 /* GCDWebServerErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC751E2E2E2E009A93B8 /* GCDWebServerErrorResponse.m */; };
+		FA2DBC851E2E2E2E009A93B8 /* GCDWebServerFileResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC771E2E2E2E009A93B8 /* GCDWebServerFileResponse.m */; };
+		FA2DBC861E2E2E2E009A93B8 /* GCDWebServerStreamedResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBC791E2E2E2E009A93B8 /* GCDWebServerStreamedResponse.m */; };
+		FA2DBCE81E2E340B009A93B8 /* HttpServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2DBCE71E2E340B009A93B8 /* HttpServer.swift */; };
+		FA2DBCF01E2E399A009A93B8 /* WebContent in Resources */ = {isa = PBXBuildFile; fileRef = FA2DBCEF1E2E399A009A93B8 /* WebContent */; };
 		FA2E2EE61DB7A42000CE8F7F /* ProgramManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E2EE51DB7A42000CE8F7F /* ProgramManager.swift */; };
 		FA2E2EE81DB8DAA700CE8F7F /* EpgProvidersVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E2EE71DB8DAA700CE8F7F /* EpgProvidersVC.swift */; };
 		FA2E2EFD1DBDFD8900CE8F7F /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2E2EF51DBDFD8900CE8F7F /* Document.swift */; };
@@ -72,6 +87,36 @@
 		FA2383571DC5283F0007A006 /* include.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = include.h; sourceTree = "<group>"; };
 		FA2383581DC5283F0007A006 /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		FA25FEDF1E12955900578C4F /* ChannelSettingDeleteVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChannelSettingDeleteVC.swift; path = iptv/UI/Settings/ChannelSettingDeleteVC.swift; sourceTree = "<group>"; };
+		FA2DBC5C1E2E2E2E009A93B8 /* GCDWebServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServer.h; sourceTree = "<group>"; };
+		FA2DBC5D1E2E2E2E009A93B8 /* GCDWebServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServer.m; sourceTree = "<group>"; };
+		FA2DBC5E1E2E2E2E009A93B8 /* GCDWebServerConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerConnection.h; sourceTree = "<group>"; };
+		FA2DBC5F1E2E2E2E009A93B8 /* GCDWebServerConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerConnection.m; sourceTree = "<group>"; };
+		FA2DBC601E2E2E2E009A93B8 /* GCDWebServerFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerFunctions.h; sourceTree = "<group>"; };
+		FA2DBC611E2E2E2E009A93B8 /* GCDWebServerFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerFunctions.m; sourceTree = "<group>"; };
+		FA2DBC621E2E2E2E009A93B8 /* GCDWebServerHTTPStatusCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerHTTPStatusCodes.h; sourceTree = "<group>"; };
+		FA2DBC631E2E2E2E009A93B8 /* GCDWebServerPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerPrivate.h; sourceTree = "<group>"; };
+		FA2DBC641E2E2E2E009A93B8 /* GCDWebServerRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerRequest.h; sourceTree = "<group>"; };
+		FA2DBC651E2E2E2E009A93B8 /* GCDWebServerRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerRequest.m; sourceTree = "<group>"; };
+		FA2DBC661E2E2E2E009A93B8 /* GCDWebServerResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerResponse.h; sourceTree = "<group>"; };
+		FA2DBC671E2E2E2E009A93B8 /* GCDWebServerResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerResponse.m; sourceTree = "<group>"; };
+		FA2DBC691E2E2E2E009A93B8 /* GCDWebServerDataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerDataRequest.h; sourceTree = "<group>"; };
+		FA2DBC6A1E2E2E2E009A93B8 /* GCDWebServerDataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerDataRequest.m; sourceTree = "<group>"; };
+		FA2DBC6B1E2E2E2E009A93B8 /* GCDWebServerFileRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerFileRequest.h; sourceTree = "<group>"; };
+		FA2DBC6C1E2E2E2E009A93B8 /* GCDWebServerFileRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerFileRequest.m; sourceTree = "<group>"; };
+		FA2DBC6D1E2E2E2E009A93B8 /* GCDWebServerMultiPartFormRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerMultiPartFormRequest.h; sourceTree = "<group>"; };
+		FA2DBC6E1E2E2E2E009A93B8 /* GCDWebServerMultiPartFormRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerMultiPartFormRequest.m; sourceTree = "<group>"; };
+		FA2DBC6F1E2E2E2E009A93B8 /* GCDWebServerURLEncodedFormRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerURLEncodedFormRequest.h; sourceTree = "<group>"; };
+		FA2DBC701E2E2E2E009A93B8 /* GCDWebServerURLEncodedFormRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerURLEncodedFormRequest.m; sourceTree = "<group>"; };
+		FA2DBC721E2E2E2E009A93B8 /* GCDWebServerDataResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerDataResponse.h; sourceTree = "<group>"; };
+		FA2DBC731E2E2E2E009A93B8 /* GCDWebServerDataResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerDataResponse.m; sourceTree = "<group>"; };
+		FA2DBC741E2E2E2E009A93B8 /* GCDWebServerErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerErrorResponse.h; sourceTree = "<group>"; };
+		FA2DBC751E2E2E2E009A93B8 /* GCDWebServerErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerErrorResponse.m; sourceTree = "<group>"; };
+		FA2DBC761E2E2E2E009A93B8 /* GCDWebServerFileResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerFileResponse.h; sourceTree = "<group>"; };
+		FA2DBC771E2E2E2E009A93B8 /* GCDWebServerFileResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerFileResponse.m; sourceTree = "<group>"; };
+		FA2DBC781E2E2E2E009A93B8 /* GCDWebServerStreamedResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDWebServerStreamedResponse.h; sourceTree = "<group>"; };
+		FA2DBC791E2E2E2E009A93B8 /* GCDWebServerStreamedResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerStreamedResponse.m; sourceTree = "<group>"; };
+		FA2DBCE71E2E340B009A93B8 /* HttpServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HttpServer.swift; path = iptv/UI/HttpServer.swift; sourceTree = "<group>"; };
+		FA2DBCEF1E2E399A009A93B8 /* WebContent */ = {isa = PBXFileReference; lastKnownFileType = folder; name = WebContent; path = iptv/Resources/WebContent; sourceTree = "<group>"; };
 		FA2E2EE51DB7A42000CE8F7F /* ProgramManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramManager.swift; path = iptv/ProgramManager.swift; sourceTree = "<group>"; };
 		FA2E2EE71DB8DAA700CE8F7F /* EpgProvidersVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EpgProvidersVC.swift; path = iptv/UI/Settings/EpgProvidersVC.swift; sourceTree = "<group>"; };
 		FA2E2EF11DBDFD8900CE8F7F /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -152,9 +197,70 @@
 			path = 3lib/Swiftzlib;
 			sourceTree = "<group>";
 		};
+		FA2DBC5A1E2E2E2E009A93B8 /* GCDWebServer */ = {
+			isa = PBXGroup;
+			children = (
+				FA2DBC5B1E2E2E2E009A93B8 /* Core */,
+				FA2DBC681E2E2E2E009A93B8 /* Requests */,
+				FA2DBC711E2E2E2E009A93B8 /* Responses */,
+			);
+			name = GCDWebServer;
+			path = 3lib/GCDWebServer;
+			sourceTree = "<group>";
+		};
+		FA2DBC5B1E2E2E2E009A93B8 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				FA2DBC5C1E2E2E2E009A93B8 /* GCDWebServer.h */,
+				FA2DBC5D1E2E2E2E009A93B8 /* GCDWebServer.m */,
+				FA2DBC5E1E2E2E2E009A93B8 /* GCDWebServerConnection.h */,
+				FA2DBC5F1E2E2E2E009A93B8 /* GCDWebServerConnection.m */,
+				FA2DBC601E2E2E2E009A93B8 /* GCDWebServerFunctions.h */,
+				FA2DBC611E2E2E2E009A93B8 /* GCDWebServerFunctions.m */,
+				FA2DBC621E2E2E2E009A93B8 /* GCDWebServerHTTPStatusCodes.h */,
+				FA2DBC631E2E2E2E009A93B8 /* GCDWebServerPrivate.h */,
+				FA2DBC641E2E2E2E009A93B8 /* GCDWebServerRequest.h */,
+				FA2DBC651E2E2E2E009A93B8 /* GCDWebServerRequest.m */,
+				FA2DBC661E2E2E2E009A93B8 /* GCDWebServerResponse.h */,
+				FA2DBC671E2E2E2E009A93B8 /* GCDWebServerResponse.m */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		FA2DBC681E2E2E2E009A93B8 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				FA2DBC691E2E2E2E009A93B8 /* GCDWebServerDataRequest.h */,
+				FA2DBC6A1E2E2E2E009A93B8 /* GCDWebServerDataRequest.m */,
+				FA2DBC6B1E2E2E2E009A93B8 /* GCDWebServerFileRequest.h */,
+				FA2DBC6C1E2E2E2E009A93B8 /* GCDWebServerFileRequest.m */,
+				FA2DBC6D1E2E2E2E009A93B8 /* GCDWebServerMultiPartFormRequest.h */,
+				FA2DBC6E1E2E2E2E009A93B8 /* GCDWebServerMultiPartFormRequest.m */,
+				FA2DBC6F1E2E2E2E009A93B8 /* GCDWebServerURLEncodedFormRequest.h */,
+				FA2DBC701E2E2E2E009A93B8 /* GCDWebServerURLEncodedFormRequest.m */,
+			);
+			path = Requests;
+			sourceTree = "<group>";
+		};
+		FA2DBC711E2E2E2E009A93B8 /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				FA2DBC721E2E2E2E009A93B8 /* GCDWebServerDataResponse.h */,
+				FA2DBC731E2E2E2E009A93B8 /* GCDWebServerDataResponse.m */,
+				FA2DBC741E2E2E2E009A93B8 /* GCDWebServerErrorResponse.h */,
+				FA2DBC751E2E2E2E009A93B8 /* GCDWebServerErrorResponse.m */,
+				FA2DBC761E2E2E2E009A93B8 /* GCDWebServerFileResponse.h */,
+				FA2DBC771E2E2E2E009A93B8 /* GCDWebServerFileResponse.m */,
+				FA2DBC781E2E2E2E009A93B8 /* GCDWebServerStreamedResponse.h */,
+				FA2DBC791E2E2E2E009A93B8 /* GCDWebServerStreamedResponse.m */,
+			);
+			path = Responses;
+			sourceTree = "<group>";
+		};
 		FA2E2EEF1DBDFD6F00CE8F7F /* 3lib */ = {
 			isa = PBXGroup;
 			children = (
+				FA2DBC5A1E2E2E2E009A93B8 /* GCDWebServer */,
 				FAE230791E27A7F200210B64 /* FlurrytvOS */,
 				FA2383551DC5283F0007A006 /* Swiftzlib */,
 				FA2E2EF01DBDFD8900CE8F7F /* AEXML */,
@@ -221,6 +327,7 @@
 		FA830D6C1D8C1F33000BD36E /* iptv */ = {
 			isa = PBXGroup;
 			children = (
+				FA2DBCEF1E2E399A009A93B8 /* WebContent */,
 				FA6944E21D92B8D0005B854A /* CoreDataExtension.swift */,
 				FA5C61351D928084005E8EBD /* iptv.xcdatamodeld */,
 				FA830D6D1D8C1F53000BD36E /* AppDelegate.swift */,
@@ -234,6 +341,7 @@
 				FA2060CF1E212AD1008951A4 /* InAppPurchaseManager.swift */,
 				FAE2307D1E27A9E300210B64 /* iptv-Bridging_Header.h */,
 				FAE2307E1E27C70900210B64 /* Analytics.swift */,
+				FA2DBCE71E2E340B009A93B8 /* HttpServer.swift */,
 			);
 			name = iptv;
 			sourceTree = "<group>";
@@ -385,6 +493,7 @@
 				FAFC8F321DFAD87E00350A2B /* Program.storyboard in Resources */,
 				FAFE30601D9D3E8C0042A3EB /* Channel.storyboard in Resources */,
 				FA830D711D8C1F53000BD36E /* Assets.xcassets in Resources */,
+				FA2DBCF01E2E399A009A93B8 /* WebContent in Resources */,
 				FA830D8A1D8C215E000BD36E /* Main.storyboard in Resources */,
 				FA830D8F1D8C3361000BD36E /* Settings.storyboard in Resources */,
 			);
@@ -398,6 +507,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA210EC51DCA0344002B9592 /* UIExtension.swift in Sources */,
+				FA2DBC831E2E2E2E009A93B8 /* GCDWebServerDataResponse.m in Sources */,
 				FAE2307F1E27C70900210B64 /* Analytics.swift in Sources */,
 				FA5C61371D928084005E8EBD /* iptv.xcdatamodeld in Sources */,
 				FAF0E4151E00166E00897B88 /* ProgramVC.swift in Sources */,
@@ -407,6 +517,7 @@
 				FA2E2EE61DB7A42000CE8F7F /* ProgramManager.swift in Sources */,
 				FA2E2EFD1DBDFD8900CE8F7F /* Document.swift in Sources */,
 				FA38B8611E0D0EA800959277 /* ChannelSettingInfoVC.swift in Sources */,
+				FA2DBC7B1E2E2E2E009A93B8 /* GCDWebServerConnection.m in Sources */,
 				FA2E2EFE1DBDFD8900CE8F7F /* Element.swift in Sources */,
 				FAEE2EEB1DB4E60900D0F4C3 /* PlayerView.swift in Sources */,
 				FA2383591DC5283F0007A006 /* Data+Gzip.swift in Sources */,
@@ -418,27 +529,39 @@
 				FA830D701D8C1F53000BD36E /* AppDelegate.swift in Sources */,
 				FA12458B1E2A7DDE007349C8 /* AddEpgLinkVC.swift in Sources */,
 				FA2E2EE81DB8DAA700CE8F7F /* EpgProvidersVC.swift in Sources */,
+				FA2DBC821E2E2E2E009A93B8 /* GCDWebServerURLEncodedFormRequest.m in Sources */,
 				FA25FEE01E12955900578C4F /* ChannelSettingDeleteVC.swift in Sources */,
+				FA2DBC851E2E2E2E009A93B8 /* GCDWebServerFileResponse.m in Sources */,
 				FA6944E31D92B8D0005B854A /* CoreDataExtension.swift in Sources */,
 				FA5C61141D9132F1005E8EBD /* Utils.swift in Sources */,
+				FA2DBCE81E2E340B009A93B8 /* HttpServer.swift in Sources */,
 				FA2E2F011DBDFD8900CE8F7F /* Options.swift in Sources */,
+				FA2DBC7F1E2E2E2E009A93B8 /* GCDWebServerDataRequest.m in Sources */,
+				FA2DBC7D1E2E2E2E009A93B8 /* GCDWebServerRequest.m in Sources */,
 				FA2E2EFF1DBDFD8900CE8F7F /* Error.swift in Sources */,
 				FA830D861D8C20AA000BD36E /* SettingsVC.swift in Sources */,
 				FAFEFCE81E1C07270041585F /* ChannelSettingHideVC.swift in Sources */,
 				FA2060D01E212AD1008951A4 /* InAppPurchaseManager.swift in Sources */,
 				FA1245891E291431007349C8 /* ProgramDescriptionVC.swift in Sources */,
+				FA2DBC7A1E2E2E2E009A93B8 /* GCDWebServer.m in Sources */,
 				FA5C61341D92798C005E8EBD /* CoreDataManager.swift in Sources */,
 				FA51F7A41DC7746D00CA1758 /* ChannelPickerVC.swift in Sources */,
 				FA2E2F021DBDFD8900CE8F7F /* Parser.swift in Sources */,
 				FAFE305D1D9D15760042A3EB /* FocusedView.swift in Sources */,
+				FA2DBC801E2E2E2E009A93B8 /* GCDWebServerFileRequest.m in Sources */,
 				FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */,
+				FA2DBC7E1E2E2E2E009A93B8 /* GCDWebServerResponse.m in Sources */,
 				FA6ACE921E18066900658CAE /* ChannelSettingPreviewVC.swift in Sources */,
 				FA2060D21E22659C008951A4 /* PipPaymentVC.swift in Sources */,
 				FA54F3611E1518B300061835 /* ChannelSettingReorderVC.swift in Sources */,
 				FAF0E4131DFECBDC00897B88 /* ProgramVC_old.swift in Sources */,
+				FA2DBC7C1E2E2E2E009A93B8 /* GCDWebServerFunctions.m in Sources */,
 				FA843F641DEB4EC900F95DAE /* StyleManager.swift in Sources */,
+				FA2DBC841E2E2E2E009A93B8 /* GCDWebServerErrorResponse.m in Sources */,
 				FAFC8F301DF9829900350A2B /* ProgramCollectionCell.swift in Sources */,
 				FA843F6B1DF17E5C00F95DAE /* ProgramView.swift in Sources */,
+				FA2DBC861E2E2E2E009A93B8 /* GCDWebServerStreamedResponse.m in Sources */,
+				FA2DBC811E2E2E2E009A93B8 /* GCDWebServerMultiPartFormRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

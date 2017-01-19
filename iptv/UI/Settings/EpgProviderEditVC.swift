@@ -195,7 +195,7 @@ class EpgProviderEditVC: UIViewController {
         }
         else {
             urlField.text = "http://"
-            addNavigationTitle("New provider")
+            addNavigationTitle("New EPG source")
         }
         
         if providerInfo == nil {
