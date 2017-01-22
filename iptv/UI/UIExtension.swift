@@ -12,6 +12,35 @@ class UICommonString {
     static let programNotFound = "TV-program not found"
 }
 
+extension UIFont {
+    
+    func withTraits(traits:UIFontDescriptorSymbolicTraits...) -> UIFont {
+        if let descriptor = self.fontDescriptor.withSymbolicTraits(UIFontDescriptorSymbolicTraits(traits)) {
+            return UIFont(descriptor: descriptor, size: 0)
+        }
+        return self
+    }
+    
+    func bold() -> UIFont {
+        return withTraits(traits: .traitBold)
+    }
+    
+    func italic() -> UIFont {
+        return withTraits(traits: .traitItalic)
+    }
+    
+    func boldItalic() -> UIFont {
+        return withTraits(traits: .traitBold, .traitItalic)
+    }
+    
+    func regular() -> UIFont {
+        let descriptor = self.fontDescriptor.withSymbolicTraits(UIFontDescriptorSymbolicTraits(rawValue: 0))
+        return UIFont(descriptor: descriptor!, size: 0)
+    }
+    
+}
+
+
 
 extension UIView {
     

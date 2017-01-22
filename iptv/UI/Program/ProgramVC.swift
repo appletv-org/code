@@ -29,7 +29,11 @@ class ProgramVCProgramCell : UICollectionViewCell {
                 label.text = text
                 
                 if( (program!.start as! Date) < Date() &&  (program!.stop as! Date) > Date() ) {
-                    label.textColor = UIColor.red
+                    //label.textColor = UIColor.red
+                    label.font = label.font.bold()
+                }
+                else {
+                    label.font = label.font.regular()
                 }
             }
         }
@@ -135,12 +139,12 @@ extension ProgramVCProgramCollection : UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = self.dequeueReusableCell(withReuseIdentifier: "ProgramVCProgramCell", for: indexPath) as! ProgramVCProgramCell
-        
-        if programs.count == 0 {
+        let index = IndexPathToIndex(indexPath)
+        if programs.count <= index  {
             cell.program = nil
         }
         else {
-            cell.program = programs[IndexPathToIndex(indexPath)]
+            cell.program = programs[index]
         }
         
         
