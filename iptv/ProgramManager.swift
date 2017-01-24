@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-struct ParserChannel {
+class ParserChannel {
     var name : String
     var icon : String?
     
@@ -18,7 +18,7 @@ struct ParserChannel {
     }
 }
 
-struct ParserProgram {
+class ParserProgram {
     var start : Date
     var stop  : Date
     var title : String
@@ -32,7 +32,7 @@ struct ParserProgram {
     }
 }
 
-struct ParserChannelWithProgram {
+class ParserChannelWithProgram {
     var channel : ParserChannel
     var programs: [ParserProgram]
     
@@ -511,7 +511,7 @@ class ProgramManager {
 
 
 
-extension ProgramManager { //upload data (programs, icons) by url
+extension ProgramManager  { //upload data (programs, icons) by url
     
     func checkUpdateTimer() {
         serialQueue.async {
@@ -674,7 +674,8 @@ extension ProgramManager { //upload data (programs, icons) by url
                 xml = try data.gunzipped()
             }
             
-            let channels = try self._parseXml(xml)
+            let channels = try self._parseXml2(xml)
+            xml = Data() //free memory
             
             self._saveProgramsToDB(provider, channels)
             
@@ -773,7 +774,16 @@ extension ProgramManager { //upload data (programs, icons) by url
         return channels
         
     }
-    
+
+    func _parseXml2(_ data:Data) throws -> [String: ParserChannelWithProgram] {
+        let epgParser = EpgxmlToParseChannels()
+        let ret = epgParser.parseData(data)
+        if ret.err != nil {
+            throw ret.err!
+        }
+        return ret.channels
+    }
+
     
     func _saveProgramsToDB(_ provider:EpgProviderInfo, _ channels:  [String: ParserChannelWithProgram]) {
         
@@ -792,6 +802,9 @@ extension ProgramManager { //upload data (programs, icons) by url
             //soft change programs (change by channel)
             for (id, channelProg) in channels {
                 
+                if channelProg.programs.count == 0 {
+                    continue
+                }
                 
                 //sort programs by start time
                 var programs = channelProg.programs.sorted(by: { $0.start.timeIntervalSince1970 < $1.start.timeIntervalSince1970 })
@@ -881,4 +894,153 @@ extension ProgramManager { //upload data (programs, icons) by url
 
     }
 
+}
+
+
+
+class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
+    
+    let formatter = DateFormatter()
+    
+    var channels = [String: ParserChannelWithProgram]()
+    var xmlParser = XMLParser()
+    
+    var channelId : String?
+    var currentChannel : ParserChannel?
+    var currentProgram : ParserProgram?
+    var currentValue : String?
+    var err : Error?
+    
+    override init() {
+        self.formatter.dateFormat = "yyyyMMddHHmmss Z"
+        super.init()
+    }
+    
+    func parseData(_ data:Data) -> (channels:[String: ParserChannelWithProgram], err:Error?) {
+        xmlParser = XMLParser(data: data)
+        xmlParser.delegate = self
+        xmlParser.parse()
+        
+        return (channels, err)
+    }
+    
+    func parserDidStartDocument(_ parser: XMLParser) {
+        channels = [String: ParserChannelWithProgram]()
+    }
+    
+    /*
+    func parserDidEndDocument(_ parser: XMLParser) {
+        self.completion?(channels, nil)
+    }
+     */
+    
+    func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
+        err = parseError
+    }
+
+    
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+        
+        switch(elementName) {
+        
+        case "channel":
+            
+            channelId = attributeDict["id"]
+            if channelId == nil {
+                print ("channel have not attribute id")
+            }
+            currentChannel = ParserChannel("")
+            
+        case "programme":
+            channelId = attributeDict["channel"]
+            let start = attributeDict["start"]
+            let stop = attributeDict["stop"]
+            
+            if  channelId != nil, start != nil, stop != nil,
+                let startDate = formatter.date(from: start!),
+                let stopDate = formatter.date(from: stop!)
+            {
+                currentProgram = ParserProgram(title: "", start: startDate, stop: stopDate)
+            }
+            
+
+        
+        case "icon":
+            if  currentChannel != nil,
+                let src = attributeDict["src"]
+            {
+                currentChannel!.icon = src
+            }
+            
+        default:
+            break
+
+        }
+        
+    }
+    
+    
+    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+        switch(elementName) {
+            
+        case "channel":
+            if currentChannel != nil, currentChannel!.name != "", channelId != nil  {
+                channels[channelId!] = ParserChannelWithProgram(currentChannel!)
+                currentChannel = nil
+                channelId = nil
+            }
+            else {
+                print("cann't parse channel: \(currentChannel?.name) \(channelId)")
+            }
+    
+        case "programme":
+            if currentProgram != nil, currentProgram!.title != "", channelId != nil,
+               var channel = channels[channelId!]
+            {
+                channel.programs.append(currentProgram!)
+                currentProgram = nil
+                channelId = nil
+            }
+            else {
+                print("cann't parse program: \(currentProgram?.title) \(channelId)")
+            }
+        
+        //channel values
+        case "display-name":
+            if currentChannel != nil, currentValue != nil {
+                currentChannel!.name = currentValue!.lowercased()
+            }
+
+        //programme values
+        case "title":
+            if currentProgram != nil, currentValue != nil {
+                if (channelId == "223") {
+                    print("value= \(currentValue!)")
+                }
+                currentProgram!.title = currentValue!
+            }
+
+            
+        case "category":
+            if currentProgram != nil, currentValue != nil {
+                currentProgram!.category = currentValue!
+            }
+            
+        case "desc":
+            if currentProgram != nil, currentValue != nil {
+                currentProgram!.desc = currentValue!
+            }
+            
+        default:
+            break
+   
+        }
+        
+        currentValue = nil
+    }
+    
+    public func parser(_ parser: XMLParser, foundCharacters string: String) {
+        self.currentValue = string
+    }
+    
 }

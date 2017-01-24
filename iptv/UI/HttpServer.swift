@@ -11,6 +11,9 @@ import Foundation
 
 class HttpServer: GCDWebServer {
     
+    static let operationFail = "Operation failed"
+    static let operationSuccess = "Operation completed succesfully"
+    
     
     override init() {
         super.init()
@@ -25,7 +28,7 @@ class HttpServer: GCDWebServer {
 
 
         self.addHandler(forMethod: "POST", path: "/add_channel", request: GCDWebServerURLEncodedFormRequest.self, processBlock: { (request) -> GCDWebServerResponse? in
-            var ret = "Success operation"
+            var ret = HttpServer.operationSuccess
             if  let formRequest = request as? GCDWebServerURLEncodedFormRequest,
                 let name = formRequest.arguments["name"] as? String,
                 let url = formRequest.arguments["url"] as? String,
@@ -33,7 +36,7 @@ class HttpServer: GCDWebServer {
             {
                 let err = ChannelManager.addChannel([], name: name, url: url, isPublic: isPublic == "on")
                 if err != nil {
-                    ret = "Operation fail: " + errMsg(err!)
+                    ret = "\(HttpServer.operationFail): " + errMsg(err!)
                 }
                 
             }
@@ -41,7 +44,7 @@ class HttpServer: GCDWebServer {
         })
         
         self.addHandler(forMethod: "POST", path: "/add_remote_group", request: GCDWebServerURLEncodedFormRequest.self, processBlock: { (request) -> GCDWebServerResponse? in
-            var ret = "Success operation"
+            var ret = HttpServer.operationSuccess
             if  let formRequest = request as? GCDWebServerURLEncodedFormRequest,
                 let name = formRequest.arguments["name"] as? String,
                 let url = formRequest.arguments["url"] as? String,
@@ -49,7 +52,7 @@ class HttpServer: GCDWebServer {
             {
                 let err = ChannelManager.addRemoteGroup([], name: name, url: url, isPublic: isPublic == "on")
                 if err != nil {
-                    ret = "Operation fail: " + errMsg(err!)
+                    ret = "\(HttpServer.operationFail): " + errMsg(err!)
                 }
                 
             }
@@ -61,7 +64,7 @@ class HttpServer: GCDWebServer {
         })
         
         self.addHandler(forMethod: "POST", path: "/add_epg", request: GCDWebServerURLEncodedFormRequest.self, processBlock: { (request) -> GCDWebServerResponse? in
-            var ret = "Success operation"
+            var ret = HttpServer.operationSuccess
             if  let formRequest = request as? GCDWebServerURLEncodedFormRequest,
                 let name = formRequest.arguments["name"] as? String,
                 let url = formRequest.arguments["url"] as? String
@@ -69,7 +72,7 @@ class HttpServer: GCDWebServer {
                 let epgInfo = EpgProviderInfo(name: name, url: url)
                 let err = ProgramManager.instance.addProvider(epgInfo)
                 if err != nil {
-                    ret = "Operation fail: " + errMsg(err!)
+                    ret = "\(HttpServer.operationFail): " + errMsg(err!)
                 }
                 
             }
@@ -88,10 +91,10 @@ class HttpServer: GCDWebServer {
                 let group = GroupInfo(name: name)
                 ChannelManager.addM3uList(content:content, toGroup:group)
                 ChannelManager.root.groups.append(group)
-                return GCDWebServerDataResponse(html:"<html><body><p>Success operation</p></body></html>")
+                return GCDWebServerDataResponse(html:"<html><body><p>\(HttpServer.operationSuccess)</p></body></html>")
             }
             
-            return GCDWebServerDataResponse(html:"<html><body><p>Failure operation</p></body></html>")
+            return GCDWebServerDataResponse(html:"<html><body><p>\(HttpServer.operationFail)</p></body></html>")
         })
 
 
