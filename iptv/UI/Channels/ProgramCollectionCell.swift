@@ -18,11 +18,12 @@ class ProgramCollectionCell : UICollectionViewCell {
     
     func setProgram(_ program:EpgProgram?) {
         if program != nil {
-            self.textView.attributedText = setProgramText(program!)
+            textView.attributedText = setProgramText(program!)
         }
         else {
-            self.textView.text = UICommonString.programNotFound
+            textView.text = UICommonString.programNotFound
         }
+        //print("ProgramCollectionCell: \(textView.text) ")
         self.setProgressBar(program)
     }
     

@@ -10,6 +10,7 @@ import UIKit
 
 
 
+
 class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     var channel : ChannelInfo?
@@ -17,19 +18,22 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
     
     weak var dayLabel: UILabel!
     weak var actionButtons: UISegmentedControl!
-    weak var programCollectionView: UICollectionView! {
+    weak var programCollectionView: FocusedCollectionView! {
         didSet {
             programCollectionView.dataSource = self
             programCollectionView.delegate = self
             programCollectionView.remembersLastFocusedIndexPath = false
         }
     }
+    weak var pauseProgramCollectionView: ContainerFocused!
+    
     
     weak var channelsVC: ChannelsVC! {
         didSet {
             dayLabel = channelsVC.dayLabel
             actionButtons = channelsVC.actionButtons
             programCollectionView = channelsVC.programCollectionView
+            pauseProgramCollectionView = channelsVC.pauseProgramCollectionView
         }
     }
     
@@ -46,6 +50,8 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         //sort programs
         programs.sort(by: { $0.start!.timeIntervalSince1970 < $1.start!.timeIntervalSince1970 })
         
+        print("programs.count= \(programs.count) programs[0] = \(programs.count == 0 ? "nil" : programs[0].title)")
+        
         print("ChannelVC::play for channel:\(channel.name) find programs:\(programs.count)" )
         //programCollectionView.reloadData()
         programCollectionView.reloadSections(IndexSet(integer:0))
@@ -54,6 +60,7 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         let indNow = findIndexNow()
         if let index = indNow.index {
             programCollectionView.scrollToItem(at: IndexPath(row:index, section:0), at: .left, animated: false)
+            programCollectionView.focusedIndex = IndexPath(row:index, section:0)
         }
         labelDayUpdate()
         
@@ -149,7 +156,7 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         var program :EpgProgram? = nil
         if index < programs.count {
             program = programs[index]
-            print( "cellForItemAt \(programs[index].title)")
+            //print( "cellForItemAt \(index) is \(programs[index].title)")
         }
         cell.setProgram(program)
         
@@ -188,7 +195,7 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
            indexPath.row < programs.count
         {
             let program = programs[indexPath.row]
-            print( "didUpdateFocusIn \(programs[indexPath.row].title)")
+            //print( "didUpdateFocusIn \(programs[indexPath.row].title)")
             labelDayUpdate(program.start as? Date)
         }
     

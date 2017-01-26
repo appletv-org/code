@@ -1014,9 +1014,6 @@ class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
         //programme values
         case "title":
             if currentProgram != nil, currentValue != nil {
-                if (channelId == "223") {
-                    print("value= \(currentValue!)")
-                }
                 currentProgram!.title = currentValue!
             }
 

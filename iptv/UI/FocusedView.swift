@@ -37,6 +37,8 @@ class FocusedView : UIView {
         }
     }
     
+    
+    
     /*
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         super.didUpdateFocus(in: context, with: coordinator)
@@ -55,6 +57,45 @@ class FocusedView : UIView {
 
 //focused first focused subview if not define focusedObject or focusedFunc
 class ContainerFocused : FocusedView {
+
+    //support pause focus
+    private var _timePause : TimeInterval?
+    private var timeInto : Date?
+    
+    func setFocusPause(_ timePauseInSec:Double?) {
+        if timePauseInSec != nil {
+            _timePause = TimeInterval(timePauseInSec!)
+        }
+        else {
+            _timePause = nil
+        }
+    }
+    
+    
+    override func shouldUpdateFocus(in context: UIFocusUpdateContext) -> Bool {
+        
+        if  _timePause != nil,
+            let nextView = context.nextFocusedItem as? UIView,
+            let prevView = context.previouslyFocusedItem as? UIView
+        {
+            if nextView.isDescendant(of: self) && !prevView.isDescendant(of: self) {
+                //print("into to ProgramCollectionView")
+                timeInto = Date()
+            }
+            if timeInto != nil, !nextView.isDescendant(of: self) && prevView.isDescendant(of: self) {
+                
+                if -timeInto!.timeIntervalSinceNow < _timePause!
+                {
+                    return false
+                }
+                else {
+                    timeInto = nil
+                }
+            }
+        }
+        return true
+    }
+
     
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         super.didUpdateFocus(in: context, with: coordinator)
@@ -81,6 +122,8 @@ class ContainerFocused : FocusedView {
         return ret
     }
 }
+
+
 
 class FocusedViewController : UIViewController {
     
@@ -152,7 +195,10 @@ class FocusedCollectionView : UICollectionView {
         else {
             return super.preferredFocusEnvironments
         }
-        self.scrollToItem(at: focusedIndex!, at: .centeredHorizontally, animated: false)
+        
+        if !self.indexPathsForVisibleItems.contains(focusedIndex!) {
+            self.scrollToItem(at: focusedIndex!, at: .centeredHorizontally, animated: false)
+        }
         if let cell = cellForItem(at: focusedIndex!) {
             return [cell]
         }

@@ -72,6 +72,8 @@ class ChannelsVC : FocusedViewController {
     let  imageFavoriteOn = UIImage(named: "favoriteOn")
     let  imageFavoriteOff = UIImage(named: "favoriteOff")
     
+    var isFirstAppear = true //not update program in first appear
+    
  
     @IBOutlet weak var mainPlayer: PlayerView!
 
@@ -97,10 +99,12 @@ class ChannelsVC : FocusedViewController {
     //show program
     @IBOutlet weak var programAndPipView: UIView!
     @IBOutlet weak var programView: ProgramView!
-    @IBOutlet weak var programCollectionView: UICollectionView!
+    @IBOutlet weak var pauseProgramCollectionView: ContainerFocused!
+    @IBOutlet weak var programCollectionView: FocusedCollectionView!
     
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var actionButtons: UISegmentedControl!
+    
 
     //constrain for show/hide program/channel
     @IBOutlet weak var programViewBottomConstraint: NSLayoutConstraint!
@@ -125,7 +129,6 @@ class ChannelsVC : FocusedViewController {
     override func viewDidLoad() {
         
         super.viewDidLoad()
-
         
         channelPickerVC = ChannelPickerVC.insertToView(parentController: self, parentView: channelPickerView)
         channelPickerVC.showAllGroup = true
@@ -136,6 +139,8 @@ class ChannelsVC : FocusedViewController {
         
         //program guide
         programView.channelsVC = self
+        
+        pauseProgramCollectionView.setFocusPause(0.2)
         
         let tapActionButton = UITapGestureRecognizer( target: self, action:  #selector(programAction))
         actionButtons.addGestureRecognizer(tapActionButton)
@@ -230,10 +235,13 @@ class ChannelsVC : FocusedViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if  let channel = programView.channel
+        if  let channel = programView.channel, !isFirstAppear
         {
             let _ = programView.update(channel)
-        }        
+        }
+        else {
+            isFirstAppear = false
+        }
     }
 
     
@@ -325,6 +333,7 @@ class ChannelsVC : FocusedViewController {
             return false
         }
         
+        //prevent to middleview from closeButton
         if  prevView == buttonChannelClose,
             nextView == middleChannelView
         {
@@ -339,7 +348,6 @@ class ChannelsVC : FocusedViewController {
         //let nextFocusedItem = context.nextFocusedItem
         let nextFocusedView = context.nextFocusedItem as? UIView
         let prevFocusedView = context.previouslyFocusedItem as? UIView
-        
         
         //switch program to prev/next
         if prevFocusedView == middleChannelView &&
@@ -360,7 +368,7 @@ class ChannelsVC : FocusedViewController {
             })
             
         }
-    
+        
         //border animation for main view
         if  nextFocusedView != nil {
             if nextFocusedView == middleChannelView && prevFocusedView != middleChannelView {
@@ -373,6 +381,7 @@ class ChannelsVC : FocusedViewController {
             }
         }
         
+        
         //programView show/hide
         if nextFocusedView != nil && prevFocusedView != nil {
             if nextFocusedView!.isDescendant(of: programAndPipView) &&  prevFocusedView!.isDescendant(of: changeProgramView) {
@@ -383,7 +392,28 @@ class ChannelsVC : FocusedViewController {
             }
         }
         
-        
+        /*
+        //change borger color for focused
+        if nextFocusedView != nil && prevFocusedView  != nil {
+            let borderAnimationViews : [UIView] = [programCollectionView]
+            
+            
+            for focusedView in borderAnimationViews {
+                if nextFocusedView!.isDescendant(of: focusedView) && !prevFocusedView!.isDescendant(of: focusedView) {
+                    
+                    focusedView.layer.borderWidth = 10
+                    let borderColorAnim = CABasicAnimation(keyPath: "borderColor")
+                    borderColorAnim.fromValue=UIColor.yellow.cgColor
+                    borderColorAnim.toValue=UIColor.clear.cgColor
+                    borderColorAnim.duration = 0.5
+                    focusedView.layer.add(borderColorAnim, forKey: "borderColor")
+                    
+                    break
+                }
+            }
+        }
+         */
+
         
         /*
         //print debug focused view
