@@ -55,43 +55,66 @@ class FocusedView : UIView {
     */
 }
 
+class SwitchFocusPause {
+    var view : UIView!
+    var pauseTime : TimeInterval
+    
+    private var _lastInto :Date?
+    
+    init(view:UIView, pause:Double) {
+        self.view = view
+        self.pauseTime = TimeInterval(pause)
+    }
+    
+    func shouldUpdateFocus(in context: UIFocusUpdateContext) -> Bool {
+               
+        if let nextView = context.nextFocusedView,
+           let prevView = context.previouslyFocusedView
+        {
+            if nextView.isDescendant(of: view) && !prevView.isDescendant(of: view) { //into event
+                //print("into to ProgramCollectionView")
+                _lastInto = Date()
+            }
+            if _lastInto != nil, !nextView.isDescendant(of: view) && prevView.isDescendant(of: view) { //out event
+                
+                if -_lastInto!.timeIntervalSinceNow < pauseTime
+                {
+                    return false
+                }
+                else {
+                    _lastInto = nil
+                }
+            }
+        }
+        return true
+    }
+    
+}
+
 //focused first focused subview if not define focusedObject or focusedFunc
 class ContainerFocused : FocusedView {
 
     //support pause focus
-    private var _timePause : TimeInterval?
-    private var timeInto : Date?
+    var switchPause : SwitchFocusPause?
     
     func setFocusPause(_ timePauseInSec:Double?) {
         if timePauseInSec != nil {
-            _timePause = TimeInterval(timePauseInSec!)
+            switchPause = SwitchFocusPause(view:self, pause:timePauseInSec!)
         }
         else {
-            _timePause = nil
+            switchPause = nil
         }
     }
     
     
     override func shouldUpdateFocus(in context: UIFocusUpdateContext) -> Bool {
         
-        if  _timePause != nil,
-            let nextView = context.nextFocusedItem as? UIView,
-            let prevView = context.previouslyFocusedItem as? UIView
-        {
-            if nextView.isDescendant(of: self) && !prevView.isDescendant(of: self) {
-                //print("into to ProgramCollectionView")
-                timeInto = Date()
-            }
-            if timeInto != nil, !nextView.isDescendant(of: self) && prevView.isDescendant(of: self) {
-                
-                if -timeInto!.timeIntervalSinceNow < _timePause!
-                {
-                    return false
-                }
-                else {
-                    timeInto = nil
-                }
-            }
+        if !super.shouldUpdateFocus(in: context) {
+            return false
+        }
+        
+        if switchPause != nil {
+            return switchPause!.shouldUpdateFocus(in: context)
         }
         return true
     }
@@ -151,6 +174,10 @@ class FocusedViewController : UIViewController {
 
 class FocusedCollectionView : UICollectionView {
     
+    
+    //support pause focus
+    var switchPause : SwitchFocusPause?
+    
     var focusedIndex: IndexPath? {
         didSet {
             //print ("change focusedIndex: \(focusedIndex)")
@@ -195,10 +222,12 @@ class FocusedCollectionView : UICollectionView {
         else {
             return super.preferredFocusEnvironments
         }
-        
+        showElement(focusedIndex!, animated:false)
+        /*
         if !self.indexPathsForVisibleItems.contains(focusedIndex!) {
             self.scrollToItem(at: focusedIndex!, at: .centeredHorizontally, animated: false)
         }
+         */
         if let cell = cellForItem(at: focusedIndex!) {
             return [cell]
         }
@@ -206,6 +235,44 @@ class FocusedCollectionView : UICollectionView {
             return super.preferredFocusEnvironments
         }
     }
+    
+    func showElement(_ showIndex:IndexPath, animated:Bool) {
+        
+        if !self.indexPathsForVisibleItems.contains(showIndex) {
+            var position : UICollectionViewScrollPosition = .centeredHorizontally
+            if indexPathsForVisibleItems.count > 0 {
+                if showIndex.row < indexPathsForVisibleItems[0].row {
+                    position = .left
+                }
+                else {
+                    position = .right
+                }
+            }
+            self.scrollToItem(at: showIndex, at: position, animated: animated)
+        }
+    }
+    
+    func setFocusPause(_ timePauseInSec:Double?) {
+        if timePauseInSec != nil {
+            switchPause = SwitchFocusPause(view:self, pause:timePauseInSec!)
+        }
+        else {
+            switchPause = nil
+        }
+    }
+
+    override func shouldUpdateFocus(in context: UIFocusUpdateContext) -> Bool {
+        
+        if !super.shouldUpdateFocus(in: context) {
+            return false
+        }
+        
+        if switchPause != nil {
+            return switchPause!.shouldUpdateFocus(in: context)
+        }
+        return true
+    }
+
 
 }
 

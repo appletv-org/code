@@ -9,39 +9,6 @@
 import Foundation
 import CoreData
 
-class ParserChannel {
-    var name : String
-    var icon : String?
-    
-    init(_ name:String) {
-        self.name = name
-    }
-}
-
-class ParserProgram {
-    var start : Date
-    var stop  : Date
-    var title : String
-    var desc  : String?
-    var category: String?
-    
-    init(title:String, start:Date, stop:Date) {
-        self.title = title
-        self.start = start
-        self.stop = stop
-    }
-}
-
-class ParserChannelWithProgram {
-    var channel : ParserChannel
-    var programs: [ParserProgram]
-    
-    init(_ channel:ParserChannel) {
-        self.channel = channel
-        self.programs = [ParserProgram]()
-    }
-    
-}
 
 class EpgProviderInfo : NSObject, NSCoding {
     
@@ -128,7 +95,7 @@ class EpgProviderInfo : NSObject, NSCoding {
 }
 
 
-class ProgramManager {
+class ProgramManager : NSObject {
     
     static let providerUserDefaultKey = "epgProviders"
     static let linkUserDefaultKey = "epgLinks"
@@ -140,10 +107,7 @@ class ProgramManager {
     static let userInfoProvider = "provider"
     static let errorMsg = "errorMsg"
     
-    
-    
-    
-    let serialQueue = DispatchQueue(label: "ProgramManagerQueue")
+    let serialQueue = DispatchQueue(label: "ProgramManagerQueue", qos: .utility)
     
     var iconCache =  NSCache<NSString,NSData>()
     
@@ -175,7 +139,7 @@ class ProgramManager {
     
     
     static let instance = ProgramManager()
-    private init() {
+    private override init() {
     }
 
     
@@ -510,14 +474,51 @@ class ProgramManager {
 }
 
 
+class ParserChannel {
+    var name : String
+    var icon : String?
+    
+    init(_ name:String) {
+        self.name = name
+    }
+}
 
-extension ProgramManager  { //upload data (programs, icons) by url
+class ParserProgram {
+    var start : Date
+    var stop  : Date
+    var title : String
+    var desc  : String?
+    var category: String?
+    
+    init(title:String, start:Date, stop:Date) {
+        self.title = title
+        self.start = start
+        self.stop = stop
+    }
+}
+
+class ParserChannelWithProgram {
+    var channel : ParserChannel
+    var programs: [ParserProgram]
+    
+    init(_ channel:ParserChannel) {
+        self.channel = channel
+        self.programs = [ParserProgram]()
+    }
+    
+}
+
+
+
+
+
+
+extension ProgramManager { //upload data (programs, icons) by url
     
     func checkUpdateTimer() {
         serialQueue.async {
             self._checkUpdateTimer()
         }
-
     }
     
     func _checkUpdateTimer() {
@@ -663,21 +664,45 @@ extension ProgramManager  { //upload data (programs, icons) by url
 
             return
         }
+        
         do {
-            let data = try Data(contentsOf: url!)
-    
-            //parse xml
-            var xml = data
+
+            let tempPath = NSTemporaryDirectory().appendingPathComponent("program.xml")
+            let tempFileUrl = URL(fileURLWithPath:  tempPath)
+                
+            //data to temporary file
+            try autoreleasepool {
             
-            
-            if data.isGzipped {
-                xml = try data.gunzipped()
+                //data to temporary file
+                 var xml = try Data(contentsOf: url!)
+                
+                if xml.isGzipped {
+                    let xmlnew = try xml.gunzipped()
+                    xml = xmlnew
+                }
+                
+                
+                
+                FileManager.default.createFile(atPath: tempFileUrl.path, contents: xml, attributes: nil)
+                
+                /*
+                //let file = try FileHandle(forWritingTo: url)
+                let file = try FileHandle(forWritingAtPath: tempFileUrl.path)
+                file?.write(xml)
+                file?.closeFile()
+                 */
+                
+                
+                //try xml.write(to: url)
+                xml.removeAll(keepingCapacity: false)
+                xml = Data() //release xml data
+        
             }
             
-            let channels = try self._parseXml2(xml)
-            xml = Data() //free memory
+            try parseFileAndSaveDb(tempFileUrl, provider)
             
-            self._saveProgramsToDB(provider, channels)
+            //parse xml and save to db
+            //try parseXmlAndSaveDb2(xml, provider)
             
             
             dbProvider!.error = nil
@@ -696,6 +721,42 @@ extension ProgramManager  { //upload data (programs, icons) by url
         //task.resume()
         
     }
+    
+    /*
+    func parseXmlAndSaveDb(_ xml:Data, _ provider:EpgProviderInfo)  throws {
+        let channels = try self._parseXml2(xml)
+        self._saveProgramsToDB(provider, channels)
+    }
+ */
+    
+    /*
+    func parseXmlAndSaveDb2(_ xml:Data, _ provider:EpgProviderInfo)  throws {
+        let epgParser = EpgxmlToParseChannels()
+        let dbReplaceChannels = DbReplaceChannel(provider)
+        
+        epgParser.delegate = dbReplaceChannels
+        let ret = epgParser.parseData(xml)
+        if ret.err != nil {
+            throw ret.err!
+        }
+        dbReplaceChannels.finish()
+    }
+ */
+    
+    func parseFileAndSaveDb(_ url:URL, _ provider:EpgProviderInfo)  throws {
+        let epgParser = EpgxmlToParseChannels()
+        let dbReplaceChannels = DbReplaceChannel(provider)
+        epgParser.delegate = dbReplaceChannels
+        
+        epgParser.parseFile(url)
+        dbReplaceChannels.finish()
+    }
+
+    
+
+
+    
+    
     
     func _parseXml(_ data:Data) throws -> [String: ParserChannelWithProgram] {
         
@@ -775,6 +836,7 @@ extension ProgramManager  { //upload data (programs, icons) by url
         
     }
 
+    /*
     func _parseXml2(_ data:Data) throws -> [String: ParserChannelWithProgram] {
         let epgParser = EpgxmlToParseChannels()
         let ret = epgParser.parseData(data)
@@ -783,139 +845,63 @@ extension ProgramManager  { //upload data (programs, icons) by url
         }
         return ret.channels
     }
-
+ */
     
+    /*
     func _saveProgramsToDB(_ provider:EpgProviderInfo, _ channels:  [String: ParserChannelWithProgram]) {
         
-        //let moc = CoreDataManager.context()
-        let dbcontext = CoreDataManager.concurrentContext()
-        
-        
-        //dbcontext.perform {
-            
-            var dbProvider : EpgProvider?  = CoreDataManager.requestFirstElement(NSPredicate(format:"name==%@", provider.name), context:dbcontext)
-            if dbProvider == nil {
-                dbProvider = EpgProvider(context:dbcontext)
-                dbProvider!.name = provider.name
-            }
-            
-            //soft change programs (change by channel)
-            for (id, channelProg) in channels {
-                
-                if channelProg.programs.count == 0 {
-                    continue
-                }
-                
-                //sort programs by start time
-                var programs = channelProg.programs.sorted(by: { $0.start.timeIntervalSince1970 < $1.start.timeIntervalSince1970 })
-
-                
-                var dbChannel : EpgChannel? = CoreDataManager.requestFirstElement(NSPredicate(format: "name==%@ AND provider.name == %@", channelProg.channel.name,  provider.name), context:dbcontext)
-                
-                if dbChannel == nil {
-                    dbChannel = EpgChannel(context:dbcontext)
-                    dbChannel!.id = id
-                    dbChannel!.name = channelProg.channel.name
-                    dbChannel!.icon = channelProg.channel.icon
-                    dbChannel!.provider = dbProvider
-                }
-                else {
-                    
-                    if programs.count > 0 {
-                        //delete programs, exist in new programs list                        
-                        let fetchRequest: NSFetchRequest<EpgProgram> = EpgProgram.fetchRequest()
-                        fetchRequest.predicate = NSPredicate(
-                            format: "channel.name==%@ AND channel.provider.name == %@ AND start >= %@",
-                            channelProg.channel.name,  provider.name, programs[0].start as NSDate)
-                        
-                        if let result = try? dbcontext.fetch(fetchRequest) {
-                            for dbprogram in result {
-                                dbcontext.delete(dbprogram) //delete programs exists in new list
-                            }
-                        }
-                    }
-                }
-                
-                //add programs
-                for program in programs {
-                    let dbprogram = EpgProgram(context:dbcontext)
-                    dbprogram.title = program.title
-                    dbprogram.desc = program.desc
-                    dbprogram.start = program.start as NSDate?
-                    dbprogram.stop = program.stop as NSDate?
-                    dbprogram.channel = dbChannel!
-                    
-                }
-                //print("save \(channelProg.programs.count) programs for '\(channelProg.programs)' channel")
-            }
-        
-            //delete programs more them 7-day old
-            let oldDate = Calendar.current.startOfDay(for: Date()).addingTimeInterval(-7*24*60*60)
-            let fetchRequest: NSFetchRequest<EpgProgram> = EpgProgram.fetchRequest()
-            fetchRequest.predicate = NSPredicate(
-                format: "channel.provider.name == %@ AND start < %@",
-                provider.name, oldDate as NSDate)
-        
-            if let result = try? dbcontext.fetch(fetchRequest) {
-                for dbprogram in result {
-                    dbcontext.delete(dbprogram) //delete old programs
-                }
-            }
-        
-            //get min max date
-        
-            var minDate : Date? = nil
-            var maxDate : Date? = nil
-
-            let fetchRequestDate: NSFetchRequest<EpgProgram> = EpgProgram.fetchRequest()
-            fetchRequestDate.predicate = NSPredicate(format:"channel.provider.name == %@", provider.name)
-            fetchRequestDate.fetchLimit = 1
-            fetchRequestDate.sortDescriptors = [NSSortDescriptor(key: "start", ascending: true)]
-            if  let result = try? dbcontext.fetch(fetchRequestDate),
-                result.count > 0
-            {
-                minDate = result[0].start as Date?
-            }
-            fetchRequestDate.sortDescriptors = [NSSortDescriptor(key: "stop", ascending: false)]
-            if  let result = try? dbcontext.fetch(fetchRequestDate),
-                result.count > 0
-            {
-                maxDate = result[0].stop as Date?
-            }
-        
-            dbProvider!.startDate = minDate as NSDate?
-            dbProvider!.finishDate = maxDate as NSDate?
-            dbProvider!.channelCount = Int64(channels.count)
-            dbProvider!.lastUpdate = Date() as NSDate?
-            
-            CoreDataManager.saveConcurrentContext(dbcontext)
-        
-        //}
-
+        let dbReplaceChannels = DbReplaceChannel(provider)
+        for (id, channelProg) in channels {
+            dbReplaceChannels.saveChannel(id: id, channelProg: channelProg)
+        }
+        dbReplaceChannels.finish()
     }
+ */
 
 }
 
 
+protocol EpgxmlToParseChannelsDelegate: class {
+    func saveChannel(id:String, channel:ParserChannel, programs:[ParserProgram] )
+}
 
 class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
     
+    weak var delegate : EpgxmlToParseChannelsDelegate?
+    
     let formatter = DateFormatter()
     
-    var channels = [String: ParserChannelWithProgram]()
+    var channels = [String: ParserChannel]()
     var xmlParser = XMLParser()
     
     var channelId : String?
     var currentChannel : ParserChannel?
     var currentProgram : ParserProgram?
-    var currentValue : String?
+    var currentValue = ""
+    //var lastChannelWithProgram : ParserChannelWithProgram?
+    var lastChannel : ParserChannel?
+    var lastChannelId = ""
+    var programsForLastChannel: [ParserProgram] = []
     var err : Error?
+    
+    var channelCounter = 0
+
     
     override init() {
         self.formatter.dateFormat = "yyyyMMddHHmmss Z"
         super.init()
     }
     
+    func parseFile(_ url:URL) {
+        xmlParser = XMLParser(contentsOf: url)!
+        xmlParser.delegate = self
+        xmlParser.parse()
+        
+        //return (channels, err)
+    }
+
+    
+/*
     func parseData(_ data:Data) -> (channels:[String: ParserChannelWithProgram], err:Error?) {
         xmlParser = XMLParser(data: data)
         xmlParser.delegate = self
@@ -923,16 +909,19 @@ class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
         
         return (channels, err)
     }
+ */
     
     func parserDidStartDocument(_ parser: XMLParser) {
-        channels = [String: ParserChannelWithProgram]()
+        channels = [:]
     }
     
-    /*
+    
     func parserDidEndDocument(_ parser: XMLParser) {
-        self.completion?(channels, nil)
+        if lastChannelId != "" && lastChannel != nil && delegate != nil && programsForLastChannel.count > 0 {
+            delegate!.saveChannel(id: lastChannelId, channel: lastChannel!, programs:programsForLastChannel )
+        }
     }
-     */
+    
     
     func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
         err = parseError
@@ -948,8 +937,11 @@ class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
             channelId = attributeDict["id"]
             if channelId == nil {
                 print ("channel have not attribute id")
+                currentChannel = nil
             }
-            currentChannel = ParserChannel("")
+            else {
+                currentChannel = ParserChannel("")
+            }
             
         case "programme":
             channelId = attributeDict["channel"]
@@ -961,6 +953,9 @@ class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
                 let stopDate = formatter.date(from: stop!)
             {
                 currentProgram = ParserProgram(title: "", start: startDate, stop: stopDate)
+            }
+            else {
+                currentProgram = nil
             }
             
 
@@ -981,11 +976,12 @@ class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
     
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+
         switch(elementName) {
             
         case "channel":
             if currentChannel != nil, currentChannel!.name != "", channelId != nil  {
-                channels[channelId!] = ParserChannelWithProgram(currentChannel!)
+                channels[channelId!] = currentChannel!
                 currentChannel = nil
                 channelId = nil
             }
@@ -994,38 +990,58 @@ class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
             }
     
         case "programme":
-            if currentProgram != nil, currentProgram!.title != "", channelId != nil,
-               var channel = channels[channelId!]
+            if currentProgram != nil, currentProgram!.title != "", channelId != nil
             {
-                channel.programs.append(currentProgram!)
-                currentProgram = nil
-                channelId = nil
+                if lastChannelId != channelId! { //save lastChannel with programs to db
+                    if lastChannel != nil && programsForLastChannel.count > 0 && delegate != nil {
+                        delegate!.saveChannel(id: lastChannelId, channel: lastChannel!, programs:programsForLastChannel)
+                        channelCounter += 1
+                        print("count channels: \(channels.count) channelCounter: \(channelCounter) name: \(lastChannel?.name) programs:\(programsForLastChannel.count)")
+                    }
+                    else {
+                        print("not saved programs for channel: \(lastChannel?.name)")
+                    }
+                    
+                    lastChannelId = channelId!
+                    lastChannel = channels[channelId!]
+                    programsForLastChannel = []
+                    
+                }
+                if lastChannel != nil  {
+                    programsForLastChannel.append(currentProgram!)
+                }
+                else {
+                     print("not found channel for program: \(currentProgram?.title) \(channelId)")
+                }
             }
             else {
                 print("cann't parse program: \(currentProgram?.title) \(channelId)")
             }
+            currentProgram = nil
+            channelId = nil
+
         
         //channel values
         case "display-name":
-            if currentChannel != nil, currentValue != nil {
-                currentChannel!.name = currentValue!.lowercased()
+            if currentChannel != nil, currentValue != "" {
+                currentChannel!.name = currentValue.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()
             }
 
         //programme values
         case "title":
-            if currentProgram != nil, currentValue != nil {
-                currentProgram!.title = currentValue!
+            if currentProgram != nil, currentValue != "" {
+                currentProgram!.title = currentValue.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
             }
 
             
         case "category":
-            if currentProgram != nil, currentValue != nil {
-                currentProgram!.category = currentValue!
+            if currentProgram != nil, currentValue != "" {
+                currentProgram!.category = currentValue.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
             }
             
         case "desc":
-            if currentProgram != nil, currentValue != nil {
-                currentProgram!.desc = currentValue!
+            if currentProgram != nil, currentValue != "" {
+                currentProgram!.desc = currentValue.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
             }
             
         default:
@@ -1033,11 +1049,130 @@ class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
    
         }
         
-        currentValue = nil
+        currentValue = ""
     }
     
     public func parser(_ parser: XMLParser, foundCharacters string: String) {
-        self.currentValue = string
+        self.currentValue += string
     }
     
+}
+
+
+class DbReplaceChannel : EpgxmlToParseChannelsDelegate {
+    
+    let dbcontext = CoreDataManager.concurrentContext()
+    var provider : EpgProviderInfo!
+    var dbProvider : EpgProvider?
+    var channelCount: Int64
+    
+    init(_ provider:EpgProviderInfo) {
+        //let moc = CoreDataManager.context()
+        
+        //dbcontext.perform {
+        self.provider = provider
+        
+        dbProvider = CoreDataManager.requestFirstElement(NSPredicate(format:"name==%@", provider.name), context:dbcontext)
+        if dbProvider == nil {
+            dbProvider = EpgProvider(context:dbcontext)
+            dbProvider!.name = provider.name
+        }
+        channelCount = 0
+    }
+    
+    func saveChannel(id:String, channel:ParserChannel, programs channelPrograms:[ParserProgram]) {
+        
+        if channelPrograms.count == 0 {
+            return
+        }
+        
+        channelCount += 1
+        
+        //sort programs by start time
+        var programs = channelPrograms.sorted(by: { $0.start.timeIntervalSince1970 < $1.start.timeIntervalSince1970 })
+        
+        
+        var dbChannel : EpgChannel? = CoreDataManager.requestFirstElement(NSPredicate(format: "name==%@ AND provider.name == %@", channel.name,  provider.name), context:dbcontext)
+        
+        if dbChannel == nil {
+            dbChannel = EpgChannel(context:dbcontext)
+            dbChannel!.id = id
+            dbChannel!.name = channel.name
+            dbChannel!.icon = channel.icon
+            dbChannel!.provider = dbProvider
+        }
+        else {
+            
+            if programs.count > 0 {
+                //delete programs, exist in new programs list
+                let fetchRequest: NSFetchRequest<EpgProgram> = EpgProgram.fetchRequest()
+                fetchRequest.predicate = NSPredicate(
+                    format: "channel.name==%@ AND channel.provider.name == %@ AND start >= %@",
+                    channel.name,  provider.name, programs[0].start as NSDate)
+                
+                if let result = try? dbcontext.fetch(fetchRequest) {
+                    for dbprogram in result {
+                        dbcontext.delete(dbprogram) //delete programs exists in new list
+                    }
+                }
+            }
+        }
+        
+        //add programs
+        for program in programs {
+            let dbprogram = EpgProgram(context:dbcontext)
+            dbprogram.title = program.title
+            dbprogram.desc = program.desc
+            dbprogram.start = program.start as NSDate?
+            dbprogram.stop = program.stop as NSDate?
+            dbprogram.channel = dbChannel!
+        }
+        
+    }
+    
+    func finish() {
+        
+        //delete programs more them 7-day old
+        let oldDate = Calendar.current.startOfDay(for: Date()).addingTimeInterval(-7*24*60*60)
+        let fetchRequest: NSFetchRequest<EpgProgram> = EpgProgram.fetchRequest()
+        fetchRequest.predicate = NSPredicate(
+            format: "channel.provider.name == %@ AND start < %@",
+            provider.name, oldDate as NSDate)
+        
+        if let result = try? dbcontext.fetch(fetchRequest) {
+            for dbprogram in result {
+                dbcontext.delete(dbprogram) //delete old programs
+            }
+        }
+        
+        //get min max date
+        
+        var minDate : Date? = nil
+        var maxDate : Date? = nil
+        
+        let fetchRequestDate: NSFetchRequest<EpgProgram> = EpgProgram.fetchRequest()
+        fetchRequestDate.predicate = NSPredicate(format:"channel.provider.name == %@", provider.name)
+        fetchRequestDate.fetchLimit = 1
+        fetchRequestDate.sortDescriptors = [NSSortDescriptor(key: "start", ascending: true)]
+        if  let result = try? dbcontext.fetch(fetchRequestDate),
+            result.count > 0
+        {
+            minDate = result[0].start as Date?
+        }
+        fetchRequestDate.sortDescriptors = [NSSortDescriptor(key: "stop", ascending: false)]
+        if  let result = try? dbcontext.fetch(fetchRequestDate),
+            result.count > 0
+        {
+            maxDate = result[0].stop as Date?
+        }
+        
+        if dbProvider != nil {
+            dbProvider!.startDate = minDate as NSDate?
+            dbProvider!.finishDate = maxDate as NSDate?
+            dbProvider!.channelCount = channelCount
+            dbProvider!.lastUpdate = Date() as NSDate?
+            
+            CoreDataManager.saveConcurrentContext(dbcontext)
+        }
+    }
 }

@@ -248,6 +248,8 @@ class ChannelPickerVC : FocusedViewController, DirectoryStackDelegate {
         collectionView.dataSource = self
         collectionView.remembersLastFocusedIndexPath = false //we use focusedIndex
         
+        collectionView.setFocusPause(0.2)
+        
         directoryStack.delegate = self
         
         
@@ -258,6 +260,7 @@ class ChannelPickerVC : FocusedViewController, DirectoryStackDelegate {
             }
             return []
         }
+        directoryContainerView.setFocusPause(0.2)
         //setupPath(path)
     }
     
@@ -325,13 +328,19 @@ class ChannelPickerVC : FocusedViewController, DirectoryStackDelegate {
     
     }
     
-    func centerElement(_ name:String, animated:Bool = false) {
+    
+    func showAsSelectedElement(_ name:String, animated:Bool = false) {
         let ind = groupInfo.findDirIndex(name)
         if ind >= 0 {
-            
-            collectionView.scrollToItem(at: IndexPath( row:ind, section:0), at: .centeredHorizontally, animated: animated)
+            let index = IndexPath( row:ind, section:0)
+            collectionView.showElement(index, animated: animated)
+            if let cell = collectionView.cellForItem(at: index) as? ChannelCell {
+                cell.selectedCell(isSelected: true)
+            }
+            //collectionView.scrollToItem(at: IndexPath( row:ind, section:0), at: .centeredHorizontally, animated: animated)
         }
     }
+    
     
 }
 
@@ -438,8 +447,7 @@ extension ChannelPickerVC : UICollectionViewDataSource, UICollectionViewDelegate
     
     
     func indexPathForPreferredFocusedView(in collectionView: UICollectionView) -> IndexPath? {
-        if(self.collectionView.focusedIndex != nil) {
-            let indexPath =  self.collectionView.focusedIndex!
+        if  let indexPath = self.collectionView.focusedIndex {
             self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
             return indexPath
         }

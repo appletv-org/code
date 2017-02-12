@@ -60,6 +60,12 @@ extension String
     }
 }
 
+extension String {
+    func appendingPathComponent(_ string: String) -> String {
+        return URL(fileURLWithPath: self).appendingPathComponent(string).path
+    }
+}
+
 //Date to string and vice versa
 extension Date {
     func toFormatString(_ format:String) -> String {

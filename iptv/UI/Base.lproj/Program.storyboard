@@ -221,7 +221,7 @@
                                             </collectionViewCell>
                                         </cells>
                                     </collectionView>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yav-82-h7r" userLabel="FilterView">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yav-82-h7r" userLabel="FilterView" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
                                         <rect key="frame" x="10" y="10" width="1890" height="70"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="100" translatesAutoresizingMaskIntoConstraints="NO" id="uNM-Er-HnR">

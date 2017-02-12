@@ -62,7 +62,7 @@ struct Style {
         //style.elementBackgroungColor = UIColor.
         
         
-        style.panelBgColor = UIColor.lightGray.withAlphaComponent(0.5)
+        style.panelBgColor = UIColor.lightGray.withAlphaComponent(0.8)
         style.panelTextColor = UIColor(white: 0.1, alpha: 1.0)
         style.panelSelectedColor = UIColor.white
         

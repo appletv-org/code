@@ -21,12 +21,12 @@ class ChannelSettingReorderVC : BottomController {
     @IBAction func leftAction(_ sender: Any) {
         let _ = ChannelManager.reorderPath(channelSettingVC.currentPath, shift:-1)
         channelSettingVC.reloadPath(channelSettingVC.currentPath, isFocused:false)
-        channelSettingVC.channelPickerVC.centerElement(name, animated:true)
+        channelSettingVC.channelPickerVC.showAsSelectedElement(name, animated:false)
     }
     @IBAction func rightAction(_ sender: Any) {
         let _ = ChannelManager.reorderPath(channelSettingVC.currentPath, shift:1)
         channelSettingVC.reloadPath(channelSettingVC.currentPath, isFocused:false)
-        channelSettingVC.channelPickerVC.centerElement(name, animated:true)
+        channelSettingVC.channelPickerVC.showAsSelectedElement(name, animated:false)
     }
     
     func refresh() {

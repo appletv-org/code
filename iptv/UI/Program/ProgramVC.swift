@@ -111,7 +111,7 @@ class ProgramVCProgramCollection : FocusedCollectionView {
 
 }
 
-extension ProgramVCProgramCollection : UICollectionViewDataSource {
+extension ProgramVCProgramCollection : UICollectionViewDataSource, UICollectionViewDelegate {
     
     
 
@@ -152,8 +152,22 @@ extension ProgramVCProgramCollection : UICollectionViewDataSource {
 
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     
-
+        let index = IndexPathToIndex(indexPath)
+        if index < programs.count {
+        //print( "didSelectItemAt \(programs[index].title)")
+            if  let channelName = programs[index].channel?.name,
+                let startTime = programs[index].start as? Date
+            {
+                let programDescriptionVC = ProgramDescriptionVC.loadFromIB()
+                programDescriptionVC.channelName = channelName
+                programDescriptionVC.startTime = startTime
+                programVC.present(programDescriptionVC, animated: true, completion: nil)
+            }
+        }
+    }
+    
 }
 
 
@@ -391,6 +405,7 @@ class ProgramVC : FocusedViewController {
         
         programCollectionView.programVC = self
         programCollectionView.dataSource = programCollectionView
+        programCollectionView.delegate = programCollectionView
         
         self.viewToFocus = channelCollectionView
         

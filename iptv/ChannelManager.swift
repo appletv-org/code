@@ -779,6 +779,7 @@ class ChannelManager {
             if !isPublic {
                 let url = NSURL(string: url)
                 logUrl = url?.host ?? "undefine"
+                logUrl += "/..."
             }
             Analytics.logCountry("addChannel", params:["url":logUrl, "name":name])
             
