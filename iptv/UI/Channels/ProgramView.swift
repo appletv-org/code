@@ -59,8 +59,8 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         
         let indNow = findIndexNow()
         if let index = indNow.index {
-            programCollectionView.showElement(IndexPath(row:index, section:0), animated: false)
-            //programCollectionView.scrollToItem(at: IndexPath(row:index, section:0), at: .left, animated: false)
+            //programCollectionView.showElement(IndexPath(row:index, section:0), animated: false)
+            programCollectionView.scrollToItem(at: IndexPath(row:index, section:0), at: .left, animated: false)
             programCollectionView.focusedIndex = IndexPath(row:index, section:0)
         }
         labelDayUpdate()

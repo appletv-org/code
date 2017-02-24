@@ -926,7 +926,9 @@ class ChannelManager {
         }
         
         //check copy/move reserved group
-        if let _ = ChannelManager.reservedNames.index(of:pathElements.groups!.last!.name) {
+        if let _ = ChannelManager.reservedNames.index(of:pathElements.groups!.last!.name),
+            pathElements.channel == nil
+        {
             return Err("You can't copy/move reserved group:\"\(pathElements.groups!.last!.name)\"")
         }
         

@@ -107,7 +107,7 @@ class ProgramManager : NSObject {
     static let userInfoProvider = "provider"
     static let errorMsg = "errorMsg"
     
-    let serialQueue = DispatchQueue(label: "ProgramManagerQueue", qos: .utility)
+    let serialQueue = DispatchQueue(label: "ProgramManagerQueue", qos: .background)
     
     var iconCache =  NSCache<NSString,NSData>()
     
@@ -529,6 +529,8 @@ extension ProgramManager { //upload data (programs, icons) by url
             timerUpdate!.invalidate()
             timerUpdate =  nil
         }
+        
+        
         
         for provider in epgProviders {
             
