@@ -37,7 +37,7 @@ class InAppProduct {
     fileprivate var startTryDate: Date?
     
     #if DEBUG
-        fileprivate var expireTime  = TimeInterval(1*60) 
+        fileprivate var expireTime  = TimeInterval(24*60*60) 
     #else
         fileprivate var expireTime  = TimeInterval(24*60*60)
     #endif
