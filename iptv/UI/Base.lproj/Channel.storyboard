@@ -13,16 +13,16 @@
         <!--ChannelsVC-->
         <scene sceneID="hNz-n2-bh7">
             <objects>
-                <viewController id="9pv-A4-QxB" customClass="ChannelsVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="9pv-A4-QxB" customClass="ChannelsVC" customModule="tvorg" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ia1-K6-d13"/>
                         <viewControllerLayoutGuide type="bottom" id="4ug-Mw-9AY"/>
                     </layoutGuides>
-                    <view key="view" tag="1" contentMode="scaleToFill" id="tsR-hK-woN" customClass="ControllerView" customModule="iptv" customModuleProvider="target">
+                    <view key="view" tag="1" contentMode="scaleToFill" id="tsR-hK-woN" customClass="ControllerView" customModule="tvorg" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view tag="1000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iSw-KR-nIT" userLabel="PlayerView" customClass="PlayerView" customModule="iptv" customModuleProvider="target">
+                            <view tag="1000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iSw-KR-nIT" userLabel="PlayerView" customClass="PlayerView" customModule="tvorg" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
@@ -68,24 +68,24 @@
                                     <constraint firstItem="GiA-m6-nZs" firstAttribute="top" secondItem="bXf-LD-fqb" secondAttribute="bottom" constant="81" id="uK8-W8-gEV"/>
                                 </constraints>
                             </view>
-                            <view tag="3000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zza-hi-pPi" userLabel="LeftRightProgramView" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
+                            <view tag="3000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zza-hi-pPi" userLabel="LeftRightProgramView" customClass="ContainerFocused" customModule="tvorg" customModuleProvider="target">
                                 <rect key="frame" x="20" y="145" width="1880" height="10"/>
                                 <subviews>
-                                    <view tag="3001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M7h-jm-Z03" customClass="FocusedView" customModule="iptv" customModuleProvider="target">
+                                    <view tag="3001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M7h-jm-Z03" customClass="FocusedView" customModule="tvorg" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="300" height="10"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="300" id="hPs-Tg-bFf"/>
                                         </constraints>
                                     </view>
-                                    <view tag="3002" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CiL-gy-7Xn" customClass="FocusedView" customModule="iptv" customModuleProvider="target">
+                                    <view tag="3002" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CiL-gy-7Xn" customClass="FocusedView" customModule="tvorg" customModuleProvider="target">
                                         <rect key="frame" x="305" y="0.0" width="50" height="10"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="50" id="tPe-a6-sJf"/>
                                         </constraints>
                                     </view>
-                                    <view tag="3003" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Suh-K9-7f5" customClass="FocusedView" customModule="iptv" customModuleProvider="target">
+                                    <view tag="3003" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Suh-K9-7f5" customClass="FocusedView" customModule="tvorg" customModuleProvider="target">
                                         <rect key="frame" x="1870" y="0.0" width="10" height="10"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </view>
@@ -108,7 +108,7 @@
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aqb-82-bUJ">
                                 <rect key="frame" x="0.0" y="320" width="1920" height="440"/>
                                 <subviews>
-                                    <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yjf-rr-Km9" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
+                                    <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yjf-rr-Km9" customClass="ContainerFocused" customModule="tvorg" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="1920" height="90"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tv3-1U-2eW">
@@ -131,7 +131,7 @@
                                             <constraint firstAttribute="height" constant="90" id="imo-oK-RfA"/>
                                         </constraints>
                                     </view>
-                                    <view tag="4000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gLE-1w-Dez" userLabel="ChannelPickerView" customClass="PanelView" customModule="iptv" customModuleProvider="target">
+                                    <view tag="4000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gLE-1w-Dez" userLabel="ChannelPickerView" customClass="PanelView" customModule="tvorg" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="90" width="1920" height="350"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -153,13 +153,13 @@
                             <view tag="5000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RWR-bB-oOm">
                                 <rect key="frame" x="0.0" y="760" width="1920" height="320"/>
                                 <subviews>
-                                    <view tag="5100" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kU9-vR-XXj" userLabel="ProgramView" customClass="ProgramView" customModule="iptv" customModuleProvider="target">
+                                    <view tag="5100" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kU9-vR-XXj" userLabel="ProgramView" customClass="ProgramView" customModule="tvorg" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="1420" height="320"/>
                                         <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YfP-E9-gTo" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YfP-E9-gTo" customClass="ContainerFocused" customModule="tvorg" customModuleProvider="target">
                                                 <rect key="frame" x="8" y="0.0" width="1412" height="260"/>
                                                 <subviews>
-                                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" tag="5110" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="jjS-DO-Q2t" customClass="FocusedCollectionView" customModule="iptv" customModuleProvider="target">
+                                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" tag="5110" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="jjS-DO-Q2t" customClass="FocusedCollectionView" customModule="tvorg" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="0.0" width="1412" height="260"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="20" id="UDG-Dp-Bdd">
@@ -169,7 +169,7 @@
                                                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                         </collectionViewFlowLayout>
                                                         <cells>
-                                                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ProgramCell" id="UMm-Wh-jal" customClass="ProgramCollectionCell" customModule="iptv" customModuleProvider="target">
+                                                            <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ProgramCell" id="UMm-Wh-jal" customClass="ProgramCollectionCell" customModule="tvorg" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="20" width="676" height="220"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -237,7 +237,7 @@
                                                     <constraint firstItem="jjS-DO-Q2t" firstAttribute="leading" secondItem="YfP-E9-gTo" secondAttribute="leading" id="mVg-lt-dk1"/>
                                                 </constraints>
                                             </view>
-                                            <view tag="5120" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="06L-4x-Au1" userLabel="ButtonsView" customClass="ContainerFocused" customModule="iptv" customModuleProvider="target">
+                                            <view tag="5120" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="06L-4x-Au1" userLabel="ButtonsView" customClass="ContainerFocused" customModule="tvorg" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="260" width="1420" height="60"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AVs-EL-FQz">
@@ -284,7 +284,7 @@
                                             <constraint firstAttribute="bottom" secondItem="06L-4x-Au1" secondAttribute="bottom" id="ho9-Ax-yS8"/>
                                         </constraints>
                                     </view>
-                                    <view tag="5200" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jD7-7Z-omH" customClass="PipPlayer" customModule="iptv">
+                                    <view tag="5200" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jD7-7Z-omH" customClass="PipPlayer" customModule="tvorg">
                                         <rect key="frame" x="1420" y="0.0" width="500" height="320"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -359,7 +359,7 @@
         <!--PaymentVC-->
         <scene sceneID="JCo-E7-ZFa">
             <objects>
-                <viewController storyboardIdentifier="PIPPaymentVC" modalPresentationStyle="overCurrentContext" id="qwR-fg-6WS" customClass="PIPPaymentVC" customModule="iptv" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PIPPaymentVC" modalPresentationStyle="overCurrentContext" id="qwR-fg-6WS" customClass="PIPPaymentVC" customModule="tvorg" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="f1a-RG-9Fo"/>
                         <viewControllerLayoutGuide type="bottom" id="WoW-kM-7lq"/>

@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:iptv.xcodeproj">
+      location = "self:/Volumes/DataHD/Alex/development/iptv/iptv_appletv/iptv/tvorg.xcodeproj">
    </FileRef>
 </Workspace>

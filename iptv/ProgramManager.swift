@@ -998,7 +998,7 @@ class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
                     if lastChannel != nil && programsForLastChannel.count > 0 && delegate != nil {
                         delegate!.saveChannel(id: lastChannelId, channel: lastChannel!, programs:programsForLastChannel)
                         channelCounter += 1
-                        print("count channels: \(channels.count) channelCounter: \(channelCounter) name: \(lastChannel?.name) programs:\(programsForLastChannel.count)")
+                        //print("count channels: \(channels.count) channelCounter: \(channelCounter) name: \(lastChannel?.name) programs:\(programsForLastChannel.count)")
                     }
                     else {
                         print("not saved programs for channel: \(lastChannel?.name)")

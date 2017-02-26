@@ -144,7 +144,7 @@
 		FA6944E21D92B8D0005B854A /* CoreDataExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CoreDataExtension.swift; path = iptv/CoreDataExtension.swift; sourceTree = "<group>"; };
 		FA6ACE911E18066900658CAE /* ChannelSettingPreviewVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChannelSettingPreviewVC.swift; path = iptv/UI/Settings/ChannelSettingPreviewVC.swift; sourceTree = "<group>"; };
 		FA7589C91DD10DBF009D2327 /* EpgProviderEditVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EpgProviderEditVC.swift; path = iptv/UI/Settings/EpgProviderEditVC.swift; sourceTree = "<group>"; };
-		FA830D4F1D8C0C62000BD36E /* iptv.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iptv.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA830D4F1D8C0C62000BD36E /* tvorg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tvorg.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA830D6D1D8C1F53000BD36E /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = iptv/AppDelegate.swift; sourceTree = "<group>"; };
 		FA830D6E1D8C1F53000BD36E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = iptv/Assets.xcassets; sourceTree = "<group>"; };
 		FA830D6F1D8C1F53000BD36E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = iptv/Info.plist; sourceTree = "<group>"; };
@@ -319,7 +319,7 @@
 		FA830D501D8C0C62000BD36E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FA830D4F1D8C0C62000BD36E /* iptv.app */,
+				FA830D4F1D8C0C62000BD36E /* tvorg.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -427,9 +427,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FA830D4E1D8C0C62000BD36E /* iptv */ = {
+		FA830D4E1D8C0C62000BD36E /* tvorg */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FA830D601D8C0C63000BD36E /* Build configuration list for PBXNativeTarget "iptv" */;
+			buildConfigurationList = FA830D601D8C0C63000BD36E /* Build configuration list for PBXNativeTarget "tvorg" */;
 			buildPhases = (
 				FA830D4B1D8C0C62000BD36E /* Sources */,
 				FA830D4C1D8C0C62000BD36E /* Frameworks */,
@@ -439,9 +439,9 @@
 			);
 			dependencies = (
 			);
-			name = iptv;
+			name = tvorg;
 			productName = iptv;
-			productReference = FA830D4F1D8C0C62000BD36E /* iptv.app */;
+			productReference = FA830D4F1D8C0C62000BD36E /* tvorg.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -466,7 +466,7 @@
 					};
 				};
 			};
-			buildConfigurationList = FA830D4A1D8C0C62000BD36E /* Build configuration list for PBXProject "iptv" */;
+			buildConfigurationList = FA830D4A1D8C0C62000BD36E /* Build configuration list for PBXProject "tvorg" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -479,7 +479,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FA830D4E1D8C0C62000BD36E /* iptv */,
+				FA830D4E1D8C0C62000BD36E /* tvorg */,
 			);
 		};
 /* End PBXProject section */
@@ -739,7 +739,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FA830D4A1D8C0C62000BD36E /* Build configuration list for PBXProject "iptv" */ = {
+		FA830D4A1D8C0C62000BD36E /* Build configuration list for PBXProject "tvorg" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FA830D5E1D8C0C63000BD36E /* Debug */,
@@ -748,7 +748,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FA830D601D8C0C63000BD36E /* Build configuration list for PBXNativeTarget "iptv" */ = {
+		FA830D601D8C0C63000BD36E /* Build configuration list for PBXNativeTarget "tvorg" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FA830D611D8C0C63000BD36E /* Debug */,
