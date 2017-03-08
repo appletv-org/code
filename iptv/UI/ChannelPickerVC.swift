@@ -386,18 +386,17 @@ extension ChannelPickerVC : UICollectionViewDataSource, UICollectionViewDelegate
         }
         index -= groupInfo.groups.count
 
+
+        if index < groupInfo.channels.count {
+            cell.element = .channel(groupInfo.channels[index])
+        }
         
         if showHiddenGroup && groupInfo.remoteInfo != nil {
-            if index == 0 {
+            if index == groupInfo.channels.count {
                 let group = GroupInfo(name: ChannelManager.groupNameHidden)
                 cell.element = .group(group)
                 return cell
             }
-            index -= 1
-        }
-
-        if index < groupInfo.channels.count {
-            cell.element = .channel(groupInfo.channels[index])
         }
         
         return cell
@@ -427,22 +426,20 @@ extension ChannelPickerVC : UICollectionViewDataSource, UICollectionViewDelegate
         }
         index -= groupInfo.groups.count
         
-        if showHiddenGroup && groupInfo.remoteInfo != nil {
-            if index == 0 {
-                var newPath = path
-                newPath.append(ChannelManager.groupNameHidden)
-                setupPath(newPath, isParent: true)
-                return
-            }
-            index -= 1
-        }       
+
         
         if index >= 0 && index < groupInfo.channels.count {
             delegate?.selectedPath(chooseControl: self, path: path + [groupInfo.channels[index].name])
         }
         
-        //index -= groups.count
-        //cell.label.text = channels[index].name
+        if showHiddenGroup && groupInfo.remoteInfo != nil {
+            if index == groupInfo.channels.count {
+                var newPath = path
+                newPath.append(ChannelManager.groupNameHidden)
+                setupPath(newPath, isParent: true)
+                return
+            }
+        }
     }
     
     

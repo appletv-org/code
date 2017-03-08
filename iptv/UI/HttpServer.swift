@@ -28,15 +28,24 @@ class HttpServer: GCDWebServer {
 
 
         self.addHandler(forMethod: "POST", path: "/add_channel", request: GCDWebServerURLEncodedFormRequest.self, processBlock: { (request) -> GCDWebServerResponse? in
-            var ret = HttpServer.operationSuccess
+            var ret = HttpServer.operationFail
             if  let formRequest = request as? GCDWebServerURLEncodedFormRequest,
                 let name = formRequest.arguments["name"] as? String,
-                let url = formRequest.arguments["url"] as? String,
-                let isPublic = formRequest.arguments["public"] as? String
+                let url = formRequest.arguments["url"] as? String                
             {
-                let err = ChannelManager.addChannel([], name: name, url: url, isPublic: isPublic == "on")
+                var isPublic = false
+                if let publicArg = formRequest.arguments["public"] as? String,
+                    publicArg == "on"
+                {
+                    isPublic = true
+                }
+
+                let err = ChannelManager.addChannel([], name: name, url: url, isPublic: isPublic)
                 if err != nil {
                     ret = "\(HttpServer.operationFail): " + errMsg(err!)
+                }
+                else {
+                    ret = HttpServer.operationSuccess
                 }
                 
             }
@@ -44,15 +53,24 @@ class HttpServer: GCDWebServer {
         })
         
         self.addHandler(forMethod: "POST", path: "/add_remote_group", request: GCDWebServerURLEncodedFormRequest.self, processBlock: { (request) -> GCDWebServerResponse? in
-            var ret = HttpServer.operationSuccess
+            var ret = HttpServer.operationFail
             if  let formRequest = request as? GCDWebServerURLEncodedFormRequest,
                 let name = formRequest.arguments["name"] as? String,
-                let url = formRequest.arguments["url"] as? String,
-                let isPublic = formRequest.arguments["public"] as? String
+                let url = formRequest.arguments["url"] as? String
             {
-                let err = ChannelManager.addRemoteGroup([], name: name, url: url, isPublic: isPublic == "on")
+                var isPublic = false
+                if let publicArg = formRequest.arguments["public"] as? String,
+                    publicArg == "on"
+                {
+                    isPublic = true
+                }
+
+                let err = ChannelManager.addRemoteGroup([], name: name, url: url, isPublic: isPublic)
                 if err != nil {
                     ret = "\(HttpServer.operationFail): " + errMsg(err!)
+                }
+                else {
+                    ret = HttpServer.operationSuccess
                 }
                 
             }

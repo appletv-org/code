@@ -500,18 +500,26 @@ class ChannelManager {
     }
 
     
-    class func save() {
+    class func saveWithTimer(_ timeInterval:TimeInterval = 2.0) {
         let man = ChannelManager.instance
         if man.saveTimer != nil {
+            print("invalidate prev timer \(man.saveTimer?.isValid) firedata: \(man.saveTimer?.fireDate)" )
             man.saveTimer!.invalidate()
+            man.saveTimer = nil
         }
-        man.saveTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false, block: { (timer) in
-            let data = NSKeyedArchiver.archivedData(withRootObject: ChannelManager.root)
-            UserDefaults.standard.set(data, forKey: ChannelManager.userDefaultKey)
-            print("saved channels")
+        man.saveTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false, block: { (timer) in
+            ChannelManager.save()
+            man.saveTimer!.invalidate()
             man.saveTimer = nil
         })
     }
+    
+    
+    class func save() {
+        let data = NSKeyedArchiver.archivedData(withRootObject: ChannelManager.root)
+        UserDefaults.standard.set(data, forKey: ChannelManager.userDefaultKey)
+    }
+ 
     
 
     class func delPathElement(_ path: [String]) -> Error? {
@@ -564,7 +572,7 @@ class ChannelManager {
             
             if let index = parentGroup.channels.index(where: {$0.name == path.last})  {
                 parentGroup.channels.remove(at: index)
-                ChannelManager.save()
+                ChannelManager.saveWithTimer()
                 return nil
             }
         }
@@ -583,7 +591,7 @@ class ChannelManager {
             
             if let index = parentGroup.groups.index(where: {$0.name == path.last})  {
                 parentGroup.groups.remove(at: index)
-                ChannelManager.save()
+                ChannelManager.saveWithTimer()
                 return nil
             }
         }
@@ -696,7 +704,7 @@ class ChannelManager {
             channel.name = newName
             channel.url = newUrl
             
-            ChannelManager.save()
+            ChannelManager.saveWithTimer()
             return nil
             
         }
@@ -724,7 +732,7 @@ class ChannelManager {
                 return err
             }
             group.name = newName
-            ChannelManager.save()
+            ChannelManager.saveWithTimer()
             return nil
             
         }
@@ -857,7 +865,7 @@ class ChannelManager {
                 if ind != newInd {
                     group.channels.remove(at: ind)
                     group.channels.insert(pathElements.channel!, at:newInd)
-                    ChannelManager.save()
+                    ChannelManager.saveWithTimer()
                 }
             }
         }
@@ -878,7 +886,7 @@ class ChannelManager {
                     if ind != newInd {
                         group.groups.remove(at: ind)
                         group.groups.insert(movingGroup, at:newInd)
-                        ChannelManager.save()
+                        ChannelManager.saveWithTimer()
                     }
                 }
 
@@ -1009,7 +1017,7 @@ class ChannelManager {
                 
             }
         }
-        ChannelManager.save()
+        ChannelManager.saveWithTimer()
         
         return nil
     }
@@ -1045,7 +1053,7 @@ class ChannelManager {
                 }
             }
         }
-        ChannelManager.save()
+        ChannelManager.saveWithTimer()
         
         return nil
     }
