@@ -109,6 +109,7 @@ class ChannelsVC : FocusedViewController {
     //constrain for show/hide program/channel
     @IBOutlet weak var programViewBottomConstraint: NSLayoutConstraint!
 
+    @IBOutlet weak var actionPanelView: ContainerFocused!
     //pipView
     @IBOutlet weak var pipPlayer: PipPlayer!
     
@@ -413,7 +414,23 @@ class ChannelsVC : FocusedViewController {
             }
         }
          */
-
+        
+        /*
+        change panel background color focused Style.current?.panelFocusedBgColor
+                                        /unfocused Style.current?.panelBgColor
+        */
+        
+        for view in [self.pauseProgramCollectionView, self.channelPickerView, self.actionPanelView] as [UIView]
+        {
+            let changeFocus = view.focusedChange(context)
+            if changeFocus == .focused {
+                view.backgroundColor = Style.current?.panelFocusedBgColor
+            }
+            else if changeFocus == UIView.FocusedChangeState.unFocused {
+                view.backgroundColor = Style.current?.panelBgColor
+            }
+        }
+        
         
         /*
         //print debug focused view

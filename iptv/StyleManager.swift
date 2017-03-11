@@ -42,6 +42,7 @@ struct Style {
     
     //panel control
     var panelBgColor : UIColor?
+    var panelFocusedBgColor : UIColor?
     var panelTextColor : UIColor?
     var panelSelectedColor : UIColor?
 
@@ -63,6 +64,7 @@ struct Style {
         
         
         style.panelBgColor = UIColor.lightGray.withAlphaComponent(0.8)
+        style.panelFocusedBgColor = UIColor.darkGray.withAlphaComponent(0.8)
         style.panelTextColor = UIColor(white: 0.1, alpha: 1.0)
         style.panelSelectedColor = UIColor.white
         

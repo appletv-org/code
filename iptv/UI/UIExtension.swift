@@ -86,6 +86,30 @@ extension UIView {
             print("setSureHidden::attempts:\(attempts)")
         }
     }
+    
+    //focused/unfocused
+    
+    enum FocusedChangeState {
+        case focused, unFocused, noChange
+    }
+
+    func focusedChange(_ context:UIFocusUpdateContext) -> FocusedChangeState {
+        if  let prevView = context.nextFocusedView,
+            let nextView = context.previouslyFocusedView
+        {
+            
+            let isPrev = prevView.isDescendant(of: self)
+            let isNext = nextView.isDescendant(of: self)
+            
+            if(isNext && !isPrev) {
+                return FocusedChangeState.focused;
+            }
+            if(!isNext && isPrev) {
+                return FocusedChangeState.unFocused;
+            }
+        }
+        return FocusedChangeState.noChange;
+    }
 
 }
 

@@ -330,6 +330,7 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="actionButtons" destination="Mlt-XR-fcn" id="lBJ-9T-bF5"/>
+                        <outlet property="actionPanelView" destination="06L-4x-Au1" id="yng-sE-ZTW"/>
                         <outlet property="buttonChannelClose" destination="Tv3-1U-2eW" id="LcV-bY-Bpd"/>
                         <outlet property="changeProgramView" destination="Zza-hi-pPi" id="FlJ-xv-4Aw"/>
                         <outlet property="channelChooserContainer" destination="aqb-82-bUJ" id="piE-ug-PJJ"/>
