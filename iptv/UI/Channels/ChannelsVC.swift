@@ -11,14 +11,14 @@ import AVKit
 
 
 
-class PipPlayer : PlayerView {
+class PipPlayer : VlcPlayerView {
    
     var path : [String]?
     
     func setup() {
         self.backgroundColor = UIColor.black
         self.fillMode = .resize
-        self.player?.isMuted = true
+        self.isMute = true
         
         
     }
@@ -32,7 +32,7 @@ class PipPlayer : PlayerView {
                 if case let .channel(channelInfo) = dirElement {
                     self.url = URL(string:channelInfo.url)
                     self.play()
-                    self.player?.volume = 0.0
+                    self.isMute = true
                 }
             }
         }
@@ -75,7 +75,7 @@ class ChannelsVC : FocusedViewController {
     var isFirstAppear = true //not update program in first appear
     
  
-    @IBOutlet weak var mainPlayer: PlayerView!
+    @IBOutlet weak var mainPlayer: VlcPlayerView!   //PlayerView!
 
     //choose channel view contor
     @IBOutlet weak var channelChooserContainer: UIView!
@@ -172,9 +172,11 @@ class ChannelsVC : FocusedViewController {
         
         mainPlayer.layer.borderWidth = 10
         mainPlayer.layer.borderColor = UIColor.clear.cgColor
+        mainPlayer.name = "main"
         
         //pipPlayer
         pipPlayer.setup()
+        pipPlayer.name = "pip"
         //pipPlayer.delegate = self
         
         
@@ -580,13 +582,13 @@ extension ChannelsVC: PlayerViewDelegate {
     
     
     //playerView Delegate
-    func playerVideo(player: PlayerView, statusItemPlayer: PVItemStatus, error: Error?) {
+    func playerVideo(player: VlcPlayerView, statusItemPlayer: PVItemStatus, error: Error?) {
         
         if(error != nil) {
             //loading channel
             loadingErrorLabel.isHidden = false
             loadingActivity.isHidden = true
-            print("AVPlayerItemStatus error: \(error)")
+            print("AVPlayerItemStatus error: \(String(describing: error))")
             return
         }
         
@@ -606,7 +608,7 @@ extension ChannelsVC: PlayerViewDelegate {
     }
     
     
-    func playerVideo(player: PlayerView, statusPlayer: PVStatus, error: Error?) {
+    func playerVideo(player: VlcPlayerView, statusPlayer: PVStatus, error: Error?) {
         print("playerVideo")
     }
     
@@ -710,8 +712,13 @@ extension ChannelsVC { //replace pip and main view
             groupInfo =  findGroupInfo
             parentPath = mainPath
             currentChannelIndex = index
+            
+            pipPlayer.stopPlayer()
             play(groupInfo.channels[currentChannelIndex])
-            pipPlayer.play(pipPath)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                self.pipPlayer.play(pipPath)
+            }
+            
         }
     }
 

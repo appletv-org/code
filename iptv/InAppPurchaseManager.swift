@@ -51,7 +51,7 @@ class InAppProduct {
     
     var skProduct : SKProduct? {
         didSet {
-            print("set skProduct \(skProduct?.price)")
+            print("set skProduct \(String(describing: skProduct?.price))")
         }
     }
     

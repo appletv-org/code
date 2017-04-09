@@ -6,6 +6,7 @@
 //  Copyright © 2016 David Alejandro. All rights reserved.
 //
 
+/*
 import UIKit
 import AVFoundation.AVPlayer
 
@@ -203,7 +204,7 @@ public class PlayerView: UIView {
             avPlayer.removeTimeObserver(timeObserverToken)
         }
     }
-    func addObserversVideoItem(playerItem: PVPlayerItem) {
+    func                                                   (playerItem: PVPlayerItem) {
         playerItem.addObserver(self, forKeyPath: "loadedTimeRanges", options: [], context: &loadedContext)
         playerItem.addObserver(self, forKeyPath: "duration", options: [], context: &durationContext)
         playerItem.addObserver(self, forKeyPath: "status", options: [], context: &statusItemContext)
@@ -507,3 +508,5 @@ public class PlayerView: UIView {
         }
     }
 }
+ 
+*/

@@ -168,8 +168,8 @@ class ProgramManager : NSObject {
     
     //start & stop time with timeshift
     func _startStopTime(_ program:EpgProgram) -> (start:Date?, stop:Date?) {
-        var start = program.start as? Date
-        var stop = program.stop as? Date
+        var start = program.start as Date?
+        var stop = program.stop as Date?
         guard   let dbProvider = program.channel?.provider,
                 let provider = getProvider(dbProvider.name!),
                 provider.shiftTime != 0
@@ -268,7 +268,7 @@ class ProgramManager : NSObject {
             }
             
             let filterPrograms = programs.filter {
-                ($0.stop as! Date) > fromDate && ($0.start as! Date) <= toDate
+                ($0.stop! as Date) > fromDate && ($0.start! as Date) <= toDate
             }
             programs = filterPrograms
         }
@@ -564,7 +564,7 @@ extension ProgramManager { //upload data (programs, icons) by url
             }
             
             if      let dbProvider = getDbProvider(provider.name),
-                    let lastUpdate = dbProvider.lastUpdate as? Date,
+                    let lastUpdate = dbProvider.lastUpdate as Date?,
                     lastUpdate > prevUpdateDate
             {
                continue
@@ -777,11 +777,11 @@ extension ProgramManager { //upload data (programs, icons) by url
                     name = name!.lowercased()
                 }
                 if(id == nil || name == nil) {
-                    print("channel have not required fields: id \(id) or name \(name)")
+                    print("channel have not required fields: id \(String(describing: id)) or name \(String(describing: name))")
                     continue
                 }
                 
-                var channel = ParserChannel(name!)
+                let channel = ParserChannel(name!)
                 if let icon = child["icon"].attributes["src"] {
                     channel.icon = icon
                 }
@@ -795,13 +795,13 @@ extension ProgramManager { //upload data (programs, icons) by url
                 
                 
                 if(id == nil || start == nil || stop == nil || title == nil) {
-                    print("programme have not required fields: id \(id) or start \(start) or stop \(stop) or title \(title)")
+                    print("programme have not required fields: id \(String(describing: id)) or start \(String(describing: start)) or stop \(String(describing: stop)) or title \(String(describing: title))")
                     continue
                 }
                 
                 let channel = channels[id!]
                 if(channel == nil) {
-                    print("channel id  \(id) not exist for programme")
+                    print("channel id  \(String(describing: id)) not exist for programme")
                     continue
                 }
                 
@@ -811,11 +811,11 @@ extension ProgramManager { //upload data (programs, icons) by url
                 let startDate = formatter.date(from: start!)
                 let stopDate = formatter.date(from: stop!)
                 if(startDate == nil || stopDate == nil) {
-                    print("cann't parse data \(start) or \(stop)")
+                    print("cann't parse data \(String(describing: start)) or \(String(describing: stop))")
                     continue
                 }
                 
-                var program = ParserProgram(title:title!, start:startDate!, stop:stopDate!)
+                let program = ParserProgram(title:title!, start:startDate!, stop:stopDate!)
                 
                 if let category = child["category"].value {
                     program.category = category
@@ -988,7 +988,7 @@ class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
                 channelId = nil
             }
             else {
-                print("cann't parse channel: \(currentChannel?.name) \(channelId)")
+                print("cann't parse channel: \(String(describing: currentChannel?.name)) \(String(describing: channelId))")
             }
     
         case "programme":
@@ -1001,7 +1001,7 @@ class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
                         //print("count channels: \(channels.count) channelCounter: \(channelCounter) name: \(lastChannel?.name) programs:\(programsForLastChannel.count)")
                     }
                     else {
-                        print("not saved programs for channel: \(lastChannel?.name)")
+                        print("not saved programs for channel: \(String(describing: lastChannel?.name))")
                     }
                     
                     lastChannelId = channelId!
@@ -1013,11 +1013,11 @@ class EpgxmlToParseChannels : NSObject, XMLParserDelegate {
                     programsForLastChannel.append(currentProgram!)
                 }
                 else {
-                     print("not found channel for program: \(currentProgram?.title) \(channelId)")
+                     print("not found channel for program: \(String(describing: currentProgram?.title)) \(String(describing: channelId))")
                 }
             }
             else {
-                print("cann't parse program: \(currentProgram?.title) \(channelId)")
+                print("cann't parse program: \(String(describing: currentProgram?.title)) \(String(describing: channelId))")
             }
             currentProgram = nil
             channelId = nil

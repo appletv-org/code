@@ -12,12 +12,17 @@ import AVKit
 class ChannelSettingPreviewVC : BottomController {
     
     
-    @IBOutlet weak var playerView: PlayerView!
+    @IBOutlet weak var playerView: VlcPlayerView!
     @IBOutlet weak var videoSizeLabel: UILabel!
     
     
     override func viewDidLoad() {
         playerView.delegate = self
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        playerView.stopPlayer()
     }
     
     func refresh() {
@@ -28,21 +33,22 @@ class ChannelSettingPreviewVC : BottomController {
             playerView.resetPlayer()
             playerView.url = URL(string:channel.url)
             playerView.play()
-            playerView.player?.volume = 0.0
+            playerView.isMute = true
+            playerView.name = "preview"
         }
         else {
             playerView.resetPlayer()
         }
-        
-        
     }
+    
+    
     
 }
 
 extension ChannelSettingPreviewVC : PlayerViewDelegate {
     
     //playerView Delegate
-    func playerVideo(player: PlayerView, statusItemPlayer: PVItemStatus, error: Error?) {
+    func playerVideo(player: VlcPlayerView, statusItemPlayer: PVItemStatus, error: Error?) {
         
         
         if(error != nil) {
@@ -50,20 +56,11 @@ extension ChannelSettingPreviewVC : PlayerViewDelegate {
         }
         
         if statusItemPlayer == .readyToPlay {
+            /*
             if let size = playerView.player?.items()[0].presentationSize {
                 videoSizeLabel.text = "\(Int(size.width)) x \(Int(size.height))"
-                
-                /*
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                    if let events = player.player?.items()[0].accessLog()?.events {
-                        print ("events.count \(events.count)")
-                        print ("audiobitrate \(events.last?.averageAudioBitrate)")
-                        print ("videobitrate \(events.last?.averageAudioBitrate)")
-                    }
-                })
-                 */
-
             }
+            */
             
         }
         

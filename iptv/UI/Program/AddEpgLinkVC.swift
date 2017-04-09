@@ -80,10 +80,10 @@ extension AddEpgLinkVC : UITableViewDataSource, UITableViewDelegate {
                 cell.epgChannelNameLabel.text = epgChannelName
                 if let epgProgram = epgPrograms[epgChannelName] {
                     var text = ""
-                    if let startDate = epgProgram.start as? Date {
+                    if let startDate = epgProgram.start as Date? {
                         text += startDate.toFormatString("HH:mm ")
                     }
-                    if let finishDate = epgProgram.stop as? Date {
+                    if let finishDate = epgProgram.stop as Date? {
                         text += finishDate.toFormatString("- HH:mm ")
                     }
                     if let title = epgProgram.title {

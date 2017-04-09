@@ -503,7 +503,7 @@ class ChannelManager {
     class func saveWithTimer(_ timeInterval:TimeInterval = 2.0) {
         let man = ChannelManager.instance
         if man.saveTimer != nil {
-            print("invalidate prev timer \(man.saveTimer?.isValid) firedata: \(man.saveTimer?.fireDate)" )
+            print("invalidate prev timer \(String(describing: man.saveTimer?.isValid)) firedata: \(String(describing: man.saveTimer?.fireDate))" )
             man.saveTimer!.invalidate()
             man.saveTimer = nil
         }
@@ -916,7 +916,7 @@ class ChannelManager {
         
         //check duplicate name
         let sourceName = pathElements.channel != nil ? pathElements.channel!.name : pathElements.groups!.last!.name
-        if let dirElement = pathToElements.groups!.last!.findDirElement(sourceName) {
+        if pathToElements.groups!.last!.findDirElement(sourceName) != nil {
             return Err("Group has item with the same name")
         }
         

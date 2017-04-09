@@ -65,10 +65,10 @@ class ProgramDescriptionVC : FocusedViewController {
                 
                 // time and title
                 text = ""
-                if let startDate = program.start as? Date {
+                if let startDate = program.start as Date? {
                     text += startDate.toFormatString("HH:mm")
                 }
-                if let stopDate = program.stop as? Date {
+                if let stopDate = program.stop as Date? {
                     text += " - " + stopDate.toFormatString("HH:mm")
                 }
 

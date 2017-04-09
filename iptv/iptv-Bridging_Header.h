@@ -16,6 +16,7 @@
 #import "GCDWebServerMultiPartFormRequest.h"
 #import "GCDWebServerURLEncodedFormRequest.h"
 
+#import "TVVLCKit.h"
 
 #import <CommonCrypto/CommonCrypto.h>
 

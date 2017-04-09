@@ -50,7 +50,7 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         //sort programs
         programs.sort(by: { $0.start!.timeIntervalSince1970 < $1.start!.timeIntervalSince1970 })
         
-        print("programs.count= \(programs.count) programs[0] = \(programs.count == 0 ? "nil" : programs[0].title)")
+        print("programs.count= \(programs.count) programs[0] = \(String(describing: programs.count == 0 ? "nil" : programs[0].title))")
         
         print("ChannelVC::play for channel:\(channel.name) find programs:\(programs.count)" )
         //programCollectionView.reloadData()
@@ -170,7 +170,7 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         if index < programs.count {
             //print( "didSelectItemAt \(programs[index].title)")
             if let channelName = channel?.name,
-               let startTime = programs[index].start as? Date
+               let startTime = programs[index].start as Date?
             {
                 let programDescriptionVC = ProgramDescriptionVC.loadFromIB()
                 programDescriptionVC.channelName = channelName
@@ -197,7 +197,7 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         {
             let program = programs[indexPath.row]
             //print( "didUpdateFocusIn \(programs[indexPath.row].title)")
-            labelDayUpdate(program.start as? Date)
+            labelDayUpdate(program.start as Date?)
         }
     
         

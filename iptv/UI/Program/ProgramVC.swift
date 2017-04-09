@@ -28,7 +28,7 @@ class ProgramVCProgramCell : UICollectionViewCell {
                 text +=  (program!.title ?? "") + "\n" + (program!.desc ?? "")
                 label.text = text
                 
-                if( (program!.start as! Date) < Date() &&  (program!.stop as! Date) > Date() ) {
+                if( (program!.start! as Date) < Date() &&  (program!.stop! as Date) > Date() ) {
                     //label.textColor = UIColor.red
                     label.font = label.font.bold()
                 }
@@ -87,7 +87,7 @@ class ProgramVCProgramCollection : FocusedCollectionView {
             self.reloadData()
             
             //set focused index
-            if let index = programs.index( where: {($0.start as! Date) < Date() &&  ($0.stop as! Date) > Date()} ) {
+            if let index = programs.index( where: {($0.start! as Date) < Date() &&  ($0.stop! as Date) > Date()} ) {
                 self.focusedIndex = indexToIndexPath(index)
             }
             
@@ -158,7 +158,7 @@ extension ProgramVCProgramCollection : UICollectionViewDataSource, UICollectionV
         if index < programs.count {
         //print( "didSelectItemAt \(programs[index].title)")
             if  let channelName = programs[index].channel?.name,
-                let startTime = programs[index].start as? Date
+                let startTime = programs[index].start as Date?
             {
                 let programDescriptionVC = ProgramDescriptionVC.loadFromIB()
                 programDescriptionVC.channelName = channelName

@@ -140,12 +140,12 @@ extension EpgProvidersVC: UITableViewDataSource {
                 
                 if let dbProvider = ProgramManager.instance.getDbProvider(provider.name) {
                     
-                    if let lastUpdate = dbProvider.lastUpdate as? Date {
+                    if (dbProvider.lastUpdate as Date?) != nil {
                        
                     }
                     cell.channels.text = String(dbProvider.channelCount)
-                    if let startDate = dbProvider.startDate as? Date,
-                       let finishDate = dbProvider.finishDate as? Date {
+                    if let startDate = dbProvider.startDate as Date?,
+                       let finishDate = dbProvider.finishDate as Date? {
                         cell.dateInterval.text = startDate.toFormatString("dd.MM HH:mm") + " - " + finishDate.toFormatString("dd.MM HH:mm")
                     }
                     
@@ -159,7 +159,7 @@ extension EpgProvidersVC: UITableViewDataSource {
                         if dbProvider.error != nil && !dbProvider.error!.isEmpty {
                            statusText = dbProvider.error!
                         }
-                        else if let updateDate = dbProvider.lastUpdate as? Date {
+                        else if let updateDate = dbProvider.lastUpdate as Date? {
                            statusText = "updated " + updateDate.toFormatString("dd.MM HH:mm")
                         }
                     }
