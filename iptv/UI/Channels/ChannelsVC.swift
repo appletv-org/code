@@ -22,7 +22,7 @@ class CommonPlayer: UIView, PlayerViewDelegate {
             playerView!.reset()
         }
         
-        if(url.pathExtension == "m3u8" && (url.scheme == "http" || url.scheme == "https")) {
+        if(!OtherSettings.preferVLC && url.pathExtension == "m3u8" && (url.scheme == "http" || url.scheme == "https")) {
             if(playerView == nil || playerView as? VlcPlayerView != nil) {
                 self.setPlayer(ApplePlayerView())
             }
@@ -64,25 +64,28 @@ class CommonPlayer: UIView, PlayerViewDelegate {
 
 
 class PipPlayer : CommonPlayer {
-   
+    
     var path : [String]?
     
-    func play(_ path: [String]?) {
-        
-        self.path = path
+    func play(path: [String]?) {
         
         if path != nil,
-           let dirElement = ChannelManager.findDirElement(path!),
-           case let .channel(channelInfo) = dirElement
+            let dirElement = ChannelManager.findDirElement(path!),
+            case let .channel(channelInfo) = dirElement
         {
+            self.path = path
             self.play(url:URL(string:channelInfo.url)!)
-            self.playerView!.isMute = true
+        }
+        if let playerView = self.playerView {
+            playerView.isMute = true
         }
     }
     
     override func setPlayer(_ playerView: PlayerView) {
+        playerView.name = "pip"
         playerView.isMute = true
         super.setPlayer(playerView)
+        
     }
     
     override func setup() {
@@ -103,8 +106,10 @@ class MainPlayer : CommonPlayer {
     }
 
     override func setPlayer(_ playerView: PlayerView) {
+        playerView.name = "main"
         playerView.isMute = false
         super.setPlayer(playerView)
+        
     }
     
     
@@ -704,7 +709,7 @@ extension ChannelsVC { //pip show/hide
         isPipView = isShow
         
         if(isShow) {
-            pipPlayer.play(self.currentChannelPath)
+            pipPlayer.play(path:self.currentChannelPath)
         }
         else {
             pipPlayer.playerView?.reset()
@@ -754,37 +759,28 @@ extension ChannelsVC { //replace pip and main view
         }
         
         //change paths pip and main
-        /*
-        if          var mainPath = pipPlayer.path,
-                    let findGroupInfo = ChannelManager.findParentGroup(mainPath),
-                    let name = mainPath.popLast(),
-                    let index = findGroupInfo.channels.index(where: {$0.name == name}),
-                    let pipPath = currentChannelPath {
-            groupInfo =  findGroupInfo
-            parentPath = mainPath
-            currentChannelIndex = index
-            
-            pipPlayer.playerView?.stop()
-            play(groupInfo.channels[currentChannelIndex])
-            self.pipPlayer.play(pipPath)
-            
-        }
-        */
-        if      var mainPath = pipPlayer.path,
-                let findGroupInfo = ChannelManager.findParentGroup(mainPath),
-                let name = mainPath.popLast(),
-                let index = findGroupInfo.channels.index(where: {$0.name == name}),
-                let pipPath = currentChannelPath {
-            groupInfo =  findGroupInfo
-            parentPath = mainPath
-            currentChannelIndex = index
-
-            let mainPlayerView = mainPlayer.playerView!;
+        if  var mainPath = pipPlayer.path,
+            let findGroupInfo = ChannelManager.findParentGroup(mainPath),
+            let name = mainPath.popLast(),
+            let index = findGroupInfo.channels.index(where: {$0.name == name})
+        {
+            let mainPlayerView = mainPlayer.playerView!
             let pipPlayerView = pipPlayer.playerView!
-            pipPlayerView.isMute = false;
-            mainPlayerView.isMute = true;
+            pipPlayerView.isMute = false
+            mainPlayerView.isMute = true
+
             pipPlayer.setPlayer(mainPlayerView)
-            mainPlayer.setPlayer(pipPlayerView);
+            pipPlayer.path = currentChannelPath
+
+            groupInfo =  findGroupInfo
+            parentPath = mainPath
+            currentChannelIndex = index
+            
+            mainPlayer.setPlayer(pipPlayerView)
+            let channel = groupInfo.channels[currentChannelIndex]
+            let favImage = ChannelManager.favoriteIndex(channel) != nil ? imageFavoriteOn : imageFavoriteOff
+            actionButtons.setImage(favImage, forSegmentAt: 0)
+            _ = programView.update(channel)
 
         }
 

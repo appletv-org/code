@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.AppleTV.Storyboard" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="AppleTV" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vnk-yl-iYP">
+<document type="com.apple.InterfaceBuilder.AppleTV.Storyboard" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="AppleTV" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vnk-yl-iYP">
     <device id="appleTV" orientation="landscape">
         <adaptation id="light"/>
     </device>
     <dependencies>
         <deployment identifier="tvOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -16,6 +16,7 @@
         <!--Settings-->
         <scene sceneID="9cO-bi-9Zb">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NS4-AT-WYg" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController title="Settings" id="vnk-yl-iYP" customClass="SettingsVC" customModule="tvorg" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="LG7-18-Bo4"/>
@@ -71,6 +72,26 @@
                                             <segue destination="i2x-00-X4t" kind="show" id="h6P-pO-ltK"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="SetupCell2" textLabel="ubF-0J-dTJ" style="IBUITableViewCellStyleDefault" id="8RL-p3-w7H" userLabel="SetupCell2">
+                                        <rect key="frame" x="0.0" y="226" width="640" height="66"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8RL-p3-w7H" id="SLr-XM-6T9">
+                                            <rect key="frame" x="0.0" y="0.0" width="564" height="66"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Other settings" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ubF-0J-dTJ">
+                                                    <rect key="frame" x="20" y="0.0" width="544" height="66"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="38"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="kCY-3Q-ztQ" kind="show" id="KVB-7P-d3e"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </prototypes>
                                 <sections/>
                             </tableView>
@@ -93,9 +114,8 @@
                         <outlet property="tableView" destination="L2a-Ub-00N" id="ZxV-gq-p3T"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="NS4-AT-WYg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-9122" y="1329"/>
+            <point key="canvasLocation" x="-9347" y="1312"/>
         </scene>
         <!--Epg ProvidersVC-->
         <scene sceneID="pgJ-Tt-pKJ">
@@ -281,6 +301,63 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WZy-T1-TeV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-6741" y="1354"/>
+        </scene>
+        <!--Other Settings-->
+        <scene sceneID="r1q-c8-0OI">
+            <objects>
+                <viewController id="kCY-3Q-ztQ" customClass="OtherSettings" customModule="tvorg" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="phQ-Fv-49a"/>
+                        <viewControllerLayoutGuide type="bottom" id="X78-pK-3sg"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dzU-f3-Mq0">
+                        <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oFd-sq-M6C">
+                                <rect key="frame" x="0.0" y="172" width="1920" height="908"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="gjp-tZ-ZtQ">
+                                        <rect key="frame" x="40" y="0.0" width="639" height="69"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="o9H-Ds-VhR">
+                                                <rect key="frame" x="0.0" y="0.0" width="639" height="69"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Prefer player:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iTq-IK-6QF">
+                                                        <rect key="frame" x="0.0" y="0.0" width="229" height="69"/>
+                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="724-mh-QPa">
+                                                        <rect key="frame" x="249" y="0.0" width="390" height="70"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.10000000000000001" colorSpace="calibratedWhite"/>
+                                                        <segments>
+                                                            <segment title="Standart"/>
+                                                            <segment title="VLC"/>
+                                                        </segments>
+                                                        <connections>
+                                                            <action selector="changePreferPlayer:" destination="kCY-3Q-ztQ" eventType="valueChanged" id="2pG-g4-a7M"/>
+                                                        </connections>
+                                                    </segmentedControl>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
+                    </view>
+                    <connections>
+                        <outlet property="preferPlayer" destination="724-mh-QPa" id="DwN-F7-qln"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="etJ-RO-NCe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-6741" y="2782"/>
         </scene>
         <!--Channel Setting EditVC-->
         <scene sceneID="Yh5-G9-LVE">
@@ -884,7 +961,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gwq-vL-07f" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6508" y="-79"/>
+            <point key="canvasLocation" x="-6741" y="72"/>
         </scene>
         <!--Channel Setting AddVC-->
         <scene sceneID="wDi-pm-e4m">
