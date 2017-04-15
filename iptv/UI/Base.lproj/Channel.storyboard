@@ -22,9 +22,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view tag="1000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iSw-KR-nIT" userLabel="PlayerView" customClass="VlcPlayerView" customModule="tvorg" customModuleProvider="target">
+                            <view tag="1000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iSw-KR-nIT" userLabel="PlayerView" customClass="MainPlayer" customModule="tvorg" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <view tag="2000" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kbO-ei-XoE" userLabel="LoadingView">
                                 <rect key="frame" x="20" y="0.0" width="1880" height="1080"/>
@@ -286,7 +286,7 @@
                                     </view>
                                     <view tag="5200" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jD7-7Z-omH" customClass="PipPlayer" customModule="tvorg">
                                         <rect key="frame" x="1420" y="0.0" width="500" height="320"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="500" id="9yT-vx-hBq"/>
                                             <constraint firstAttribute="height" constant="320" id="Aab-lB-Jit"/>

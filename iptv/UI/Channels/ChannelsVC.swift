@@ -10,33 +10,103 @@ import UIKit
 import AVKit
 
 
-
-class PipPlayer : VlcPlayerView {
-   
-    var path : [String]?
+class CommonPlayer: UIView, PlayerViewDelegate {
+    
+    var playerView: PlayerView?
+    weak var delegate: PlayerViewDelegate?
+    var name: String = ""
+    
+    func play(url: URL) {
+    
+        if(playerView != nil) {
+            playerView!.reset()
+        }
+        
+        if(url.pathExtension == "m3u8" && (url.scheme == "http" || url.scheme == "https")) {
+            if(playerView == nil || playerView as? VlcPlayerView != nil) {
+                self.setPlayer(ApplePlayerView())
+            }
+        }
+        else {
+            if(playerView == nil || playerView as? ApplePlayerView != nil) {
+                self.setPlayer(VlcPlayerView())
+            }
+        }
+        
+        self.playerView!.name = self.name
+        self.playerView!.url = url
+        self.playerView!.play()
+        //self.playerView!.isMute = true
+    }
+    
+    func setPlayer(_ playerView: PlayerView) {
+        /*
+        if(self.playerView != nil) {
+           self.playerView!.removeFromSuperview()
+        }
+         */
+        self.addSubview(playerView)
+        playerView.frame = CGRect(origin: CGPoint.zero, size: self.frame.size)
+        self.playerView = playerView
+        self.playerView?.delegate = self
+    }
     
     func setup() {
         self.backgroundColor = UIColor.black
-        self.fillMode = .resize
-        self.isMute = true
-        
-        
+        self.playerView?.fillMode = .resize
     }
     
+    func changeStatus(player: PlayerView, status: PlayerStatus, error: Error?) {
+        self.delegate?.changeStatus(player: player, status: status, error: error)
+    }
+    
+}
+
+
+class PipPlayer : CommonPlayer {
+   
+    var path : [String]?
+    
     func play(_ path: [String]?) {
-        self.resetPlayer()
+        
         self.path = path
         
-        if path != nil {
-            if let dirElement = ChannelManager.findDirElement(path!) {
-                if case let .channel(channelInfo) = dirElement {
-                    self.url = URL(string:channelInfo.url)
-                    self.play()
-                    self.isMute = true
-                }
-            }
+        if path != nil,
+           let dirElement = ChannelManager.findDirElement(path!),
+           case let .channel(channelInfo) = dirElement
+        {
+            self.play(url:URL(string:channelInfo.url)!)
+            self.playerView!.isMute = true
         }
     }
+    
+    override func setPlayer(_ playerView: PlayerView) {
+        playerView.isMute = true
+        super.setPlayer(playerView)
+    }
+    
+    override func setup() {
+        super.setup()
+        self.name = "pip"
+    }
+}
+
+class MainPlayer : CommonPlayer {
+
+    override func setup() {
+        super.setup()
+        
+        self.layer.borderWidth = 10
+        self.layer.borderColor = UIColor.clear.cgColor
+        self.name = "main"
+
+    }
+
+    override func setPlayer(_ playerView: PlayerView) {
+        playerView.isMute = false
+        super.setPlayer(playerView)
+    }
+    
     
 }
 
@@ -75,7 +145,7 @@ class ChannelsVC : FocusedViewController {
     var isFirstAppear = true //not update program in first appear
     
  
-    @IBOutlet weak var mainPlayer: VlcPlayerView!   //PlayerView!
+    @IBOutlet weak var mainPlayer: MainPlayer!   //PlayerView!
 
     //choose channel view contor
     @IBOutlet weak var channelChooserContainer: UIView!
@@ -166,17 +236,11 @@ class ChannelsVC : FocusedViewController {
             }
         }
         //mainPlayer
-        mainPlayer.backgroundColor = UIColor.black
-        mainPlayer.fillMode = .resize
+        mainPlayer.setup()
         mainPlayer.delegate = self
-        
-        mainPlayer.layer.borderWidth = 10
-        mainPlayer.layer.borderColor = UIColor.clear.cgColor
-        mainPlayer.name = "main"
         
         //pipPlayer
         pipPlayer.setup()
-        pipPlayer.name = "pip"
         //pipPlayer.delegate = self
         
         
@@ -459,10 +523,7 @@ class ChannelsVC : FocusedViewController {
         loadingErrorLabel.isHidden = true
         loadingChannelLabel.text = channel.name
         
-        
-        mainPlayer.resetPlayer()
-        mainPlayer.url = URL(string:channel.url)
-        mainPlayer.play()
+        mainPlayer.play(url:URL(string:channel.url)!)
         
         
         //set favorite button
@@ -582,7 +643,8 @@ extension ChannelsVC: PlayerViewDelegate {
     
     
     //playerView Delegate
-    func playerVideo(player: VlcPlayerView, statusItemPlayer: PVItemStatus, error: Error?) {
+    
+    func changeStatus(player: PlayerView, status:PlayerStatus, error: Error?) {
         
         if(error != nil) {
             //loading channel
@@ -592,26 +654,18 @@ extension ChannelsVC: PlayerViewDelegate {
             return
         }
         
-        switch statusItemPlayer {
-        case AVPlayerItemStatus.unknown:
-            print("AVPlayerItemStatus unknown")
-        case AVPlayerItemStatus.readyToPlay:
+        switch status {
+        case PlayerStatus.playing:
             print("AVPlayerItemStatus readyToPlay")
             
             loadingErrorLabel.isHidden = true
             loadingActivity.isHidden = false
             loadingView.isHidden = true
             
-        case AVPlayerItemStatus.failed:
-            print("AVPlayerItemStatus failed")
+        default:
+            print("AVPlayerItemStatus \(status)")
         }
     }
-    
-    
-    func playerVideo(player: VlcPlayerView, statusPlayer: PVStatus, error: Error?) {
-        print("playerVideo")
-    }
-    
 }
 
 extension ChannelsVC { //pip show/hide
@@ -653,7 +707,7 @@ extension ChannelsVC { //pip show/hide
             pipPlayer.play(self.currentChannelPath)
         }
         else {
-            pipPlayer.resetPlayer()
+            pipPlayer.playerView?.reset()
         }
     }
     
@@ -697,13 +751,10 @@ extension ChannelsVC { //replace pip and main view
         
         if !isPipView {
             return
-            /*
-            if mainPlayer.
-            mainPlayer.stop()
-             */
         }
         
         //change paths pip and main
+        /*
         if          var mainPath = pipPlayer.path,
                     let findGroupInfo = ChannelManager.findParentGroup(mainPath),
                     let name = mainPath.popLast(),
@@ -713,13 +764,30 @@ extension ChannelsVC { //replace pip and main view
             parentPath = mainPath
             currentChannelIndex = index
             
-            pipPlayer.stopPlayer()
+            pipPlayer.playerView?.stop()
             play(groupInfo.channels[currentChannelIndex])
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                self.pipPlayer.play(pipPath)
-            }
+            self.pipPlayer.play(pipPath)
             
         }
+        */
+        if      var mainPath = pipPlayer.path,
+                let findGroupInfo = ChannelManager.findParentGroup(mainPath),
+                let name = mainPath.popLast(),
+                let index = findGroupInfo.channels.index(where: {$0.name == name}),
+                let pipPath = currentChannelPath {
+            groupInfo =  findGroupInfo
+            parentPath = mainPath
+            currentChannelIndex = index
+
+            let mainPlayerView = mainPlayer.playerView!;
+            let pipPlayerView = pipPlayer.playerView!
+            pipPlayerView.isMute = false;
+            mainPlayerView.isMute = true;
+            pipPlayer.setPlayer(mainPlayerView)
+            mainPlayer.setPlayer(pipPlayerView);
+
+        }
+
     }
 
 }

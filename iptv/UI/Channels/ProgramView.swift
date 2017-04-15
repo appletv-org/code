@@ -8,9 +8,6 @@
 
 import UIKit
 
-
-
-
 class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     var channel : ChannelInfo?

@@ -6,98 +6,63 @@
 //  Copyright © 2016 David Alejandro. All rights reserved.
 //
 
-/*
+
 import UIKit
 import AVFoundation.AVPlayer
 
 private extension Selector {
-    static let playerItemDidPlayToEndTime = #selector(PlayerView.playerItemDidPlayToEndTime(aNotification:))
+    static let playerItemDidPlayToEndTime = #selector(ApplePlayerView.playerItemDidPlayToEndTime(aNotification:))
 }
 
 public extension PVTimeRange{
     static let zero = kCMTimeRangeZero
 }
 
-public typealias PVStatus = AVPlayerStatus
-public typealias PVItemStatus = AVPlayerItemStatus
 public typealias PVTimeRange = CMTimeRange
 public typealias PVPlayer = AVQueuePlayer
 public typealias PVPlayerItem = AVPlayerItem
 
-public protocol PlayerViewDelegate: class {
-    func playerVideo(player: PlayerView, statusPlayer: PVStatus, error: Error?)
-    func playerVideo(player: PlayerView, statusItemPlayer: PVItemStatus, error: Error?)
-    func playerVideo(player: PlayerView, loadedTimeRanges: [PVTimeRange])
-    func playerVideo(player: PlayerView, duration: Double)
-    func playerVideo(player: PlayerView, currentTime: Double)
-    func playerVideo(player: PlayerView, rate: Float)
-    func playerVideo(playerFinished player: PlayerView)
+public protocol PlayerViewDelegate2: class {
+    func playerVideo(player: ApplePlayerView, statusPlayer: PVStatus, error: Error?)
+    //func playerVideo(player: ApplePlayerView, statusItemPlayer: PVItemStatus, error: Error?)
+    func playerVideo(player: ApplePlayerView, loadedTimeRanges: [PVTimeRange])
+    func playerVideo(player: ApplePlayerView, duration: Double)
+    func playerVideo(player: ApplePlayerView, currentTime: Double)
+    func playerVideo(player: ApplePlayerView, rate: Float)
+    func playerVideo(playerFinished player: ApplePlayerView)
 }
 
-public extension PlayerViewDelegate {
+public extension PlayerViewDelegate2 {
     
-    func playerVideo(player: PlayerView, statusPlayer: PVStatus, error: Error?) {
+    func playerVideo(player: ApplePlayerView, statusPlayer: PVStatus, error: Error?) {
         
     }
-    func playerVideo(player: PlayerView, statusItemPlayer: PVItemStatus, error: Error?) {
+    //func playerVideo(player: ApplePlayerView, statusItemPlayer: PVItemStatus, error: Error?) {
+    //
+    //}
+    func playerVideo(player: ApplePlayerView, loadedTimeRanges: [PVTimeRange]) {
         
     }
-    func playerVideo(player: PlayerView, loadedTimeRanges: [PVTimeRange]) {
+    func playerVideo(player: ApplePlayerView, duration: Double) {
         
     }
-    func playerVideo(player: PlayerView, duration: Double) {
+    func playerVideo(player: ApplePlayerView, currentTime: Double) {
         
     }
-    func playerVideo(player: PlayerView, currentTime: Double) {
+    func playerVideo(player: ApplePlayerView, rate: Float) {
         
     }
-    func playerVideo(player: PlayerView, rate: Float) {
-        
-    }
-    func playerVideo(playerFinished player: PlayerView) {
+    func playerVideo(playerFinished player: ApplePlayerView) {
         
     }
 }
 
-public enum PlayerViewFillMode {
-    case resizeAspect
-    case resizeAspectFill
-    case resize
-    
-    init?(videoGravity: String){
-        switch videoGravity {
-        case AVLayerVideoGravityResizeAspect:
-            self = .resizeAspect
-        case AVLayerVideoGravityResizeAspectFill:
-            self = .resizeAspectFill
-        case AVLayerVideoGravityResize:
-            self = .resize
-        default:
-            return nil
-        }
-    }
-    
-    var AVLayerVideoGravity:String {
-        get {
-            switch self {
-            case .resizeAspect:
-                return AVLayerVideoGravityResizeAspect
-            case .resizeAspectFill:
-                return AVLayerVideoGravityResizeAspectFill
-            case .resize:
-                return AVLayerVideoGravityResize
-            }
-        }
-    }
-}
 
 private extension CMTime {
     static var zero:CMTime { return kCMTimeZero }
 }
 /// A simple `UIView` subclass that is backed by an `AVPlayerLayer` layer.
-public class PlayerView: UIView {
-    
-    
+public class ApplePlayerView: PlayerView, PlayerViewDelegate2 {
     
     var playerLayer: AVPlayerLayer {
         get {
@@ -112,12 +77,13 @@ public class PlayerView: UIView {
     }
     
     
+    
     private var timeObserverToken: AnyObject?
     private weak var lastPlayerTimeObserve: PVPlayer?
     
     private var urlsQueue: Array<URL>?
     //MARK: - Public Variables
-    public weak var delegate: PlayerViewDelegate?
+    public weak var delegate2: PlayerViewDelegate2?
     
     public var loopVideosQueue = false
     
@@ -132,9 +98,15 @@ public class PlayerView: UIView {
     }
     
     
-    public var fillMode: PlayerViewFillMode! {
+    override public var fillMode: PlayerViewFillMode! {
         didSet {
             playerLayer.videoGravity = fillMode.AVLayerVideoGravity
+        }
+    }
+    
+    override public var isMute: Bool {
+        didSet {
+            self.player?.isMuted = isMute
         }
     }
     
@@ -204,7 +176,7 @@ public class PlayerView: UIView {
             avPlayer.removeTimeObserver(timeObserverToken)
         }
     }
-    func                                                   (playerItem: PVPlayerItem) {
+    func addObserversVideoItem(playerItem: PVPlayerItem) {
         playerItem.addObserver(self, forKeyPath: "loadedTimeRanges", options: [], context: &loadedContext)
         playerItem.addObserver(self, forKeyPath: "duration", options: [], context: &durationContext)
         playerItem.addObserver(self, forKeyPath: "status", options: [], context: &statusItemContext)
@@ -232,7 +204,7 @@ public class PlayerView: UIView {
         lastPlayerTimeObserve = player
         self.timeObserverToken = player?.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main) { [weak self] time-> Void in
             if let mySelf = self {
-                self?.delegate?.playerVideo(player: mySelf, currentTime: mySelf.currentTime)
+                self?.delegate2?.playerVideo(player: mySelf, currentTime: mySelf.currentTime)
             }
             } as AnyObject?
     }
@@ -245,22 +217,22 @@ public class PlayerView: UIView {
             
             self.addVideosOnQueue(urls: urlsQueue, afterItem: item)
         }
-        self.delegate?.playerVideo(playerFinished: self)
+        self.delegate2?.playerVideo(playerFinished: self)
     }
     // MARK: public Functions
     
-    public func play() {
+    public override func play() {
         rate = 1
         //player?.play()
     }
     
-    public func pause() {
+    public override func pause() {
         rate = 0
         //player?.pause()
     }
     
     
-    public func stop() {
+    public override func stop() {
         currentTime = 0
         pause()
     }
@@ -268,7 +240,7 @@ public class PlayerView: UIView {
         player?.advanceToNextItem()
     }
     
-    public func resetPlayer() {
+    public override func reset() {
         urlsQueue = nil
         guard let player = player else {
             return
@@ -331,7 +303,7 @@ public class PlayerView: UIView {
         let viewImage: UIImage = UIImage(cgImage: ref)
         return (viewImage, timePicture)
     }
-    public var url: URL? {
+    override public var url: URL? {
         didSet {
             guard let url = url else {
                 urls = nil
@@ -346,7 +318,7 @@ public class PlayerView: UIView {
             
             
             //print("willSet urls")
-            resetPlayer()
+            reset()
             guard let urls = newUrls else {
                 return
             }
@@ -420,7 +392,8 @@ public class PlayerView: UIView {
     
     deinit {
         delegate = nil
-        resetPlayer()
+        delegate2 = nil
+        reset()
     }
     // MARK: private variables for context KVO
     
@@ -447,7 +420,7 @@ public class PlayerView: UIView {
                 super.observeValue(forKeyPath: keyPath, of: object, change: change , context: context)
                 return
             }
-            self.delegate?.playerVideo(player: self, statusPlayer: avPlayer.status, error: avPlayer.error)
+            self.delegate2?.playerVideo(player: self, statusPlayer: avPlayer.status, error: avPlayer.error)
 
             //self.delegate?.playerVideo(self, statusPlayer: avPlayer.status, error: avPlayer.error)
             //self.delegate?.playerVideo(player: self, statusItemPlayer: avPlayer.status, error: avPlayer.error)
@@ -463,21 +436,23 @@ public class PlayerView: UIView {
             }
             
             let values = times.map({ $0.timeRangeValue})
-            self.delegate?.playerVideo(player: self, loadedTimeRanges: values)
+            self.delegate2?.playerVideo(player: self, loadedTimeRanges: values)
             
             
         } else if context == &durationContext{
             
             if let currentItem = player?.currentItem {
-                self.delegate?.playerVideo(player: self, duration: currentItem.duration.seconds)
+                self.delegate2?.playerVideo(player: self, duration: currentItem.duration.seconds)
                 
             }
             
         } else if context == &statusItemContext{
             //status of item has changed
             if let currentItem = player?.currentItem {
-                
-                self.delegate?.playerVideo(player: self, statusItemPlayer: currentItem.status, error: currentItem.error)
+                self.delegate?.changeStatus(player: self,
+                                            status: currentItem.status == .readyToPlay ? .playing : .idle,
+                                            error: currentItem.error)
+                //self.delegate?.playerVideo(player: self, statusItemPlayer: currentItem.status, error: currentItem.error)
             }
             
         } else if context == &rateContext{
@@ -492,7 +467,7 @@ public class PlayerView: UIView {
             }
             
             //self.delegate?.playerVideo(self, rate: newRate)
-            self.delegate?.playerVideo(player: self, rate: newRate)
+            self.delegate2?.playerVideo(player: self, rate: newRate)
             
         } else if context == &playerItemContext{
             guard let oldItem = (change?[NSKeyValueChangeKey.oldKey] as? PVPlayerItem) else{
@@ -509,4 +484,4 @@ public class PlayerView: UIView {
     }
 }
  
-*/
+
