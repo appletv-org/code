@@ -766,8 +766,8 @@ extension ChannelsVC { //replace pip and main view
         {
             let mainPlayerView = mainPlayer.playerView!
             let pipPlayerView = pipPlayer.playerView!
-            pipPlayerView.isMute = false
-            mainPlayerView.isMute = true
+            //mainPlayerView.isMute = true
+            //pipPlayerView.isMute = false
 
             pipPlayer.setPlayer(mainPlayerView)
             pipPlayer.path = currentChannelPath
