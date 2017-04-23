@@ -655,20 +655,20 @@ extension ChannelsVC: PlayerViewDelegate {
             //loading channel
             loadingErrorLabel.isHidden = false
             loadingActivity.isHidden = true
-            print("AVPlayerItemStatus error: \(String(describing: error))")
+            //print("AVPlayerItemStatus error: \(String(describing: error))")
             return
         }
         
         switch status {
         case PlayerStatus.playing:
-            print("AVPlayerItemStatus readyToPlay")
+            //print("AVPlayerItemStatus readyToPlay")
             
             loadingErrorLabel.isHidden = true
             loadingActivity.isHidden = false
             loadingView.isHidden = true
             
-        default:
-            print("AVPlayerItemStatus \(status)")
+        default: ()
+            //print("AVPlayerItemStatus \(status)")
         }
     }
 }

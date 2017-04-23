@@ -13,11 +13,11 @@ class ChannelSettingPreviewVC : BottomController {
     
     
     @IBOutlet weak var playerView: VlcPlayerView!
-    @IBOutlet weak var videoSizeLabel: UILabel!
+    //@IBOutlet weak var videoSizeLabel: UILabel!
     
     
     override func viewDidLoad() {
-        playerView.delegate = self
+        //playerView.delegate = self as! PlayerViewDelegate
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -26,14 +26,14 @@ class ChannelSettingPreviewVC : BottomController {
     }
     
     func refresh() {
-        videoSizeLabel.text = "undefined"
+        //videoSizeLabel.text = "undefined"
         if let dirElement = channelSettingVC.dirElement,
             case .channel(let channel) = dirElement
         {
             playerView.reset()
             playerView.url = URL(string:channel.url)
-            playerView.play()
             playerView.isMute = true
+            playerView.play()
             playerView.name = "preview"
         }
         else {
@@ -45,6 +45,7 @@ class ChannelSettingPreviewVC : BottomController {
     
 }
 
+/*
 extension ChannelSettingPreviewVC : PlayerViewDelegate {
     
     //playerView Delegate
@@ -55,6 +56,19 @@ extension ChannelSettingPreviewVC : PlayerViewDelegate {
         }
         
         if status == .playing {
+            let media = self.playerView.mediaPlayer.media
+            media?.delegate = self
+            
+            Timer.scheduledTimer(withTimeInterval: 15.0, repeats: false, block: { (_) in
+                let media = self.playerView.mediaPlayer.media
+                if media != nil {
+                    self.printTrackInfo(media!)
+                    print( "\(media!.metaDictionary)")
+                    print ( "\(media!.debugDescription)")
+                }
+            })
+            //let res = media?.parse(withOptions: VLCMediaParsingOptions(VLCMediaParseLocal|VLCMediaFetchLocal|VLCMediaParseNetwork|VLCMediaFetchNetwork), timeout:3000)
+            
             /*
             if let size = playerView.player?.items()[0].presentationSize {
                 videoSizeLabel.text = "\(Int(size.width)) x \(Int(size.height))"
@@ -65,5 +79,49 @@ extension ChannelSettingPreviewVC : PlayerViewDelegate {
         
     }
 
+}
+
+extension ChannelSettingPreviewVC : VLCMediaDelegate {
+
+    func mediaDidFinishParsing(_ media:VLCMedia) {
+        //activityIndicator.isHidden = true
+        //infoLabel.text = "text"
+        printTrackInfo(media)
+        
+    }
+    
+    func mediaMetaDataDidChange(_ media:VLCMedia) {
+        print( "media.parsedStatus: \(media.parsedStatus)")
+    }
+    
+    func printTrackInfo(_ media:VLCMedia) {
+        var text = "" //"url: \(self.currentChannel!.url) \n"
+        for track in media.tracksInformation {
+            if  let trackInfo = track as? Dictionary<String, Any>,
+                let type = trackInfo[VLCMediaTracksInformationType] as? String
+            {
+                switch(type) {
+                case VLCMediaTracksInformationTypeVideo:
+                    text += "Video dimensions:" +
+                        "\(String(describing: trackInfo[VLCMediaTracksInformationVideoWidth]))x" +
+                    "\(String(describing: trackInfo[VLCMediaTracksInformationVideoHeight]))"
+                case VLCMediaTracksInformationTypeAudio:
+                    text += "Audio sample rate:\(String(describing: trackInfo[VLCMediaTracksInformationAudioRate]))"
+                case VLCMediaTracksInformationTypeText:
+                    text += "Subtitres text Encoding:\(String(describing: trackInfo[VLCMediaTracksInformationTextEncoding]))"
+                default:
+                    text += "Unknown track"
+                }
+                text += " bitrate:\(String(describing: trackInfo[VLCMediaTracksInformationBitrate]))"
+                text  += " description: \(String(describing: trackInfo[VLCMediaTracksInformationDescription]))"
+                text += "\n"
+                
+            }
+        }
+        print(text)
+       
+    }
     
 }
+
+*/

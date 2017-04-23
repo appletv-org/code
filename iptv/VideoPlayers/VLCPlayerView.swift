@@ -130,7 +130,7 @@ public class VlcPlayerView: PlayerView, VLCMediaPlayerDelegate {
         
     }
     
-    
+    /*
     public func mediaPlayerTimeChanged(_ aNotification:Notification) {
         print("\(name): time change \(Date())")
     }
@@ -140,6 +140,7 @@ public class VlcPlayerView: PlayerView, VLCMediaPlayerDelegate {
     public func mediaPlayerTitleChanged(_ aNotification:Notification) {
         print("\(name): title change")
     }
+    */
 
   }
 

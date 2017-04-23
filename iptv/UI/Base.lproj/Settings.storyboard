@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.AppleTV.Storyboard" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="AppleTV" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vnk-yl-iYP">
+<document type="com.apple.InterfaceBuilder.AppleTV.Storyboard" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="AppleTV" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vnk-yl-iYP">
     <device id="appleTV" orientation="landscape">
         <adaptation id="light"/>
     </device>
     <dependencies>
         <deployment identifier="tvOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -300,7 +300,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WZy-T1-TeV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6741" y="1354"/>
+            <point key="canvasLocation" x="-6741" y="1468"/>
         </scene>
         <!--Other Settings-->
         <scene sceneID="r1q-c8-0OI">
@@ -357,7 +357,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="etJ-RO-NCe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-6741" y="2782"/>
+            <point key="canvasLocation" x="-6741" y="3176"/>
         </scene>
         <!--Channel Setting EditVC-->
         <scene sceneID="Yh5-G9-LVE">
@@ -888,7 +888,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fTu-8W-iDQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4568" y="1354"/>
+            <point key="canvasLocation" x="-4373" y="1468"/>
         </scene>
         <!--ChannelSettins-->
         <scene sceneID="ILD-IU-NkU">
@@ -1044,7 +1044,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8E2-xm-xqa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4353" y="246.5"/>
+            <point key="canvasLocation" x="-4353" y="351"/>
         </scene>
         <!--Channel Setting InfoVC-->
         <scene sceneID="fMV-IP-RLC">
@@ -1080,7 +1080,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UzA-49-nXT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2362" y="-482"/>
+            <point key="canvasLocation" x="-2328" y="-483"/>
         </scene>
         <!--Channel Setting PreviewVC-->
         <scene sceneID="UhO-3G-2WB">
@@ -1101,30 +1101,8 @@
                                     <constraint firstAttribute="width" secondItem="9EA-Yh-1ei" secondAttribute="height" multiplier="950:607" id="0v1-Ml-ifF"/>
                                 </constraints>
                             </view>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="pC7-CK-dGD">
+                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="pC7-CK-dGD">
                                 <rect key="frame" x="20" y="41" width="693" height="39"/>
-                                <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="6Gp-Zc-IpM">
-                                        <rect key="frame" x="0.0" y="0.0" width="693" height="39"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Video size:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eqb-wp-bYX">
-                                                <rect key="frame" x="0.0" y="0.0" width="153" height="39"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="undefined" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gey-O0-aJK">
-                                                <rect key="frame" x="193" y="0.0" width="500" height="39"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="500" id="evd-nH-eQH"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                    </stackView>
-                                </subviews>
                             </stackView>
                         </subviews>
                         <constraints>
@@ -1139,12 +1117,11 @@
                     <size key="freeformSize" width="1880" height="615"/>
                     <connections>
                         <outlet property="playerView" destination="9EA-Yh-1ei" id="92z-h5-PvH"/>
-                        <outlet property="videoSizeLabel" destination="gey-O0-aJK" id="qpp-9U-ovw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Maz-bw-bvu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2362" y="-1279.5"/>
+            <point key="canvasLocation" x="-2362" y="-1281"/>
         </scene>
         <!--Channel Setting DeleteVC-->
         <scene sceneID="Qdv-ce-Y8N">
@@ -1444,6 +1421,54 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BWy-NY-CVT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-327" y="-1280.5"/>
+        </scene>
+        <!--Channel Setting MetadataVC-->
+        <scene sceneID="O47-hL-P1m">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ckj-s4-8vM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController storyboardIdentifier="ChannelSettingMetadataVC" id="cL0-p1-yMj" customClass="ChannelSettingMetadataVC" customModule="tvorg" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="goU-kb-Tw4"/>
+                        <viewControllerLayoutGuide type="bottom" id="gfn-ch-Uiv"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="lxc-K2-vc1">
+                        <rect key="frame" x="0.0" y="0.0" width="1880" height="615"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="G1j-k4-DDW">
+                                <rect key="frame" x="930" y="133" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5ic-fw-fcV">
+                                <rect key="frame" x="0.0" y="73" width="1880" height="438"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Info:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9mu-Cp-BZf">
+                                <rect key="frame" x="33" y="8" width="76" height="46"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="5ic-fw-fcV" firstAttribute="leading" secondItem="lxc-K2-vc1" secondAttribute="leadingMargin" constant="10" id="71y-T8-OZz"/>
+                            <constraint firstItem="5ic-fw-fcV" firstAttribute="top" secondItem="goU-kb-Tw4" secondAttribute="bottom" constant="20" id="Pmk-Us-yOF"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="5ic-fw-fcV" secondAttribute="trailing" constant="10" id="nhg-18-djS"/>
+                            <constraint firstItem="gfn-ch-Uiv" firstAttribute="top" secondItem="5ic-fw-fcV" secondAttribute="bottom" constant="20" id="ptD-TY-kZH"/>
+                        </constraints>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="1880" height="615"/>
+                    <connections>
+                        <outlet property="activityIndicator" destination="G1j-k4-DDW" id="BcR-oq-7Lf"/>
+                        <outlet property="infoLabel" destination="5ic-fw-fcV" id="wNV-lY-d4p"/>
+                    </connections>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="-4353" y="-1227.5"/>
         </scene>
     </scenes>
     <resources>
