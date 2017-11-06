@@ -68,7 +68,7 @@ func parseM3u(content: String) -> [M3uItem] {
         if str.hasPrefix("#EXTINF:") {
             let props = str.components(separatedBy: ",")
             let name = props.last
-            if props.count > 1 && props.last!.characters.count > 0 {
+            if props.count > 1 && props.last!.count > 0 {
                 //save previous item
                 if item != nil && item!.name != nil && item!.url != nil {
                     items.append(item!)

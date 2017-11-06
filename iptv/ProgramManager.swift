@@ -204,10 +204,10 @@ class ProgramManager : NSObject {
         
             //remove version ( <space>.<number>)
             var lastComp = components.last!
-            if  lastComp.characters.count >= 2,
-                lastComp.characters[lastComp.startIndex] == "."
+            if  lastComp.count >= 2,
+                lastComp[lastComp.startIndex] == "."
             {
-                let ver = String(lastComp.characters.dropFirst())
+                let ver = String(lastComp.dropFirst())
                 if Int(ver) != nil {
                     let _ = components.popLast()
                 }
@@ -217,7 +217,7 @@ class ProgramManager : NSObject {
             if components.count != 1 {
                 lastComp = components.last!
                 if  lastComp.characters.count >= 2 {
-                    let firstSymbol = lastComp.characters[lastComp.startIndex]
+                    let firstSymbol = lastComp[lastComp.startIndex]
                     if  firstSymbol == "+" ||  firstSymbol == "-",
                         let timeShift = Int(lastComp)
                     {
@@ -1125,8 +1125,8 @@ class DbReplaceChannel : EpgxmlToParseChannelsDelegate {
             let dbprogram = EpgProgram(context:dbcontext)
             dbprogram.title = program.title
             dbprogram.desc = program.desc
-            dbprogram.start = program.start as NSDate?
-            dbprogram.stop = program.stop as NSDate?
+            dbprogram.start = program.start // as NSDate?
+            dbprogram.stop = program.stop // as NSDate?
             dbprogram.channel = dbChannel!
         }
         
@@ -1169,10 +1169,10 @@ class DbReplaceChannel : EpgxmlToParseChannelsDelegate {
         }
         
         if dbProvider != nil {
-            dbProvider!.startDate = minDate as NSDate?
-            dbProvider!.finishDate = maxDate as NSDate?
+            dbProvider!.startDate = minDate // as NSDate?
+            dbProvider!.finishDate = maxDate // as NSDate?
             dbProvider!.channelCount = channelCount
-            dbProvider!.lastUpdate = Date() as NSDate?
+            dbProvider!.lastUpdate = Date() // as NSDate?
             
             CoreDataManager.saveConcurrentContext(dbcontext)
         }

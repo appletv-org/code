@@ -339,7 +339,7 @@ class ChannelsVC : FocusedViewController {
     }
         
         
-    func programAction(sender: UITapGestureRecognizer) {
+    @objc func programAction(sender: UITapGestureRecognizer) {
         if let tapSegment = SegmentAction(rawValue:actionButtons.selectedSegmentIndex) {
             switch(tapSegment) {
                
@@ -725,7 +725,7 @@ extension ChannelsVC { //pip show/hide
 
 extension ChannelsVC { //show/hide  channel chooser
 
-    func showChannelChooser(sender: UITapGestureRecognizer) {
+    @objc func showChannelChooser(sender: UITapGestureRecognizer) {
         channelChooserContainer.isHidden = false
         programShow(animated:false)
         //set position
@@ -738,7 +738,7 @@ extension ChannelsVC { //show/hide  channel chooser
         self.viewToFocus = self.channelPickerVC?.collectionView
     }
     
-    func menuClickHandler(sender: UITapGestureRecognizer) {
+    @objc func menuClickHandler(sender: UITapGestureRecognizer) {
         if self.channelChooserContainer.isHidden == false {
             self.channelChooserContainer.isHidden = true
             programHide(animated: false)
@@ -752,7 +752,7 @@ extension ChannelsVC { //show/hide  channel chooser
 
 extension ChannelsVC { //replace pip and main view
     
-    func playClickHandler(sender: UITapGestureRecognizer) {
+    @objc func playClickHandler(sender: UITapGestureRecognizer) {
         
         if !isPipView {
             return

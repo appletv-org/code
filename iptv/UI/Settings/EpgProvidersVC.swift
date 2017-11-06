@@ -106,7 +106,7 @@ class EpgProvidersVC: FocusedViewController {
     }
     
     
-    func changeModeAction(sender: UITapGestureRecognizer) {
+    @objc func changeModeAction(sender: UITapGestureRecognizer) {
         
         if editModeSegmentedControl.selectedSegmentIndex == 0 {
             tableView.isEditing = false

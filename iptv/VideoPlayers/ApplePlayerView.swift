@@ -61,6 +61,26 @@ public extension PlayerViewDelegate2 {
 private extension CMTime {
     static var zero:CMTime { return kCMTimeZero }
 }
+
+
+
+private extension PlayerViewFillMode {
+  
+    var videoGravity:AVLayerVideoGravity {
+        get {
+            switch self {
+            case PlayerViewFillMode.resizeAspect:
+                return AVLayerVideoGravity.resizeAspect
+            case PlayerViewFillMode.resizeAspectFill:
+                return AVLayerVideoGravity.resizeAspectFill
+            case PlayerViewFillMode.resize:
+                return AVLayerVideoGravity.resize
+            }
+        }
+    }
+}
+
+
 /// A simple `UIView` subclass that is backed by an `AVPlayerLayer` layer.
 public class ApplePlayerView: PlayerView, PlayerViewDelegate2 {
     
@@ -100,7 +120,7 @@ public class ApplePlayerView: PlayerView, PlayerViewDelegate2 {
     
     override public var fillMode: PlayerViewFillMode! {
         didSet {
-            playerLayer.videoGravity = fillMode.AVLayerVideoGravity
+            playerLayer.videoGravity = fillMode.videoGravity;//AVLayerVideoGravity(rawValue: fillMode.AVLayerVideoGravity)
         }
     }
     
@@ -209,7 +229,7 @@ public class ApplePlayerView: PlayerView, PlayerViewDelegate2 {
             } as AnyObject?
     }
     
-    func playerItemDidPlayToEndTime(aNotification: NSNotification) {
+    @objc func playerItemDidPlayToEndTime(aNotification: NSNotification) {
         //notification of player to stop
         let item = aNotification.object as! PVPlayerItem
         if loopVideosQueue && player?.items().count == 1,

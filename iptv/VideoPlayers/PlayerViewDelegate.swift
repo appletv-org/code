@@ -69,30 +69,5 @@ public enum PlayerViewFillMode {
     case resizeAspect
     case resizeAspectFill
     case resize
-    
-    init?(videoGravity: String){
-        switch videoGravity {
-        case AVLayerVideoGravityResizeAspect:
-            self = .resizeAspect
-        case AVLayerVideoGravityResizeAspectFill:
-            self = .resizeAspectFill
-        case AVLayerVideoGravityResize:
-            self = .resize
-        default:
-            return nil
-        }
-    }
-    
-    var AVLayerVideoGravity:String {
-        get {
-            switch self {
-            case .resizeAspect:
-                return AVLayerVideoGravityResizeAspect
-            case .resizeAspectFill:
-                return AVLayerVideoGravityResizeAspectFill
-            case .resize:
-                return AVLayerVideoGravityResize
-            }
-        }
-    }
 }
+

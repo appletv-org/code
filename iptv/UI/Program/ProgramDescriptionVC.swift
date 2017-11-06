@@ -31,8 +31,8 @@ class ProgramDescriptionVC : FocusedViewController {
     static let titleFont = UIFont.boldSystemFont(ofSize: 36)
     static let descFont = UIFont.systemFont(ofSize: 36)
     static let foregroundColor = UIColor.darkGray
-    static let titleAttributes : [String : Any] = [ NSFontAttributeName: titleFont, NSForegroundColorAttributeName: ProgramDescriptionVC.foregroundColor ]
-    static let descAttributes : [String : Any] = [ NSFontAttributeName: descFont, NSForegroundColorAttributeName: ProgramDescriptionVC.foregroundColor]
+    static let titleAttributes : [NSAttributedStringKey : Any] = [ NSAttributedStringKey.font: titleFont, NSAttributedStringKey.foregroundColor: ProgramDescriptionVC.foregroundColor ]
+    static let descAttributes : [NSAttributedStringKey : Any] = [ NSAttributedStringKey.font: descFont, NSAttributedStringKey.foregroundColor: ProgramDescriptionVC.foregroundColor]
 
 
     override func viewDidLoad() {

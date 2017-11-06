@@ -38,10 +38,10 @@ class ProgramCollectionCell : UICollectionViewCell {
             foregroundColor = styleColor
         }
         
-        let timeFormatAttributes : [String : Any]  = [ NSFontAttributeName: titleFont, NSForegroundColorAttributeName: foregroundColor ]
+        let timeFormatAttributes : [NSAttributedStringKey : Any]  = [ NSAttributedStringKey.font: titleFont, NSAttributedStringKey.foregroundColor: foregroundColor ]
         
-        let titleAttributes : [String : Any] = [ NSFontAttributeName: titleFont, NSForegroundColorAttributeName: foregroundColor ]
-        let descAttributes : [String : Any] = [ NSFontAttributeName: descFont, NSForegroundColorAttributeName: foregroundColor]
+        let titleAttributes : [NSAttributedStringKey : Any] = [ NSAttributedStringKey.font: titleFont, NSAttributedStringKey.foregroundColor: foregroundColor ]
+        let descAttributes : [NSAttributedStringKey : Any] = [ NSAttributedStringKey.font: descFont, NSAttributedStringKey.foregroundColor: foregroundColor]
         
         
         //start date
@@ -111,7 +111,7 @@ class ProgramCollectionCell : UICollectionViewCell {
         if context.nextFocusedItem as? ProgramCollectionCell == self {
             if let attrText = self.textView.attributedText {
                 let attrString = NSMutableAttributedString(attributedString: attrText)
-                attrString.addAttribute(NSForegroundColorAttributeName, value: selectedColor, range:NSMakeRange(0, attrText.length))
+                attrString.addAttribute(NSAttributedStringKey.foregroundColor, value: selectedColor, range:NSMakeRange(0, attrText.length))
                 self.textView.attributedText = attrString
             }
             self.view.layer.borderWidth = 5.0
@@ -121,7 +121,7 @@ class ProgramCollectionCell : UICollectionViewCell {
         if context.previouslyFocusedItem as? ProgramCollectionCell == self {
             if let attrText = self.textView.attributedText {
                 let attrString = NSMutableAttributedString(attributedString: attrText)
-                attrString.addAttribute(NSForegroundColorAttributeName, value: textColor, range:NSMakeRange(0, attrText.length))
+                attrString.addAttribute(NSAttributedStringKey.foregroundColor, value: textColor, range:NSMakeRange(0, attrText.length))
                 self.textView.attributedText = attrString
                 self.view.layer.borderWidth = 0.0
                 

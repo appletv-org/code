@@ -196,7 +196,7 @@ class DirectoryStack:UIStackView {
     }
     
     
-    func changeDirAction(_ sender:UIButton?) {
+    @objc func changeDirAction(_ sender:UIButton?) {
         let index = sender!.tag
         
         let newPath = Array(path[0..<index])
