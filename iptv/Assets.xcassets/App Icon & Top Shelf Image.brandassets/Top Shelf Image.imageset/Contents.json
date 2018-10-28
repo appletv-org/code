@@ -4,6 +4,10 @@
       "idiom" : "tv",
       "filename" : "TopShield Old.png",
       "scale" : "1x"
+    },
+    {
+      "idiom" : "tv",
+      "scale" : "2x"
     }
   ],
   "info" : {

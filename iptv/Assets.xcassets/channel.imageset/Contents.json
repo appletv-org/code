@@ -4,6 +4,10 @@
       "idiom" : "tv",
       "filename" : "channel.png",
       "scale" : "1x"
+    },
+    {
+      "idiom" : "tv",
+      "scale" : "2x"
     }
   ],
   "info" : {

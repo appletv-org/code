@@ -614,6 +614,7 @@ extension ChannelsVC { //programView animation
         if(isShow) {
             //self.viewToFocus = self.programCollectionView
             if hideTime != nil {
+                print("start hide timer")
                 timerHideProgram = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: false, block: { (_) in
                     self.programHide(animated:true)
                 })

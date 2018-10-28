@@ -1,3 +1,4 @@
+
 //
 //  Utils.swift
 //  iptv
@@ -7,6 +8,7 @@
 //
 
 import Foundation
+
 
 //--- error -----
 enum SimpleError : Error {
@@ -32,7 +34,7 @@ func errMsg(_ err:Error) -> String {
 
 
 
-//--- directory ------
+//--- Dictionary ------
 func + <K,V>(left: Dictionary<K,V>, right: Dictionary<K,V>)
     -> Dictionary<K,V>
 {
@@ -52,7 +54,7 @@ func += <K, V> ( left: inout [K:V], right: [K:V]) {
     }
 }
 
-//String
+//--- String
 extension String
 {
     var  isBlank:Bool {
@@ -84,7 +86,7 @@ extension String {
     }
 }
 
-//Date operators
+//--- Date operators
 
 extension Date {
     
@@ -121,22 +123,33 @@ func -= ( left: inout Date, right: TimeInterval) {
     left.addTimeInterval(-right)
 }
 
+//--- Array
+
+
 
 //Coping protocol and array realized
 //Protocal that copyable class should conform
 protocol Copying {
-    init(original: Self)
+    init(copy: Self)
 }
 
 //Concrete class extension
 extension Copying {
     func copy() -> Self {
-        return Self.init(original: self)
+        return Self.init(copy: self)
     }
 }
 
 //Array extension for elements conforms the Copying protocol
 extension Array where Element: Copying {
+    
+    init(copy: Array<Element>) {
+        self = Array<Element>();
+        for element in copy {
+            self.append(element.copy());
+        }
+    }
+    
     func clone() -> Array {
         var copiedArray = Array<Element>()
         for element in self {
@@ -146,20 +159,22 @@ extension Array where Element: Copying {
     }
 }
 
-func md5(_ string: String) -> String {
+func md5(_ inputString: String) -> String! {
+    let str = inputString.cString(using: String.Encoding.utf8)
+    let strLen = CC_LONG(inputString.lengthOfBytes(using: String.Encoding.utf8))
+    let digestLen = Int(CC_MD5_DIGEST_LENGTH)
+    let result = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLen)
     
-    let context = UnsafeMutablePointer<CC_MD5_CTX>.allocate(capacity: 1)
-    var digest = Array<UInt8>(repeating:0, count:Int(CC_MD5_DIGEST_LENGTH))
-    CC_MD5_Init(context)
-    CC_MD5_Update(context, string, CC_LONG(string.lengthOfBytes(using: String.Encoding.utf8)))
-    CC_MD5_Final(&digest, context)
-    context.deallocate(capacity: 1)
-    var hexString = ""
-    for byte in digest {
-        hexString += String(format:"%02x", byte)
+    CC_MD5(str!, strLen, result)
+    
+    let hash = NSMutableString()
+    for i in 0..<digestLen {
+        hash.appendFormat("%02x", result[i])
     }
     
-    return hexString
+    result.deallocate(capacity: digestLen)
+    
+    return String(format: hash as String)
 }
 
 
