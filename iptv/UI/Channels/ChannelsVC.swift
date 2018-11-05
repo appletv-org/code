@@ -589,9 +589,10 @@ extension ChannelsVC : ChannelPickerDelegate {
 
 }
 
-extension ChannelsVC { //programView animation
+extension ChannelsVC { //programView show/hide
     
     func programShow(animated:Bool, hideTime: Double? = nil, _ isShow:Bool = true) {
+        print("programShow isShow:\(isShow) hideTime:\(hideTime)")
         if isShow {
             programViewBottomConstraint.constant = 0
         }
@@ -645,7 +646,7 @@ extension ChannelsVC { //programView animation
     
 }
 
-extension ChannelsVC: PlayerViewDelegate {
+extension ChannelsVC: PlayerViewDelegate { //loading info show/hide
     
     
     //playerView Delegate

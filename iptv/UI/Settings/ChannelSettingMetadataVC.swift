@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class ChannelSettingMetadataVC : BottomController, VLCMediaDelegate {
     
     @IBOutlet weak var infoLabel: UILabel!

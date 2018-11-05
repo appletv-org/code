@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.AppleTV.Storyboard" version="3.0" toolsVersion="14460.30.1" targetRuntime="AppleTV" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="9pv-A4-QxB">
+<document type="com.apple.InterfaceBuilder.AppleTV.Storyboard" version="3.0" toolsVersion="14460.31" targetRuntime="AppleTV" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="9pv-A4-QxB">
     <device id="appleTV" orientation="landscape">
         <adaptation id="light"/>
     </device>
     <dependencies>
-        <deployment identifier="tvOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.19.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -111,7 +110,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="1920" height="90"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tv3-1U-2eW">
-                                                <rect key="frame" x="20" y="15" width="21" height="60"/>
+                                                <rect key="frame" x="20" y="15" width="50" height="60"/>
                                                 <color key="backgroundColor" red="1" green="0.2807912669" blue="0.18054029099999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="60" id="w4r-Ac-brD"/>
@@ -488,7 +487,7 @@
     </scenes>
     <resources>
         <image name="PIPChange" width="40" height="40"/>
-        <image name="close" width="11" height="11"/>
+        <image name="close" width="40" height="40"/>
         <image name="favoriteOff" width="40" height="40"/>
         <image name="garbage" width="40" height="40"/>
     </resources>

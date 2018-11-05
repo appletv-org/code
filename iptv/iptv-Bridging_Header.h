@@ -9,14 +9,15 @@
 #ifndef iptv_Bridging_Header_h
 #define iptv_Bridging_Header_h
 
+/*
 #import "Flurry.h"
 
 #import "GCDWebServer.h"
 #import "GCDWebServerDataResponse.h"
 #import "GCDWebServerMultiPartFormRequest.h"
 #import "GCDWebServerURLEncodedFormRequest.h"
-
-#import "TVVLCKit.h"
+ */
+#import "TVVLCKit/TVVLCKit.h"
 
 #import <CommonCrypto/CommonCrypto.h>
 

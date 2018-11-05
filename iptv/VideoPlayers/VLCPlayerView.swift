@@ -107,7 +107,8 @@ public class VlcPlayerView: PlayerView, VLCMediaPlayerDelegate {
     
     public func mediaPlayerStateChanged(_ aNotification:Notification) {
         
-        print("\(name) vlc: state change \(VLCMediaPlayerStateToString(mediaPlayer.state) as String)")
+        let stringState = try VLCMediaPlayerStateToString(self.mediaPlayer.state)
+        print("\(name) vlc: state change \(stringState ?? "")")
         
         switch mediaPlayer.state  {
             
