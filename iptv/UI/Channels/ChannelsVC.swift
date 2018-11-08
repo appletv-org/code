@@ -10,112 +10,6 @@ import UIKit
 import AVKit
 
 
-class CommonPlayer: UIView, PlayerViewDelegate {
-    
-    var playerView: PlayerView?
-    weak var delegate: PlayerViewDelegate?
-    var name: String = ""
-    
-    func play(url: URL) {
-    
-        if(playerView != nil) {
-            playerView!.reset()
-        }
-        
-        if(!OtherSettings.preferVLC && url.pathExtension == "m3u8" && (url.scheme == "http" || url.scheme == "https")) {
-            if(playerView == nil || playerView as? VlcPlayerView != nil) {
-                self.setPlayer(ApplePlayerView())
-            }
-        }
-        else {
-            if(playerView == nil || playerView as? ApplePlayerView != nil) {
-                self.setPlayer(VlcPlayerView())
-            }
-        }
-        
-        self.playerView!.name = self.name
-        self.playerView!.url = url
-        self.playerView!.play()
-        //self.playerView!.isMute = true
-    }
-    
-    func setPlayer(_ playerView: PlayerView) {
-        /*
-        if(self.playerView != nil) {
-           self.playerView!.removeFromSuperview()
-        }
-         */
-        self.addSubview(playerView)
-        playerView.frame = CGRect(origin: CGPoint.zero, size: self.frame.size)
-        self.playerView = playerView
-        self.playerView?.delegate = self
-    }
-    
-    func setup() {
-        self.backgroundColor = UIColor.black
-        self.playerView?.fillMode = .resize
-    }
-    
-    func changeStatus(player: PlayerView, status: PlayerStatus, error: Error?) {
-        self.delegate?.changeStatus(player: player, status: status, error: error)
-    }
-    
-}
-
-
-class PipPlayer : CommonPlayer {
-    
-    var path : [String]?
-    
-    func play(path: [String]?) {
-        
-        if path != nil,
-            let dirElement = ChannelManager.findDirElement(path!),
-            case let .channel(channelInfo) = dirElement
-        {
-            self.path = path
-            self.play(url:URL(string:channelInfo.url)!)
-        }
-        if let playerView = self.playerView {
-            playerView.isMute = true
-        }
-    }
-    
-    override func setPlayer(_ playerView: PlayerView) {
-        playerView.name = "pip"
-        playerView.isMute = true
-        super.setPlayer(playerView)
-        
-    }
-    
-    override func setup() {
-        super.setup()
-        self.name = "pip"
-    }
-}
-
-class MainPlayer : CommonPlayer {
-
-    override func setup() {
-        super.setup()
-        
-        self.layer.borderWidth = 10
-        self.layer.borderColor = UIColor.clear.cgColor
-        self.name = "main"
-
-    }
-
-    override func setPlayer(_ playerView: PlayerView) {
-        playerView.name = "main"
-        playerView.isMute = false
-        super.setPlayer(playerView)
-        
-    }
-    
-    
-}
-
-
 class ChannelsVC : FocusedViewController {
 
     weak var channelPickerVC : ChannelPickerVC!
@@ -137,8 +31,11 @@ class ChannelsVC : FocusedViewController {
     }
     
     //toolbar animation
-    var timerHideProgram : Timer?
-    var isProgramShow : Bool = true     //programView is show or hide
+    
+    // var timerHideProgram : Timer?
+    
+    
+    
     var lastSwitchProgramTime = Date() //prevent fast switch channels
     
     //pip show/hide
@@ -157,7 +54,7 @@ class ChannelsVC : FocusedViewController {
     @IBOutlet weak var buttonChannelClose: UIButton!
     @IBAction func buttonCloseAction(_ sender: Any) {
         channelChooserContainer.isHidden = true
-        programHide(animated: true)
+        programView.hide(animated: true)
         self.viewToFocus = self.middleChannelView
     }
     @IBOutlet weak var channelPickerView: UIView!
@@ -202,6 +99,7 @@ class ChannelsVC : FocusedViewController {
         case favorite = 0, delete, pip
     }
     
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -222,7 +120,7 @@ class ChannelsVC : FocusedViewController {
         actionButtons.addGestureRecognizer(tapActionButton)
         
 
-        programHide(animated: false)
+        self.programView.hide(animated: false)
         
         //hide pip view
         pipHide(animated: false)
@@ -272,7 +170,7 @@ class ChannelsVC : FocusedViewController {
         }
         else {
             self.channelChooserContainer.isHidden = false
-            self.programShow(animated:false)
+            self.programView.show(animated:false)
             
         }
         
@@ -304,12 +202,16 @@ class ChannelsVC : FocusedViewController {
         }
         
     }
+ 
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if  let channel = programView.channel, !isFirstAppear
         {
-            let _ = programView.update(channel)
+            _ = programView.update(channel)
+            self.programView.show(animated: true)
+            
         }
         else {
             isFirstAppear = false
@@ -379,9 +281,6 @@ class ChannelsVC : FocusedViewController {
         }
     }
     
-    
-
-    
     func saveCurrentChannel() {
         if self.currentChannelIndex < self.groupInfo.channels.count {
             let channelPath = parentPath + [self.groupInfo.channels[self.currentChannelIndex].name]
@@ -389,8 +288,6 @@ class ChannelsVC : FocusedViewController {
         }
         
     }
-
-
     
     override func shouldUpdateFocus(in context: UIFocusUpdateContext) -> Bool {
         
@@ -421,7 +318,7 @@ class ChannelsVC : FocusedViewController {
         let nextFocusedView = context.nextFocusedItem as? UIView
         let prevFocusedView = context.previouslyFocusedItem as? UIView
         
-        //switch program to prev/next
+        //switch program to prev/next by swipe
         if prevFocusedView == middleChannelView &&
             (nextFocusedView == prevChannelView || nextFocusedView == nextChannelView)
         {
@@ -456,11 +353,13 @@ class ChannelsVC : FocusedViewController {
         
         //programView show/hide
         if nextFocusedView != nil && prevFocusedView != nil {
-            if nextFocusedView!.isDescendant(of: programAndPipView) &&  prevFocusedView!.isDescendant(of: changeProgramView) {
-                self.programShow(animated:true)
+            if nextFocusedView!.isDescendant(of: programAndPipView) {
+                self.programView.show(animated:true)
             }
-            else if nextFocusedView!.isDescendant(of: changeProgramView) &&  prevFocusedView!.isDescendant(of: programAndPipView) {
-                self.programHide(animated:true)            
+            if prevFocusedView!.isDescendant(of: programAndPipView) &&
+               !nextFocusedView!.isDescendant(of: programAndPipView)
+            {
+                self.programView.hide(animated:true)
             }
         }
         
@@ -534,11 +433,9 @@ class ChannelsVC : FocusedViewController {
         //set favorite button
         let favImage = ChannelManager.favoriteIndex(channel) != nil ? imageFavoriteOn : imageFavoriteOff
         actionButtons.setImage(favImage, forSegmentAt: 0)
-
         
-        if programView.update(channel) {
-            programShow(animated: true, hideTime: 4.0)
-        }
+        self.programView.show(animated: true, programView.update(channel))
+        
         
      }
 
@@ -565,7 +462,7 @@ extension ChannelsVC : ChannelPickerDelegate {
     func focusedPath(chooseControl: ChannelPickerVC,  path:[String])    {
         if let dirElement = ChannelManager.findDirElement(path) {
             if case let .channel(channelInfo) = dirElement {
-                let _ = programView.update(channelInfo)
+                self.programView.show(animated: true, programView.update(channelInfo))
             }
         }
     }
@@ -589,9 +486,10 @@ extension ChannelsVC : ChannelPickerDelegate {
 
 }
 
+/*
 extension ChannelsVC { //programView show/hide
     
-    func programShow(animated:Bool, hideTime: Double? = nil, _ isShow:Bool = true) {
+    func programShow(animated:Bool, _ isShow:Bool = true, _ hideTime:Double = 5.0) {
         print("programShow isShow:\(isShow) hideTime:\(hideTime)")
         if isShow {
             programViewBottomConstraint.constant = 0
@@ -600,7 +498,6 @@ extension ChannelsVC { //programView show/hide
             programViewBottomConstraint.constant = -programView.frame.size.height
         }
         
-        cancelProgramHideTimer()
         isProgramShow = isShow
 
         if(animated) {
@@ -614,14 +511,12 @@ extension ChannelsVC { //programView show/hide
         
         if(isShow) {
             //self.viewToFocus = self.programCollectionView
-            if hideTime != nil {
-                print("start hide timer")
-                timerHideProgram = Timer.scheduledTimer(withTimeInterval: 4.0, repeats: false, block: { (_) in
+            self.hideProgramTask.setTask(time: hideTime, block:  { (_) in
                     self.programHide(animated:true)
-                })
-            }
+            })
         }
         else {
+            self.hideProgramTask.invalidate()
             // move focus from programView
             if let focusedView = UIScreen.main.focusedView {
                 if focusedView.isDescendant(of: programView)  {
@@ -632,19 +527,10 @@ extension ChannelsVC { //programView show/hide
     }
     
     func programHide(animated:Bool) {
-        programShow(animated:animated, hideTime:nil, false)
+        self.programShow(animated:animated, false)
     }
-
-    
-    func cancelProgramHideTimer() {
-        if(timerHideProgram != nil) {
-            print("cancel hide timer")
-            timerHideProgram!.invalidate()
-            timerHideProgram = nil
-        }
-    }
-    
 }
+ */
 
 extension ChannelsVC: PlayerViewDelegate { //loading info show/hide
     
@@ -729,7 +615,7 @@ extension ChannelsVC { //show/hide  channel chooser
 
     @objc func showChannelChooser(sender: UITapGestureRecognizer) {
         channelChooserContainer.isHidden = false
-        programShow(animated:false)
+        self.programView.show(animated:false)
         //set position
         if currentChannelIndex < groupInfo.channels.count {
             channelPickerVC?.setupPath(parentPath + [groupInfo.channels[currentChannelIndex].name])
@@ -743,7 +629,7 @@ extension ChannelsVC { //show/hide  channel chooser
     @objc func menuClickHandler(sender: UITapGestureRecognizer) {
         if self.channelChooserContainer.isHidden == false {
             self.channelChooserContainer.isHidden = true
-            programHide(animated: false)
+            self.programView.hide(animated: false)
             self.viewToFocus = middleChannelView
         }
         else {
@@ -782,7 +668,9 @@ extension ChannelsVC { //replace pip and main view
             let channel = groupInfo.channels[currentChannelIndex]
             let favImage = ChannelManager.favoriteIndex(channel) != nil ? imageFavoriteOn : imageFavoriteOff
             actionButtons.setImage(favImage, forSegmentAt: 0)
-            _ = programView.update(channel)
+            programView.update(channel)
+            self.programView.show(animated: programView.update(channel))
+            
 
         }
 

@@ -13,8 +13,16 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
     var channel : ChannelInfo?
     var programs : [EpgProgram] = []
     
+    var isShow : Bool = true     //programView is show or hide
+    var hideProgramTask = TimerTask()
+
+    
     weak var dayLabel: UILabel!
     weak var actionButtons: UISegmentedControl!
+    weak var programViewBottomConstraint: NSLayoutConstraint!
+    weak var pauseProgramCollectionView: ContainerFocused!
+
+    
     weak var programCollectionView: FocusedCollectionView! {
         didSet {
             programCollectionView.dataSource = self
@@ -22,8 +30,6 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
             programCollectionView.remembersLastFocusedIndexPath = false
         }
     }
-    weak var pauseProgramCollectionView: ContainerFocused!
-    
     
     weak var channelsVC: ChannelsVC! {
         didSet {
@@ -31,8 +37,10 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
             actionButtons = channelsVC.actionButtons
             programCollectionView = channelsVC.programCollectionView
             pauseProgramCollectionView = channelsVC.pauseProgramCollectionView
+            programViewBottomConstraint = channelsVC.programViewBottomConstraint
         }
     }
+    
     
     func update(_ channel:ChannelInfo) -> Bool {//return - find program with current time
         self.channel = channel
@@ -209,4 +217,57 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         let height = programCollectionView.frame.size.height
         return CGSize(width: width, height: height)
     }
+    
+    
+    func show(animated:Bool, _ _isShow:Bool = true, _ hideTime:Double = 5.0) {
+        print("programShow isShow:\(_isShow) hideTime:\(hideTime)")
+        
+        var newShow = _isShow
+        if !newShow && !self.channelsVC.channelChooserContainer.isHidden {
+            //don't hide programview while channelChooser is show
+            newShow = true
+        }
+        if newShow != isShow {
+            if newShow {
+                self.programViewBottomConstraint.constant = 0
+            }
+            else {
+                self.programViewBottomConstraint.constant = -self.frame.size.height
+            }
+        
+        
+            if(animated) {
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.channelsVC.view.layoutIfNeeded()
+                })
+            }
+            else {
+                self.channelsVC.view.layoutIfNeeded()
+            }
+        }
+            
+        isShow = newShow
+            
+        
+        if isShow  {
+            //self.viewToFocus = self.programCollectionView
+            self.hideProgramTask.setTask(time: hideTime, block:  { (_) in
+                self.hide(animated:true)
+            })
+        }
+        else {
+            self.hideProgramTask.invalidate()
+            // move focus from programView
+            if let focusedView = UIScreen.main.focusedView {
+                if focusedView.isDescendant(of: self)  {
+                    self.channelsVC.viewToFocus = self.channelsVC.middleChannelView
+                }
+            }
+        }
+    }
+    
+    func hide(animated:Bool) {
+        self.show(animated:animated, false)
+    }
+
 }

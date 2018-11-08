@@ -53,7 +53,10 @@
 		FAF0E4131DFECBDC00897B88 /* ProgramVC_old.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0E4121DFECBDC00897B88 /* ProgramVC_old.swift */; };
 		FAF0E4151E00166E00897B88 /* ProgramVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0E4141E00166E00897B88 /* ProgramVC.swift */; };
 		FAF0E4191E017EDD00897B88 /* SelectChannelGroupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0E4181E017EDD00897B88 /* SelectChannelGroupVC.swift */; };
-		FAF65E4821903A2400306209 /* TimerShow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF65E4721903A2400306209 /* TimerShow.swift */; };
+		FAF65E4821903A2400306209 /* TimerTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF65E4721903A2400306209 /* TimerTask.swift */; };
+		FAF65E4A2194333A00306209 /* CommonPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF65E492194333A00306209 /* CommonPlayer.swift */; };
+		FAF65E4C2194338700306209 /* PipPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF65E4B2194338700306209 /* PipPlayer.swift */; };
+		FAF65E4E219433AB00306209 /* MainPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF65E4D219433AB00306209 /* MainPlayer.swift */; };
 		FAFC8F301DF9829900350A2B /* ProgramCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFC8F2F1DF9829900350A2B /* ProgramCollectionCell.swift */; };
 		FAFC8F321DFAD87E00350A2B /* Program.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAFC8F311DFAD87E00350A2B /* Program.storyboard */; };
 		FAFE305D1D9D15760042A3EB /* FocusedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFE305C1D9D15760042A3EB /* FocusedView.swift */; };
@@ -117,7 +120,10 @@
 		FAF0E4121DFECBDC00897B88 /* ProgramVC_old.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramVC_old.swift; path = iptv/UI/Program/ProgramVC_old.swift; sourceTree = "<group>"; };
 		FAF0E4141E00166E00897B88 /* ProgramVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramVC.swift; path = iptv/UI/Program/ProgramVC.swift; sourceTree = "<group>"; };
 		FAF0E4181E017EDD00897B88 /* SelectChannelGroupVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SelectChannelGroupVC.swift; path = iptv/UI/Program/SelectChannelGroupVC.swift; sourceTree = "<group>"; };
-		FAF65E4721903A2400306209 /* TimerShow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerShow.swift; sourceTree = "<group>"; };
+		FAF65E4721903A2400306209 /* TimerTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerTask.swift; sourceTree = "<group>"; };
+		FAF65E492194333A00306209 /* CommonPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonPlayer.swift; sourceTree = "<group>"; };
+		FAF65E4B2194338700306209 /* PipPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipPlayer.swift; sourceTree = "<group>"; };
+		FAF65E4D219433AB00306209 /* MainPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPlayer.swift; sourceTree = "<group>"; };
 		FAFC8F2F1DF9829900350A2B /* ProgramCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramCollectionCell.swift; path = iptv/UI/Channels/ProgramCollectionCell.swift; sourceTree = "<group>"; };
 		FAFC8F311DFAD87E00350A2B /* Program.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Program.storyboard; path = iptv/UI/Base.lproj/Program.storyboard; sourceTree = "<group>"; };
 		FAFE305C1D9D15760042A3EB /* FocusedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FocusedView.swift; path = iptv/UI/FocusedView.swift; sourceTree = "<group>"; };
@@ -244,7 +250,7 @@
 				FAFE305C1D9D15760042A3EB /* FocusedView.swift */,
 				FA210EC41DCA0344002B9592 /* UIExtension.swift */,
 				FA843F631DEB4EC900F95DAE /* StyleManager.swift */,
-				FAF65E4721903A2400306209 /* TimerShow.swift */,
+				FAF65E4721903A2400306209 /* TimerTask.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -253,9 +259,12 @@
 			isa = PBXGroup;
 			children = (
 				FA830D8B1D8C21B1000BD36E /* ChannelsVC.swift */,
+				FAF65E4D219433AB00306209 /* MainPlayer.swift */,
+				FAF65E4B2194338700306209 /* PipPlayer.swift */,
 				FA843F6A1DF17E5C00F95DAE /* ProgramView.swift */,
 				FAFC8F2F1DF9829900350A2B /* ProgramCollectionCell.swift */,
 				FA2060D11E22659C008951A4 /* PipPaymentVC.swift */,
+				FAF65E492194333A00306209 /* CommonPlayer.swift */,
 			);
 			name = Channels;
 			sourceTree = "<group>";
@@ -450,6 +459,7 @@
 				FA210EC51DCA0344002B9592 /* UIExtension.swift in Sources */,
 				FAE2307F1E27C70900210B64 /* Analytics.swift in Sources */,
 				FA5C61371D928084005E8EBD /* iptv.xcdatamodeld in Sources */,
+				FAF65E4E219433AB00306209 /* MainPlayer.swift in Sources */,
 				FAF0E4151E00166E00897B88 /* ProgramVC.swift in Sources */,
 				FA82B3BD1EA24FA100FCA81E /* OtherSettings.swift in Sources */,
 				FA7589CA1DD10DBF009D2327 /* EpgProviderEditVC.swift in Sources */,
@@ -482,14 +492,16 @@
 				FAFE305D1D9D15760042A3EB /* FocusedView.swift in Sources */,
 				FA82B3B91EA2386000FCA81E /* ApplePlayerView.swift in Sources */,
 				FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */,
+				FAF65E4A2194333A00306209 /* CommonPlayer.swift in Sources */,
 				FA6ACE921E18066900658CAE /* ChannelSettingPreviewVC.swift in Sources */,
 				FA2060D21E22659C008951A4 /* PipPaymentVC.swift in Sources */,
 				FA54F3611E1518B300061835 /* ChannelSettingReorderVC.swift in Sources */,
+				FAF65E4C2194338700306209 /* PipPlayer.swift in Sources */,
 				FAF0E4131DFECBDC00897B88 /* ProgramVC_old.swift in Sources */,
 				FA843F641DEB4EC900F95DAE /* StyleManager.swift in Sources */,
 				FAFC8F301DF9829900350A2B /* ProgramCollectionCell.swift in Sources */,
 				FA843F6B1DF17E5C00F95DAE /* ProgramView.swift in Sources */,
-				FAF65E4821903A2400306209 /* TimerShow.swift in Sources */,
+				FAF65E4821903A2400306209 /* TimerTask.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
