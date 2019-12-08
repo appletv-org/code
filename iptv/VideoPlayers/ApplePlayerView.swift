@@ -243,11 +243,13 @@ public class ApplePlayerView: PlayerView, PlayerViewDelegate2 {
     
     public override func play() {
         rate = 1
+        self.status = .loading
         //player?.play()
     }
     
     public override func pause() {
         rate = 0
+        self.status = .stopped
         //player?.pause()
     }
     

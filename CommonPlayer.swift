@@ -35,6 +35,7 @@ class CommonPlayer: UIView, PlayerViewDelegate {
         self.playerView!.url = url
         self.playerView!.play()
         //self.playerView!.isMute = true
+        
     }
     
     func setPlayer(_ playerView: PlayerView) {

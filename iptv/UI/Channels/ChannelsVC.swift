@@ -50,12 +50,11 @@ class ChannelsVC : FocusedViewController {
     @IBOutlet weak var mainPlayer: MainPlayer!   //PlayerView!
 
     //choose channel view contor
+    var hideChannelChooserTask = TimerTask()
     @IBOutlet weak var channelChooserContainer: UIView!
     @IBOutlet weak var buttonChannelClose: UIButton!
     @IBAction func buttonCloseAction(_ sender: Any) {
-        channelChooserContainer.isHidden = true
-        programView.hide(animated: true)
-        self.viewToFocus = self.middleChannelView
+        self.channelChooserShow(false)
     }
     @IBOutlet weak var channelPickerView: UIView!
     
@@ -77,7 +76,10 @@ class ChannelsVC : FocusedViewController {
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var actionButtons: UISegmentedControl!
     
-
+    @IBAction func actonButtonChange(_ sender: Any) {
+        self.changeActionButton();
+    }
+    
     //constrain for show/hide program/channel
     @IBOutlet weak var programViewBottomConstraint: NSLayoutConstraint!
 
@@ -169,9 +171,7 @@ class ChannelsVC : FocusedViewController {
             self.viewToFocus = middleChannelView
         }
         else {
-            self.channelChooserContainer.isHidden = false
-            self.programView.show(animated:false)
-            
+            self.channelChooserShow(true)
         }
         
         //menu button hide channel chooser by menu button
@@ -318,6 +318,8 @@ class ChannelsVC : FocusedViewController {
         let nextFocusedView = context.nextFocusedItem as? UIView
         let prevFocusedView = context.previouslyFocusedItem as? UIView
         
+        print("new focused \(String(describing: nextFocusedView))")
+        
         //switch program to prev/next by swipe
         if prevFocusedView == middleChannelView &&
             (nextFocusedView == prevChannelView || nextFocusedView == nextChannelView)
@@ -339,29 +341,38 @@ class ChannelsVC : FocusedViewController {
         }
         
         //border animation for main view
-        if  nextFocusedView != nil {
-            if nextFocusedView == middleChannelView && prevFocusedView != middleChannelView {
-                
-                let borderColorAnim = CABasicAnimation(keyPath: "borderColor")
-                borderColorAnim.fromValue=UIColor.blue.cgColor
-                borderColorAnim.toValue=UIColor.clear.cgColor
-                borderColorAnim.duration = 0.5
-                mainPlayer.layer.add(borderColorAnim, forKey: "borderColor")
-            }
+        if  nextFocusedView == middleChannelView && prevFocusedView != middleChannelView {
+            let borderColorAnim = CABasicAnimation(keyPath: "borderColor")
+            borderColorAnim.fromValue=UIColor.blue.cgColor
+            borderColorAnim.toValue=UIColor.clear.cgColor
+            borderColorAnim.duration = 0.5
+            mainPlayer.layer.add(borderColorAnim, forKey: "borderColor")
         }
         
         
         //programView show/hide
-        if nextFocusedView != nil && prevFocusedView != nil {
-            if nextFocusedView!.isDescendant(of: programAndPipView) {
-                self.programView.show(animated:true)
-            }
-            if prevFocusedView!.isDescendant(of: programAndPipView) &&
-               !nextFocusedView!.isDescendant(of: programAndPipView)
-            {
-                self.programView.hide(animated:true)
-            }
+        if  let next = nextFocusedView,
+            next.isDescendant(of: programAndPipView)
+        {
+            self.programView.show(animated:true)
         }
+        if  nextFocusedView == middleChannelView,
+            let prev = prevFocusedView,
+            prev.isDescendant(of: programAndPipView)
+        {
+            self.programView.hide(animated: true)
+        }
+    
+        //channelChooser not hide
+        if  let next = nextFocusedView,
+            channelChooserContainer.isHidden == false,
+            (next.isDescendant(of: channelChooserContainer) ||
+             next.isDescendant(of: programAndPipView))
+        {
+            self.channelChooserShow(true)
+        }
+            
+
         
         /*
         //change borger color for focused
@@ -417,10 +428,18 @@ class ChannelsVC : FocusedViewController {
         */
     }
     
+    func changeActionButton() {
+        self.programView.show(animated: false)
+        
+        if !self.channelChooserContainer.isHidden {
+            self.channelChooserShow();
+        }
+    }
+    
     
     
     func play(_ channel:ChannelInfo) {
-        channelChooserContainer.isHidden = true
+        self.channelChooserShow(false)
         
         //loading channel
         loadingView.isHidden = false
@@ -480,57 +499,8 @@ extension ChannelsVC : ChannelPickerDelegate {
             }
         }
     }
-
-    //func changePath(chooseControl: ChannelPickerVC,  path:[String])     {}
-    //func selectedPath(chooseControl: ChannelPickerVC,  path:[String])   {}
-
 }
 
-/*
-extension ChannelsVC { //programView show/hide
-    
-    func programShow(animated:Bool, _ isShow:Bool = true, _ hideTime:Double = 5.0) {
-        print("programShow isShow:\(isShow) hideTime:\(hideTime)")
-        if isShow {
-            programViewBottomConstraint.constant = 0
-        }
-        else {
-            programViewBottomConstraint.constant = -programView.frame.size.height
-        }
-        
-        isProgramShow = isShow
-
-        if(animated) {
-            UIView.animate(withDuration: 0.3, animations: {
-                self.view.layoutIfNeeded()
-            })
-        }
-        else {
-            self.view.layoutIfNeeded()
-        }
-        
-        if(isShow) {
-            //self.viewToFocus = self.programCollectionView
-            self.hideProgramTask.setTask(time: hideTime, block:  { (_) in
-                    self.programHide(animated:true)
-            })
-        }
-        else {
-            self.hideProgramTask.invalidate()
-            // move focus from programView
-            if let focusedView = UIScreen.main.focusedView {
-                if focusedView.isDescendant(of: programView)  {
-                    self.viewToFocus = middleChannelView
-                }
-            }
-        }
-    }
-    
-    func programHide(animated:Bool) {
-        self.programShow(animated:animated, false)
-    }
-}
- */
 
 extension ChannelsVC: PlayerViewDelegate { //loading info show/hide
     
@@ -548,12 +518,16 @@ extension ChannelsVC: PlayerViewDelegate { //loading info show/hide
         }
         
         switch status {
-        case PlayerStatus.playing:
+        case .playing:
             //print("AVPlayerItemStatus readyToPlay")
             
             loadingErrorLabel.isHidden = true
             loadingActivity.isHidden = false
             loadingView.isHidden = true
+        
+        case .stopped:
+            loadingErrorLabel.isHidden = false
+            loadingActivity.isHidden = true
             
         default: ()
             //print("AVPlayerItemStatus \(status)")
@@ -612,10 +586,28 @@ extension ChannelsVC { //pip show/hide
 }
 
 extension ChannelsVC { //show/hide  channel chooser
+    
+    func channelChooserShow(_ isShow:Bool = true) {
+        if isShow {
+            if self.channelChooserContainer.isHidden {
+                self.channelChooserContainer.isHidden = false
+                self.programView.show(animated:false)
+            }
+            self.hideChannelChooserTask.invalidate()
+            self.hideChannelChooserTask.setTask(time: 6.0) { (_) in
+                self.channelChooserShow( false )
+            }
+        }
+        if !isShow && !self.channelChooserContainer.isHidden {
+            self.channelChooserContainer.isHidden = true
+            self.programView.hide(animated:false)
+            self.hideChannelChooserTask.invalidate()
+            self.viewToFocus = self.middleChannelView
+        }
+    }
 
     @objc func showChannelChooser(sender: UITapGestureRecognizer) {
-        channelChooserContainer.isHidden = false
-        self.programView.show(animated:false)
+        self.channelChooserShow(true)
         //set position
         if currentChannelIndex < groupInfo.channels.count {
             channelPickerVC?.setupPath(parentPath + [groupInfo.channels[currentChannelIndex].name])
@@ -628,8 +620,7 @@ extension ChannelsVC { //show/hide  channel chooser
     
     @objc func menuClickHandler(sender: UITapGestureRecognizer) {
         if self.channelChooserContainer.isHidden == false {
-            self.channelChooserContainer.isHidden = true
-            self.programView.hide(animated: false)
+            self.channelChooserShow(false)
             self.viewToFocus = middleChannelView
         }
         else {

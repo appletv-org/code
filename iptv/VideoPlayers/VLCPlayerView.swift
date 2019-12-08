@@ -11,14 +11,21 @@ import Foundation
 import UIKit
 import AVFoundation.AVPlayer
 
+
 public class VlcPlayerView: PlayerView, VLCMediaPlayerDelegate {
     
-    var _mediaPlayer : VLCMediaPlayer?
+    var _mediaPlayer: VLCMediaPlayer?
+    
+    let options: [String] = [
+        "--avcodec-fast",
+        "--avcodec-hurry-up",
+        "--http-reconnect"
+    ]
     
     var mediaPlayer: VLCMediaPlayer {
         get {
             if(_mediaPlayer == nil) {
-                _mediaPlayer = VLCMediaPlayer()
+                _mediaPlayer = VLCMediaPlayer(options:options)
             }
             return _mediaPlayer!
         }
@@ -37,13 +44,13 @@ public class VlcPlayerView: PlayerView, VLCMediaPlayerDelegate {
         print("now audio volume: \(mediaPlayer.audio.volume)")
          */
         if(self.isMute) {
-            mediaPlayer.currentAudioTrackIndex = -1
+            self.mediaPlayer.currentAudioTrackIndex = -1
         }
         else {
             if  let indexes = mediaPlayer.audioTrackIndexes,
                 indexes.count > 0
             {
-                mediaPlayer.currentAudioTrackIndex = indexes.last as! Int32
+                self.mediaPlayer.currentAudioTrackIndex = indexes.last as! Int32
             }
         }        
         
@@ -68,7 +75,14 @@ public class VlcPlayerView: PlayerView, VLCMediaPlayerDelegate {
     
     override public var url: URL? {
         didSet {
+            /*
+            if self.status != .idle ||  self.status != .stopped {
+                self.stop()
+            }
+             */
             if(self.url != nil) {
+                //dangerous operation
+                print("set media url: \(self.url!.absoluteString)")
                 let media = VLCMedia(url: self.url!)
                 self.mediaPlayer.media = media
             }
@@ -81,27 +95,32 @@ public class VlcPlayerView: PlayerView, VLCMediaPlayerDelegate {
     
     
     public override func play() {
-        if( mediaPlayer.isPlaying) {
-            mediaPlayer.stop()
+        
+        if self.status != .idle ||  self.status != .stopped {
+            self.stop()
         }
-        mediaPlayer.delegate = self
-        mediaPlayer.drawable = self
-        mediaPlayer.play()
+        self.mediaPlayer.delegate = self
+        self.mediaPlayer.drawable = self
+        self.status = .loading
+        self.mediaPlayer.play()
     }
     
     public override func pause() {
-        mediaPlayer.pause()
+        self.mediaPlayer.pause()
+        self.status = .stopped
     }
     
     public override func reset() {
-        stop()
-        //_mediaPlayer = nil
+        self.stop()
     }
 
     
     public override func stop() {
-        if(mediaPlayer.isPlaying) {
-            mediaPlayer.stop()
+        if(self.status != .idle) {
+            print("start stop")
+            self.mediaPlayer.stop()
+            self.status = .idle
+            print("finish stop")
         }
     }
     
@@ -114,16 +133,18 @@ public class VlcPlayerView: PlayerView, VLCMediaPlayerDelegate {
             
         case .error:
             delegate?.changeStatus(player:self, status: .idle, error: Err("error"))
+            self.status = .idle
             //delegate?.playerVideo(player:self, statusItemPlayer:AVPlayerItemStatus.failed, error: Err("error"))
-        case .playing:
-            delegate?.changeStatus(player:self, status: .playing, error: nil)
-            //delegate?.playerVideo(player:self, statusItemPlayer:AVPlayerItemStatus.readyToPlay, error: nil)
-            if(self.isMute) {
-                //mediaPlayer.audio.volume = 0
-                mediaPlayer.currentAudioTrackIndex = isMute ? -1 : 0
-            }
+//        case .playing:
+//            delegate?.changeStatus(player:self, status: .playing, error: nil)
+//            // delegate?.playerVideo(player:self, statusItemPlayer:AVPlayerItemStatus.readyToPlay, error: nil)
+//            if(self.isMute) {
+//                // mediaPlayer.audio.volume = 0
+//                mediaPlayer.currentAudioTrackIndex = isMute ? -1 : 0
+//            }
         case .stopped:
             delegate?.changeStatus(player:self, status: .stopped, error: nil)
+            self.status = .stopped
             //delegate?.playerVideo(player:self, statusItemPlayer:AVPlayerItemStatus.failed, error: Err("stopped"))
         default: break
             //print("default status")
@@ -131,17 +152,27 @@ public class VlcPlayerView: PlayerView, VLCMediaPlayerDelegate {
         
     }
     
-    /*
+    
     public func mediaPlayerTimeChanged(_ aNotification:Notification) {
-        print("\(name): time change \(Date())")
+        if(self.status == .loading) {
+            self.status = .playing
+            delegate?.changeStatus(player:self, status: .playing, error: nil)
+            if(self.isMute) {
+                self.mediaPlayer.currentAudioTrackIndex = isMute ? -1 : 0
+            }
+            
+        }
+        // print("\(name): time change \(Date())")
     }
+    /*
     public func mediaPlayerChapterChanged(_ aNotification:Notification) {
         print("\(name): chapter change")
     }
     public func mediaPlayerTitleChanged(_ aNotification:Notification) {
         print("\(name): title change")
     }
-    */
+     */
+    
 
   }
 

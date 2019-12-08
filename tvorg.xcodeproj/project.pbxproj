@@ -48,6 +48,12 @@
 		FA843F641DEB4EC900F95DAE /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA843F631DEB4EC900F95DAE /* StyleManager.swift */; };
 		FA843F6B1DF17E5C00F95DAE /* ProgramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA843F6A1DF17E5C00F95DAE /* ProgramView.swift */; };
 		FA8544631EA382EE002BD429 /* ChannelSettingMetadataVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8544621EA382EE002BD429 /* ChannelSettingMetadataVC.swift */; };
+		FA8566A923703E12006F5F7C /* HidingTabbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8566A823703E12006F5F7C /* HidingTabbar.swift */; };
+		FA8566AB23705AFA006F5F7C /* UIFontExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8566AA23705AFA006F5F7C /* UIFontExtension.swift */; };
+		FA8566AD23705B41006F5F7C /* UIViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8566AC23705B41006F5F7C /* UIViewExtension.swift */; };
+		FA8566AF23705B90006F5F7C /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8566AE23705B90006F5F7C /* UIViewControllerExtension.swift */; };
+		FA8566B123705C14006F5F7C /* UIButtonExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8566B023705C14006F5F7C /* UIButtonExtension.swift */; };
+		FA8566B323705C56006F5F7C /* UITextExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8566B223705C56006F5F7C /* UITextExtension.swift */; };
 		FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */; };
 		FAE2307F1E27C70900210B64 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE2307E1E27C70900210B64 /* Analytics.swift */; };
 		FAF0E4131DFECBDC00897B88 /* ProgramVC_old.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF0E4121DFECBDC00897B88 /* ProgramVC_old.swift */; };
@@ -113,6 +119,12 @@
 		FA843F631DEB4EC900F95DAE /* StyleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StyleManager.swift; path = iptv/StyleManager.swift; sourceTree = "<group>"; };
 		FA843F6A1DF17E5C00F95DAE /* ProgramView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramView.swift; path = iptv/UI/Channels/ProgramView.swift; sourceTree = "<group>"; };
 		FA8544621EA382EE002BD429 /* ChannelSettingMetadataVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChannelSettingMetadataVC.swift; path = iptv/UI/Settings/ChannelSettingMetadataVC.swift; sourceTree = "<group>"; };
+		FA8566A823703E12006F5F7C /* HidingTabbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidingTabbar.swift; sourceTree = "<group>"; };
+		FA8566AA23705AFA006F5F7C /* UIFontExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFontExtension.swift; sourceTree = "<group>"; };
+		FA8566AC23705B41006F5F7C /* UIViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtension.swift; sourceTree = "<group>"; };
+		FA8566AE23705B90006F5F7C /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
+		FA8566B023705C14006F5F7C /* UIButtonExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonExtension.swift; sourceTree = "<group>"; };
+		FA8566B223705C56006F5F7C /* UITextExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextExtension.swift; sourceTree = "<group>"; };
 		FAAECE6F1D990A07004EA6ED /* ChannelManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChannelManager.swift; path = iptv/ChannelManager.swift; sourceTree = "<group>"; };
 		FAD2A1B91D9509120047AE3F /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		FAE2307D1E27A9E300210B64 /* iptv-Bridging_Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "iptv-Bridging_Header.h"; path = "iptv/iptv-Bridging_Header.h"; sourceTree = "<group>"; };
@@ -251,6 +263,12 @@
 				FA210EC41DCA0344002B9592 /* UIExtension.swift */,
 				FA843F631DEB4EC900F95DAE /* StyleManager.swift */,
 				FAF65E4721903A2400306209 /* TimerTask.swift */,
+				FA8566AA23705AFA006F5F7C /* UIFontExtension.swift */,
+				FA8566A823703E12006F5F7C /* HidingTabbar.swift */,
+				FA8566AC23705B41006F5F7C /* UIViewExtension.swift */,
+				FA8566AE23705B90006F5F7C /* UIViewControllerExtension.swift */,
+				FA8566B023705C14006F5F7C /* UIButtonExtension.swift */,
+				FA8566B223705C56006F5F7C /* UITextExtension.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -325,7 +343,6 @@
 				FA830D4C1D8C0C62000BD36E /* Frameworks */,
 				FA830D4D1D8C0C62000BD36E /* Resources */,
 				C38244401AC32B3DBEDE13BD /* [CP] Embed Pods Frameworks */,
-				AF796FEEF78C7A173E5B280A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -364,6 +381,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -394,21 +412,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		AF796FEEF78C7A173E5B280A /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-tvorg/Pods-tvorg-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		BB91A0E9BF525554C8E8C911 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -433,7 +436,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-tvorg/Pods-tvorg-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-tvorg/Pods-tvorg-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AEXML/AEXML.framework",
 				"${BUILT_PRODUCTS_DIR}/Flurry-iOS-SDK/Flurry_iOS_SDK.framework",
 				"${BUILT_PRODUCTS_DIR}/GCDWebServer/GCDWebServer.framework",
@@ -446,7 +449,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-tvorg/Pods-tvorg-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-tvorg/Pods-tvorg-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -456,8 +459,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA8566B323705C56006F5F7C /* UITextExtension.swift in Sources */,
 				FA210EC51DCA0344002B9592 /* UIExtension.swift in Sources */,
 				FAE2307F1E27C70900210B64 /* Analytics.swift in Sources */,
+				FA8566AF23705B90006F5F7C /* UIViewControllerExtension.swift in Sources */,
 				FA5C61371D928084005E8EBD /* iptv.xcdatamodeld in Sources */,
 				FAF65E4E219433AB00306209 /* MainPlayer.swift in Sources */,
 				FAF0E4151E00166E00897B88 /* ProgramVC.swift in Sources */,
@@ -467,6 +472,7 @@
 				FA5C61121D9038EF005E8EBD /* M3uParser.swift in Sources */,
 				FA2E2EE61DB7A42000CE8F7F /* ProgramManager.swift in Sources */,
 				FA38B8611E0D0EA800959277 /* ChannelSettingInfoVC.swift in Sources */,
+				FA8566AD23705B41006F5F7C /* UIViewExtension.swift in Sources */,
 				FA2383591DC5283F0007A006 /* Data+Gzip.swift in Sources */,
 				FA54F35F1E15188C00061835 /* ChannelSettingCopyVC.swift in Sources */,
 				FA6030851E09585B000486AB /* ChannelSettingEditVC.swift in Sources */,
@@ -490,9 +496,12 @@
 				FA5C61341D92798C005E8EBD /* CoreDataManager.swift in Sources */,
 				FA51F7A41DC7746D00CA1758 /* ChannelPickerVC.swift in Sources */,
 				FAFE305D1D9D15760042A3EB /* FocusedView.swift in Sources */,
+				FA8566AB23705AFA006F5F7C /* UIFontExtension.swift in Sources */,
 				FA82B3B91EA2386000FCA81E /* ApplePlayerView.swift in Sources */,
 				FAAECE701D990A07004EA6ED /* ChannelManager.swift in Sources */,
+				FA8566A923703E12006F5F7C /* HidingTabbar.swift in Sources */,
 				FAF65E4A2194333A00306209 /* CommonPlayer.swift in Sources */,
+				FA8566B123705C14006F5F7C /* UIButtonExtension.swift in Sources */,
 				FA6ACE921E18066900658CAE /* ChannelSettingPreviewVC.swift in Sources */,
 				FA2060D21E22659C008951A4 /* PipPaymentVC.swift in Sources */,
 				FA54F3611E1518B300061835 /* ChannelSettingReorderVC.swift in Sources */,
@@ -591,7 +600,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 11.0;
+				TVOS_DEPLOYMENT_TARGET = 12.4;
 			};
 			name = Debug;
 		};
@@ -643,7 +652,7 @@
 				SDKROOT = appletvos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 12.1;
+				TVOS_DEPLOYMENT_TARGET = 12.4;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -653,6 +662,7 @@
 			baseConfigurationReference = 09D175635F5148F71C53FE32 /* Pods-tvorg.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = Z23F78X45H;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
@@ -661,6 +671,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[sdk=appletvos*]" = "";
 				"LIBRARY_SEARCH_PATHS[sdk=appletvsimulator*]" = "";
+				MARKETING_VERSION = 2.1.1;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alevko.tvorg;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -668,7 +679,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/iptv/iptv-Bridging_Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
-				TVOS_DEPLOYMENT_TARGET = 11.0;
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
@@ -678,6 +689,7 @@
 			baseConfigurationReference = 9DB8BF788FF9F07DC51FAD14 /* Pods-tvorg.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = Z23F78X45H;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = "$(inherited)";
@@ -686,6 +698,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				"LIBRARY_SEARCH_PATHS[sdk=appletvos*]" = "";
 				"LIBRARY_SEARCH_PATHS[sdk=appletvsimulator*]" = "";
+				MARKETING_VERSION = 2.1.1;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alevko.tvorg;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -693,7 +706,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/iptv/iptv-Bridging_Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
-				TVOS_DEPLOYMENT_TARGET = 11.3;
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;

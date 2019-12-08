@@ -43,6 +43,8 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
     
     
     func update(_ channel:ChannelInfo) -> Bool {//return - find program with current time
+        
+        let previousProgramsCount = self.programs.count
         self.channel = channel
         
         let beginDay = NSCalendar.current.startOfDay(for: Date())
@@ -50,24 +52,27 @@ class ProgramView : PanelView, UICollectionViewDataSource, UICollectionViewDeleg
         let maxData = beginDay.addingTimeInterval(2*24*60*60)
 
         //rest only today +- 1 day programs
-        programs = ProgramManager.instance.getPrograms(channel:channel.name, from:minData, to:maxData)
+        self.programs = ProgramManager.instance.getPrograms(channel:channel.name, from:minData, to:maxData)
         
         //sort programs
-        programs.sort(by: { $0.start!.timeIntervalSince1970 < $1.start!.timeIntervalSince1970 })
-        
-        print("programs.count= \(programs.count) programs[0] = \(String(describing: programs.count == 0 ? "nil" : programs[0].title))")
+        if self.programs.count > 0 {
+            self.programs.sort(by: { $0.start!.timeIntervalSince1970 < $1.start!.timeIntervalSince1970 })
+        }
         
         print("ChannelVC::play for channel:\(channel.name) find programs:\(programs.count)" )
-        //programCollectionView.reloadData()
-        programCollectionView.reloadSections(IndexSet(integer:0))
+        if(previousProgramsCount == 0 && self.programs.count == 0) {
+            return false;
+        }
+        programCollectionView.reloadData()
+        //programCollectionView.reloadSections(IndexSet(integer:0))
         //scroll to now element
         
         let indNow = findIndexNow()
         if let index = indNow.index {
             //programCollectionView.showElement(IndexPath(row:index, section:0), animated: false)
             programCollectionView.scrollToItem(at: IndexPath(row:index, section:0), at: .left, animated: false)
-            programCollectionView.focusedIndex = IndexPath(row:index, section:0)
         }
+        programCollectionView.focusedIndex = IndexPath(row:indNow.index ?? 0, section:0)
         labelDayUpdate()
         
                 

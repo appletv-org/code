@@ -71,6 +71,7 @@ class HttpServer: GCDWebServer {
                     ret = "\(HttpServer.operationFail): " + errMsg(err!)
                 }
                 else {
+                    ChannelManager.save()
                     ret = HttpServer.operationSuccess
                 }
                 
@@ -110,6 +111,7 @@ class HttpServer: GCDWebServer {
                 let group = GroupInfo(name: name)
                 ChannelManager.addM3uList(content:content, toGroup:group)
                 ChannelManager.root.groups.append(group)
+                ChannelManager.save()
                 return GCDWebServerDataResponse(html:"<html><body><p>\(HttpServer.operationSuccess)</p></body></html>")
             }
             
@@ -139,6 +141,7 @@ class HttpServer: GCDWebServer {
             do {
                 try ChannelManager.addM3uList(url:url, toGroup:group)
                 ChannelManager.root.groups.append(group)
+                ChannelManager.save()
             }
             catch {
                 return GCDWebServerDataResponse(html:"<html><body><p>Failure operation: \(errMsg(error))</p></body></html>")

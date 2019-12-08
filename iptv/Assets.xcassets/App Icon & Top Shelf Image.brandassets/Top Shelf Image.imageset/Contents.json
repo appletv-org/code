@@ -2,11 +2,12 @@
   "images" : [
     {
       "idiom" : "tv",
-      "filename" : "TopShield Old.png",
+      "filename" : "TopShield.png",
       "scale" : "1x"
     },
     {
       "idiom" : "tv",
+      "filename" : "TopShield@2.png",
       "scale" : "2x"
     }
   ],

@@ -23,7 +23,7 @@ class ProgramCollectionCell : UICollectionViewCell {
         else {
             textView.text = UICommonString.programNotFound
         }
-        //print("ProgramCollectionCell: \(textView.text) ")
+        print("ProgramCollectionCell: \(String(describing: textView.text)) ")
         self.setProgressBar(program)
     }
     

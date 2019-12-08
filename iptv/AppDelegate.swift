@@ -32,6 +32,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Visit \(httpServer.serverURL) in your web browser")
         self.webServer = httpServer
         
+        NSSetUncaughtExceptionHandler { exception in
+           print(exception)
+           print(exception.callStackSymbols)
+        }
+        
         return true
     }
 
@@ -58,6 +63,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         CoreDataManager.instance.saveContext()
     }
+    
+    
     
 }
 

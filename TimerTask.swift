@@ -8,7 +8,7 @@
 
 import Foundation
 
-//simple sheduleTimer with invalidate previos un
+//simple sheduleTimer with invalidate previos
 class TimerTask {
     
     var timer : Timer?
